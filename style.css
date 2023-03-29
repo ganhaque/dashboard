@@ -29,6 +29,10 @@
   --gap-size: 0.8rem;
 }
 
+html {
+  background-color: rgba(var(--black), 1);
+}
+
 body {
   /* font-size: 1.2em; */
   background-color: rgba(var(--black), 1);
@@ -74,6 +78,8 @@ p {
 }
 
 .header {
+  font-family: cozette;
+  /* font-size: 1.2rem; */
   text-align: center;
   color: rgba(var(--icon-primary), 1);
   /* margin-top: var(--gap-size); */

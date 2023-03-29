@@ -5,20 +5,27 @@ body {
 
 body {
   margin: 0;
-  background: #36393f;
+  /* background: #36393f; */
 }
 
 nav {
-  background: #202225;
+  background-color: rgba(var(--black2), 1);
+  /* background: #202225; */
   float: left;
   height: 100%;
-  width: 72px;
-  
+  /* width: 72px; */
+  padding-right: 0.6rem;
+  padding-left: 0.6rem;
+
   display: flex; /* Use Flexbox */
   flex-direction: column; /* Stack one on top of another */
   align-items: center; /* Align horizontally */
   gap: 15px; /* Vertical gap between the links */
-  padding-top: 12px;
+  /* padding-top: 12px; */
+}
+
+nav a:first-child {
+  margin-top: 0.6rem;
 }
 
 nav a {
@@ -27,9 +34,9 @@ nav a {
   height: 48px;
   border-radius: 50%; /* Makes a circle */
   background: #36393f;
-  
+
   position: relative;
-  
+
   transition: border-radius 250ms, background 250ms;
 }
 
@@ -49,71 +56,71 @@ nav a.active {
 }
 
 nav a::after {
-    content: "";
-    display: block;
-    width: 8px;
-    height: 8px;
-    border-radius: 200px;
-    background: white;
-  
-    position: absolute;
-    right: 57px; /* Move it 57px to the LEFT (yes, counter-intuitive!) */
-    top: 50%;
-    transform: translateY(-50%);
-  
-    transition: height 250ms;
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 200px;
+  background: white;
+
+  position: absolute;
+  right: 57px; /* Move it 57px to the LEFT (yes, counter-intuitive!) */
+  top: 50%;
+  transform: translateY(-50%);
+
+  transition: height 250ms;
 }
 
 nav a:hover::after {
-    height: 18px;
+  height: 18px;
 }
 
 nav a.active::after {
-    height: 32px;
+  height: 32px;
 }
 
 nav a .tooltip {
-    font-family: sans-serif;
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
+  font-family: sans-serif;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
 
-    padding: 10px 12px;
-    margin-left: 10px;
-    border-radius: 8px;
-    
-    display: none;
-    width: max-content; /* Be as wide as the text that it contains */
-    
-    background: #202225;
-    
-    position: absolute;
-    left: 60px;
-    top: 50%;
-    transform: translateY(-50%);
+  padding: 10px 12px;
+  margin-left: 10px;
+  border-radius: 8px;
+
+  display: none;
+  width: max-content; /* Be as wide as the text that it contains */
+
+  background: #202225;
+
+  position: absolute;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 nav a:hover .tooltip {
-    display: block;
+  display: block;
 }
 
 nav a .tooltip::after {
-    content: "";
-    display: block;
-    width: 0;
-    height: 0;
-  
-    content: "";
-    display: block;
-    width: 0;
-    height: 0;
-  
-    border-top:   5px solid transparent;
-    border-bottom:5px solid transparent; 
-    border-right: 5px solid #202225;
-  
-    position: absolute;
-    left: -5px;
-    top: 50%;
-    transform: translateY(-50%);
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+
+  border-top:   5px solid transparent;
+  border-bottom:5px solid transparent; 
+  border-right: 5px solid #202225;
+
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
 }
