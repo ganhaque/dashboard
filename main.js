@@ -19,7 +19,7 @@ const createWindow = () => {
     // prevent white flashes
     backgroundColor: '#101317',
     autoHideMenuBar: true,
-    nodeIntegration: true,
+    // nodeIntegration: true,
     // contextIsolation: false,
     // enableRemoteModule: true,
     webPreferences: {

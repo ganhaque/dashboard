@@ -14,5 +14,10 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^23.2.0"
+  },
+  "dependencies": {
+    "babel-preset-react": "^6.24.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
