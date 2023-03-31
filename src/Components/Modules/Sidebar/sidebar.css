@@ -1,0 +1,112 @@
+.sidebar {
+  background-color: rgba(var(--one_bg),1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3rem; /* equivalent to h-12 */
+  width: 3rem; /* equivalent to w-12 */
+  margin-top: 0.5rem; /* equivalent to mt-2 */
+  margin-bottom: 0.5rem; /* equivalent to mb-2 */
+  margin-left: auto; /* equivalent to mx-auto */
+  margin-right: auto; /* equivalent to mx-auto */
+  /* background-color: #9CA3AF; */
+  background-color: rgba(var(--grey),1);
+  transition-property: background-color, border-radius, box-shadow;
+  transition-duration: 0.3s; /* equivalent to duration-300 */
+  transition-timing-function: linear; /* equivalent to ease-linear */
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* equivalent to shadow-lg */
+  border-radius: 1.5rem;
+}
+
+.sidebar-icon:hover {
+  background-color: rgba(var(--green),1); /* equivalent to hover:bg-green-600 */
+  border-radius: 0.4rem;
+}
+
+.sidebar-icon.dark-mode {
+  background-color: #1F2937; /* equivalent to dark:bg-gray-800 */
+  color: #10B981; /* equivalent to text-green-500 */
+}
+
+.sidebar-icon.dark-mode:hover {
+  background-color: #10B981; /* equivalent to hover:bg-green-600 */
+  color: #F3F4F6; /* equivalent to hover:text-white */
+  border-radius: 1rem; /* equivalent to rounded-3xl */
+}
+
+.sidebar-icon.active {
+  background-color: rgba(var(--red),1);
+  border-radius: 0.8rem;
+}
+
+.sidebar-hr {
+  /* background-color: #EDF2F7; */
+  background-color: rgba(var(--grey),1);
+  width: 2rem;
+  border-color: rgba(var(--grey),1);
+  /* border-color: #EDF2F7; */
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 9999px;
+  /* margin-left: 0.5rem; */
+  /* margin-right: 0.5rem; */
+}
+
+.sidebar-tooltip:hover {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.sidebar-tooltip {
+  font-family: sans-serif;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+
+  padding: 10px 12px;
+  margin-left: 10px;
+  border-radius: 8px;
+
+  /* display: block; */
+  display: none;
+  width: max-content; /* Be as wide as the text that it contains */
+
+  background: #202225;
+
+  position: absolute;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sidebar-tooltip::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+
+  border-top:   5px solid transparent;
+  border-bottom:5px solid transparent; 
+  border-right: 5px solid #202225;
+
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sidebar-icon:hover .sidebar-tooltip {
+  display: block;
+}
