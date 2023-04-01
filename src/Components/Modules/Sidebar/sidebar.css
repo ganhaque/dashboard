@@ -31,23 +31,12 @@
 }
 
 .sidebar-icon:hover {
-  background-color: rgba(var(--green),1); /* equivalent to hover:bg-green-600 */
+  background-color: rgba(var(--primary),1); /* equivalent to hover:bg-green-600 */
   border-radius: 0.4rem;
 }
 
-.sidebar-icon.dark-mode {
-  background-color: #1F2937; /* equivalent to dark:bg-gray-800 */
-  color: #10B981; /* equivalent to text-green-500 */
-}
-
-.sidebar-icon.dark-mode:hover {
-  background-color: #10B981; /* equivalent to hover:bg-green-600 */
-  color: #F3F4F6; /* equivalent to hover:text-white */
-  border-radius: 1rem; /* equivalent to rounded-3xl */
-}
-
 .sidebar-icon.active {
-  background-color: rgba(var(--red),1);
+  background-color: rgba(var(--secondary),1);
   border-radius: 0.8rem;
 }
 

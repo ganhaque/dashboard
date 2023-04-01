@@ -19,7 +19,7 @@ const WeatherDisplay = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return <div id="weather">{weather}</div>;
+  return <div className="item" id="weather">{weather}</div>;
 };
 
 export default WeatherDisplay;

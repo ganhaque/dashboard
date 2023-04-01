@@ -108,13 +108,19 @@ body {
 }
 
 main {
+  display: block;
   margin-left: 5rem;
   padding: var(--gap-size);
+  /* height: calc(100% - 2 * var(--gap-size)); */
 }
 
 p {
   margin: 0;
 }
+
+/* div { */
+  /* display: flex !important; */
+/* } */
 
 .flex {
   display: flex;
@@ -128,6 +134,7 @@ p {
 }
 .column-flex-direction {
   flex-direction: column;
+  /* height: calc(100% - 2 * var(--gap-size)); */
 }
 .item {
   font-family: terminus;
@@ -148,7 +155,7 @@ p {
   /* letter-spacing: 0.1rem; */
   /* font-size: 1.2rem; */
   text-align: center;
-  color: rgba(var(--icon-primary), 1);
+  color: rgba(var(--primary), 1);
   /* margin-top: var(--gap-size); */
   margin-top: 0;
   margin-bottom: var(--gap-size);
@@ -167,7 +174,8 @@ p {
 }
 
 #bigbox {
-  height: calc(100% - 2 * var(--gap-size));
+  /* height: calc(100% - 2 * var(--gap-size)); */
+  height: calc(100vh - 2 * var(--gap-size));
 }
 
 #profile {
@@ -183,10 +191,11 @@ p {
 
 #date {
   font-size: 1.2rem;
-  color: rgba(var(--icon-primary), 1);
+  color: rgba(var(--primary), 1);
 }
 
 #weather {
+  font-family: terminus, 'Noto Emoji', sans-serif;
   font-size: 1.2rem;
 }
 
@@ -250,11 +259,11 @@ p {
 
 .fa-primary {
   /* color: #ff7eee; */
-  color: rgba(var(--icon-primary), 1);
+  color: rgba(var(--primary), 1);
 }
 
 .fa-secondary {
-  color: rgba(var(--icon-secondary), 1);
+  color: rgba(var(--secondary), 1);
 }
 
 .fa-primary,
@@ -401,8 +410,8 @@ p {
   --pmenu_bg: 59, 219, 162;
   --folder_bg: 120, 169, 255;
 
-  --icon-primary: 180, 190, 254;
-  --icon-secondary: 190, 149, 255;
+  --primary: 180, 190, 254;
+  --secondary: 190, 149, 255;
 
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;
@@ -466,8 +475,8 @@ p {
   --pmenu_bg: 59, 219, 162;
   --folder_bg: 120, 169, 255;
 
-  --icon-primary: 171, 233, 179;
-  --icon-secondary: 66, 190, 101;
+  --primary: 171, 233, 179;
+  --secondary: 66, 190, 101;
 
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;

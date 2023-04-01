@@ -33,9 +33,11 @@ function Clock() {
 
   return (
     <>
-      <div id="time">{time}</div>
-      <div id="date">{date}</div>
-    </>
+      <div className="item">
+        <div id="time">{time}</div>
+        <div id="date">{date}</div>
+      </div>
+      </>
   );
 }
 

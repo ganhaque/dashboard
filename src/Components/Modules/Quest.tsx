@@ -22,7 +22,10 @@ const Quests: React.FC = () => {
   }, []);
 
   return (
-    <div id="quests">
+    <div className="item" id="quests">
+      <h2 className="header">
+        Questlog
+      </h2>
       {quests.map((quest, index) => (
         <p key={index} id="quest">
           {quest}
