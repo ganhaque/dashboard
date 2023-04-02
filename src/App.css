@@ -1,7 +1,9 @@
 /* @import url("./Components/style.css"); */
 
 .App {
+  height: calc(100vh - 2 * var(--gap-size));
   text-align: center;
+  gap: 0;
 }
 
 .App-logo {

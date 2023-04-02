@@ -97,8 +97,3 @@ app.on('window-all-closed', function () {
 //   <h1>My GitHub Contributions</h1>
 //   
 //   <div id="contributions"></div>
-//
-//   <script>
-//     // Use ipcRenderer to receive the contribution data from the main process
-//     const { ipcRenderer } = require('electron')
-//     ipcRenderer.on

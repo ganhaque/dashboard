@@ -33,7 +33,7 @@ function Clock() {
 
   return (
     <>
-      <div className="item">
+      <div className="item flex-shrink">
         <div id="time">{time}</div>
         <div id="date">{date}</div>
       </div>

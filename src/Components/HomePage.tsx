@@ -5,9 +5,9 @@ import ProfileColumn from './Pages/HomePage/ProfileColumn';
 import TimeColumn from './Pages/HomePage/TimeColumn';
 import TaskColumn from './Pages/HomePage/TaskColumn';
 
-function Main() {
+function HomePage() {
   return (
-    <main>
+    <div className="main">
       <div className="flex-container" id="bigbox">
         <ProfileColumn />
         <TaskColumn />
@@ -20,9 +20,9 @@ function Main() {
         {/* <Time /> */}
         {/* <Weather /> */}
       </div>
-    </main>
+    </div>
   );
 }
 
-export default Main;
+export default HomePage;
 

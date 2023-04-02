@@ -1,12 +1,14 @@
 .sidebar {
   background-color: rgba(var(--one_bg),1);
-  position: fixed;
-  top: 0;
-  left: 0;
+  /* position: fixed; */
+  /* top: 0; */
+  /* left: 0; */
   height: 100vh;
   width: 4rem;
   display: flex;
   flex-direction: column;
+  flex-grow: 0 !important;
+  flex-shrink: 3;
 }
 
 .sidebar-icon {
@@ -21,6 +23,7 @@
   margin-left: auto; /* equivalent to mx-auto */
   margin-right: auto; /* equivalent to mx-auto */
   /* background-color: #9CA3AF; */
+  color: rgba(var(--primary),1);
   background-color: rgba(var(--grey),1);
   transition-property: background-color, border-radius, box-shadow;
   transition-duration: 0.3s; /* equivalent to duration-300 */
@@ -28,16 +31,27 @@
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* equivalent to shadow-lg */
   border-radius: 1.5rem;
+
+  flex-grow: 0;
+  flex-shrink: 2;
 }
 
 .sidebar-icon:hover {
-  background-color: rgba(var(--primary),1); /* equivalent to hover:bg-green-600 */
+  background-color: rgba(var(--secondary),1); /* equivalent to hover:bg-green-600 */
   border-radius: 0.4rem;
+  color: rgba(var(--one_bg),1);
 }
 
 .sidebar-icon.active {
-  background-color: rgba(var(--secondary),1);
+  background-color: rgba(var(--primary),1);
+  color: rgba(var(--one_bg),1);
   border-radius: 0.8rem;
+}
+
+
+.sidebar-icon:last-child {
+  /* color: rgba(var(--red),1); */
+  margin-top: auto;
 }
 
 .sidebar-hr {
@@ -78,6 +92,9 @@
   left: 60px;
   top: 50%;
   transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  user-select: none;
 }
 
 .sidebar-tooltip::after {

@@ -9,6 +9,10 @@
   src:url("./fonts/CozetteVector.ttf");
 }
 @font-face {
+  font-family: DDBB;
+  src:url("./fonts/disposabledroid-bb.regular.ttf");
+}
+@font-face {
   font-family: terminus;
   src:url("./fonts/Terminus.ttf");
 }
@@ -20,7 +24,7 @@
 :root {
   /* font-size: 16px; */
   /* font-family: 'Open Sans'; */
-  font-family: terminus;
+  /* font-family: terminus; */
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;
   --bg-primary: #23232e;
@@ -82,8 +86,10 @@
   --pmenu_bg: 59, 219, 162;
   --folder_bg: 120, 169, 255;
 
-  --primary: 180, 190, 254;
-  --secondary: 190, 149, 255;
+  --primary: var(--red);
+  --secondary: var(--orange);
+  --tertiary: var(--yellow);
+  --quaternary: var(--catppuccin_green);
 
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;
@@ -107,9 +113,11 @@ body {
   padding: 0;
 }
 
-main {
+.main {
+  flex-grow: 2;
+  font-family: terminus;
   display: block;
-  margin-left: 5rem;
+  /* margin-left: 5rem; */
   padding: var(--gap-size);
   /* height: calc(100% - 2 * var(--gap-size)); */
 }
@@ -119,8 +127,13 @@ p {
 }
 
 /* div { */
-  /* display: flex !important; */
+/* display: flex !important; */
 /* } */
+.react-calendar-heatmap .color-scale-1 { fill: rgba(var(--primary), 0.2); }
+.react-calendar-heatmap .color-scale-2 { fill: rgba(var(--primary), 0.5); }
+.react-calendar-heatmap .color-scale-3 { fill: rgba(var(--primary),0.8); }
+.react-calendar-heatmap .color-scale-4 { fill: rgba(var(--primary), 1); }
+.react-calendar-heatmap .color-empty { fill: rgba(var(--black), 1) !important; }
 
 .flex {
   display: flex;
@@ -136,6 +149,11 @@ p {
   flex-direction: column;
   /* height: calc(100% - 2 * var(--gap-size)); */
 }
+.no-gap-flex {
+  gap: 0;
+}
+
+
 .item {
   font-family: terminus;
   background-color: rgba(var(--black2), 1);
@@ -143,15 +161,34 @@ p {
   padding: 0.8em;
   /* font-family: terminus; */
   /* border: 1px solid rgba(var(--base04), 1); */
-  border: 1px solid rgba(var(--black2), 1);
+  /* border: 1px solid rgba(var(--black2), 1); */
   border-radius: 0.8rem;
 }
+
+
 .flex-container > div {
-  flex: 1;
+  flex-grow: 1;
+}
+
+.button {
+  border-radius: 0.8rem;
+  border: 2px solid rgba(var(--primary),1);
+  /* color: rgba(var(--red), 1); */
+}
+
+#timer-button {
+  width: 12rem;
+}
+
+#TimeKeeper {
+  align-items: center;
 }
 
 .header {
-  /* font-family: cozette; */
+  /* font-family: terminus; */
+  font-family: DDBB;
+  font-weight: normal;
+  font-size: 2rem;
   /* letter-spacing: 0.1rem; */
   /* font-size: 1.2rem; */
   text-align: center;
@@ -166,6 +203,11 @@ p {
 }
 .terminus {
   font-family: terminus;
+}
+
+.flex-shrink {
+  flex-shrink: 2;
+
 }
 
 #icon {
@@ -197,10 +239,15 @@ p {
 #weather {
   font-family: terminus, 'Noto Emoji', sans-serif;
   font-size: 1.2rem;
+  /* min-width: 316px;; */
 }
 
 #quest {
   font-size: 1.2rem;
+}
+
+#github-heatmap {
+  flex-grow: 0 !important;
 }
 
 .navbar {
