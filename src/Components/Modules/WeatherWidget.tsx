@@ -5,13 +5,13 @@ interface WeatherWidgetProps {
 }
 
 const WeatherWidget: React.FC<WeatherWidgetProps> = ({ location }) => {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  /* const [isScriptLoaded, setIsScriptLoaded] = useState(false); */
 
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://weatherwidget.io/js/widget.min.js";
     script.async = true;
-    script.onload = () => setIsScriptLoaded(true);
+    /* script.onload = () => setIsScriptLoaded(true); */
     document.body.appendChild(script);
 
     return () => {

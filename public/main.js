@@ -3,6 +3,7 @@
 const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
 const path = require('path');
 const fs = require("fs");
+const { exec } = require('child_process');
 
 function createWindow () {
   // const windowOne = new BrowserWindow()
@@ -52,11 +53,23 @@ app.whenReady().then(() => {
   // ipcMain.handle('dialog:openFile', handleFileOpen)
   createWindow();
 
-  ipcMain.handle('create-file', (event, text) => {
-    const filePath = 'sample.txt';
-    fs.writeFile(filePath, text, (err) => {
-      if (err) throw err;
-      console.log('The file has been saved!');
+  // ipcMain.handle('create-file', (event, text) => {
+  //   const filePath = 'sample.txt';
+  //   fs.writeFile(filePath, text, (err) => {
+  //     if (err) throw err;
+  //     console.log('The file has been saved!');
+  //   });
+  // });
+
+  ipcMain.handle('timew-pog', async () => {
+    return new Promise((resolve, reject) => {
+      exec('timew start "pog"', (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(stdout);
+      });
     });
   });
 
@@ -72,6 +85,33 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+
+
+
+// exec("ls -la", (error, stdout, stderr) => {
+//     if (error) {
+//         console.log(`error: ${error.message}`);
+//         return;
+//     }
+//     if (stderr) {
+//         console.log(`stderr: ${stderr}`);
+//         return;
+//     }
+//     console.log(`stdout: ${stdout}`);
+// });
+
+// Execute the "timew" command to get a report
+// exec('timew start "pog"', (err, stdout, stderr) => {
+//   if (err) {
+//     // Handle error
+//     console.error(err);
+//     return;
+//   }
+//
+//   // Do something with the output
+//   console.log(stdout);
+// });
 
 // // This method will be called when Electron has finished
 // // initialization and is ready to create browser windows.

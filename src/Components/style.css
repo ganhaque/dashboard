@@ -25,12 +25,9 @@
   /* font-size: 16px; */
   /* font-family: 'Open Sans'; */
   /* font-family: terminus; */
-  --text-primary: #b6b6b6;
-  --text-secondary: #ececec;
-  --bg-primary: #23232e;
-  --bg-secondary: #141418;
   --transition-speed: 720ms;
   --gap-size: 0.8rem;
+
   --base00: 16, 19, 23;
   --base01: 26, 29, 33;
   --base02: 35, 38, 42;

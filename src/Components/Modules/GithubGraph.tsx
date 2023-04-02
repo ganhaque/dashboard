@@ -6,7 +6,13 @@ import 'react-calendar-heatmap/dist/styles.css';
 /* import { interpolateGreens } from 'd3-scale-chromatic'; */
 
 const today = new Date();
-const startDate = new Date(today.getFullYear(), today.getMonth() - 4, today.getDate() - 5);
+const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+
+const daysUntilSaturday = (6 - threeMonthsAgo.getDay()) % 7;
+const startDate = new Date(threeMonthsAgo.getFullYear(), threeMonthsAgo.getMonth(), threeMonthsAgo.getDate() + daysUntilSaturday);
+
+/* const startDate = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate() - 5); */
+
 const sinceDate = startDate.toISOString().substring(0, 10);
 
 interface GitHubGraphProps {
@@ -28,8 +34,8 @@ const GitHubGraph: React.FC<GitHubGraphProps> = ({ username, year }) => {
         const contributions = response.data.filter((event: any) => {
           return event.type === 'PushEvent' && new Date(event.created_at).getFullYear() === year;
         }).map((event: any) => {
-          const utcDate = new Date(event.created_at);
-          const localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000));
+          /* const utcDate = new Date(event.created_at); */
+          /* const localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000)); */
           /* let count = 0; */
           /* event.payload.commits.forEach((commit: any) => { */
           /*   if (commit.author.email === `${username}@users.noreply.github.com`) { */

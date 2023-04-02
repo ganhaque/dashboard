@@ -6,8 +6,9 @@ import { BsPlus,
   /* BsJournalBookmarkFill, */
   BsRocketTakeoff,
   /* BsHouse */
-  BsMoonStarsFill,
+  /* BsMoonStarsFill, */
   BsSunFill,
+  BsClock,
 } from 'react-icons/bs';
 import {
   /* FaFire, */
@@ -28,6 +29,7 @@ const sidebarItems = [
   { name: 'Lightning', index: 'lightning', icon: <BsFillLightningFill size="20" /> },
   { name: 'Finance', index: 'finance', icon: <FaDollarSign size="20" /> },
   { name: 'Calendar', index: 'calendar', icon: <GoCalendar size="24" /> },
+  { name: 'Timew', index: 'timew', icon: <BsClock size="24" /> },
   { name: 'Add', index: 'add', icon: <BsPlus size="32" /> },
   { name: 'Themes', index: 'themes', icon: <BsSunFill size="22" /> },
 ];
@@ -42,7 +44,7 @@ const Sidebar = ({ activeItem, onItemClick }: SidebarProps): JSX.Element => {
           name={item.name}
           active={activeItem === item.index}
           onClick={() => onItemClick(item.index)}
-        />
+          />
       ))}
     </div>
   );

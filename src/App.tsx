@@ -17,7 +17,7 @@ const colorPalettes : { [key: string]: ColorPalette }= {
   'red': { primary: 'red', secondary: 'orange' , tertiary: 'yellow', quaternary: 'catppuccin_green'},
   'green': { primary: 'vibrant_green', secondary: 'catppuccin_green', tertiary: 'green', quaternary: "vibrant_green" },
   /* 'green-green': { primary: 'catppuccin_green', secondary: 'vibrant_green' }, */
-  'purple-pink': { primary: 'catppuccin_lavender', secondary: 'purple', tertiary: 'blue', quaternary: 'cyan'},
+  'lavender': { primary: 'catppuccin_lavender', secondary: 'purple', tertiary: 'blue', quaternary: 'cyan'},
   // Add more color palettes here as needed
 };
 
