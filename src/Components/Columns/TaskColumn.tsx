@@ -1,5 +1,5 @@
 // TODO: get events from google calendar
-import Time from '../../Modules/Time';
+import Time from '../Modules/Time';
 
 function TaskColumn() {
   return (

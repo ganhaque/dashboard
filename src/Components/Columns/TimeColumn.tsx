@@ -1,7 +1,7 @@
-import Time from '../../Modules/Time';
-import TimeKeeper from '../../Modules/TimeKeeper';
+import Time from '../Modules/Time';
+import TimeKeeper from '../Modules/TimeKeeper';
 /* import Weather from '../../Modules/Weather'; */
-import WeatherWidget from '../../Modules/WeatherWidget';
+import WeatherWidget from '../Modules/WeatherWidget';
 
 function TimeColumn() {
   return (

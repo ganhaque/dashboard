@@ -120,6 +120,13 @@ body {
   /* margin-left: 5rem; */
   padding: var(--gap-size);
   /* height: calc(100% - 2 * var(--gap-size)); */
+  animation: fadeIn 1s;
+
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 p {
@@ -177,6 +184,7 @@ p {
 }
 
 #timer-button {
+  flex-grow: 0;
   width: 12rem;
 }
 
@@ -206,8 +214,10 @@ p {
 }
 
 .flex-shrink {
-  flex-shrink: 2;
-
+  flex-shrink: 2 !important;
+}
+.flex-no-grow {
+  flex-grow: 0 !important;
 }
 
 #icon {
@@ -221,8 +231,6 @@ p {
 }
 
 #profile {
-  flex-grow: 0;
-  flex-shrink: 2;
   margin-top: var(--gap-size);
   margin-bottom: var(--gap-size);
 }
@@ -239,317 +247,18 @@ p {
 #weather {
   font-family: terminus, 'Noto Emoji', sans-serif;
   font-size: 1.2rem;
-  /* min-width: 316px;; */
+  min-width: 316px;
+  height: 300px;
 }
 
 #quest {
   font-size: 1.2rem;
 }
 
-#github-heatmap {
-  flex-grow: 0 !important;
-}
-
-.navbar {
-  position: fixed;
-  /* background-color: var(--bg-primary); */
-  background-color: rgba(var(--darker_black), 1);
-  transition: width 600ms ease;
-  overflow: scroll;
-}
-
-.navbar-nav {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-}
-
-.nav-item {
-  width: 100%;
-}
-
-.nav-item:last-child {
-  margin-top: auto;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  height: 5rem;
-  color: var(--text-primary);
-  text-decoration: none;
-  filter: grayscale(100%) opacity(0.7);
-  transition: var(--transition-speed);
-}
-
-.nav-link:hover {
-  filter: grayscale(0%) opacity(1);
-  background: rgba(var(--grey), 1);
-  color: rgba(var(--base06), 1);
-  border-radius: 1.6rem;
-}
-
-.link-text {
-  display: none;
-  margin-left: 1rem;
-}
-
-.nav-link svg {
-  width: 2rem;
-  min-width: 2rem;
-  margin: 0 1.5rem;
-}
-
-.fa-primary {
-  /* color: #ff7eee; */
-  color: rgba(var(--primary), 1);
-}
-
-.fa-secondary {
-  color: rgba(var(--secondary), 1);
-}
-
-.fa-primary,
-.fa-secondary {
-  transition: var(--transition-speed);
-}
-
-.logo {
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  text-align: center;
-  /* color: var(--text-secondary); */
-  /* background: var(--bg-secondary); */
-  color: rgba(var(--base06), 1);
-  background: rgba(var(--darker_black), 1);
-  font-size: 1.5rem;
-  letter-spacing: 0.3ch;
-  width: 100%;
-}
-
-.logo svg {
-  transform: rotate(0deg);
-  transition: var(--transition-speed);
-}
-
-.logo-text
-{
-  display: inline;
-  position: absolute;
-  left: -999px;
-  transition: var(--transition-speed);
-}
-
-.navbar:hover .logo svg {
-  transform: rotate(-180deg);
-}
-
 /* Small screens */
 @media only screen and (max-width: 600px) {
-  .navbar {
-    bottom: 0;
-    width: 100vw;
-    height: 5rem;
-  }
-
-  .logo {
-    display: none;
-  }
-
-  .navbar-nav {
-    flex-direction: row;
-  }
-
-  .nav-link {
-    justify-content: center;
-  }
-
-  main {
-    margin: 0;
-  }
 }
 
 /* Large screens */
 @media only screen and (min-width: 600px) {
-  .navbar {
-    top: 0;
-    width: 5rem;
-    height: 100vh;
-  }
-
-  .navbar:hover {
-    width: 16rem;
-  }
-
-  .navbar:hover .link-text {
-    display: inline;
-  }
-
-  .navbar:hover .logo svg
-  {
-    margin-left: 11rem;
-  }
-
-  .navbar:hover .logo-text
-  {
-    left: 0px;
-  }
-}
-
-.dark {
-  --base00: 16, 19, 23;
-  --base01: 26, 29, 33;
-  --base02: 35, 38, 42;
-  --base03: 43, 46, 50;
-  --base04: 50, 53, 57;
-  --base05: 242, 244, 248;
-  --base06: 255, 255, 255;
-  --base07: 212, 212, 213;
-  --base08: 120, 169, 255;
-  --base09: 250, 183, 149;
-  --base0A: 233, 86, 120;
-  --base0B: 186, 232, 129;
-  --base0C: 89, 225, 227;
-  --base0D: 46, 230, 166;
-  --base0E: 190, 149, 255;
-  --base0F: 164, 200, 222;
-  --white: 255, 255, 255;
-  --darker_black: 10, 13, 17;
-  --black: 16, 19, 23;
-  --black2: 25, 29, 34;
-  --one_bg: 33, 36, 40;
-  --one_bg2: 41, 44, 48;
-  --one_bg3: 51, 54, 58;
-  --grey: 62, 65, 69;
-  --grey_fg: 69, 72, 76;
-  --grey_fg2: 74, 77, 81;
-  --light_grey: 82, 85, 89;
-  --red: 233, 86, 120;
-  --baby_pink: 248, 101, 135;
-  --pink: 255, 126, 182;
-  --catppuccin_flamingo: 242, 205, 205;
-  --catppuccin_maroon: 235, 160, 172;
-  --horizon_orange: 240, 147, 131;
-  --orange: 255, 158, 100;
-  --yellow: 246, 202, 107;
-  --sun: 235, 203, 139;
-  --catppuccin_green: 171, 233, 179;
-  --light_green: 186, 232, 129;
-  --green: 66, 190, 101;
-  --vibrant_green: 46, 230, 166;
-  --teal: 26, 188, 156;
-  --green_cyan: 37, 178, 188;
-  --cyan: 24, 184, 217;
-  --pale_blue: 164, 200, 222;
-  --light_blue: 125, 207, 255;
-  --blue: 120, 169, 255;
-  --nord_blue: 107, 156, 242;
-  --purple: 190, 149, 255;
-  --dark_purple: 157, 124, 216;
-  --catppuccin_lavender: 180, 190, 254;
-  --statusline_bg: 29, 30, 41;
-  --lightbg: 50, 51, 62;
-  --pmenu_bg: 59, 219, 162;
-  --folder_bg: 120, 169, 255;
-
-  --primary: 180, 190, 254;
-  --secondary: 190, 149, 255;
-
-  --text-primary: #b6b6b6;
-  --text-secondary: #ececec;
-  --bg-primary: #23232e;
-  --bg-secondary: #141418;
-}
-
-.light {
-  --base00: 16, 19, 23;
-  --base01: 26, 29, 33;
-  --base02: 35, 38, 42;
-  --base03: 43, 46, 50;
-  --base04: 50, 53, 57;
-  --base05: 242, 244, 248;
-  --base06: 255, 255, 255;
-  --base07: 212, 212, 213;
-  --base08: 120, 169, 255;
-  --base09: 250, 183, 149;
-  --base0A: 233, 86, 120;
-  --base0B: 186, 232, 129;
-  --base0C: 89, 225, 227;
-  --base0D: 46, 230, 166;
-  --base0E: 190, 149, 255;
-  --base0F: 164, 200, 222;
-  --white: 255, 255, 255;
-  --darker_black: 10, 13, 17;
-  --black: 16, 19, 23;
-  --black2: 25, 29, 34;
-  --one_bg: 33, 36, 40;
-  --one_bg2: 41, 44, 48;
-  --one_bg3: 51, 54, 58;
-  --grey: 62, 65, 69;
-  --grey_fg: 69, 72, 76;
-  --grey_fg2: 74, 77, 81;
-  --light_grey: 82, 85, 89;
-  --red: 233, 86, 120;
-  --baby_pink: 248, 101, 135;
-  --pink: 255, 126, 182;
-  --catppuccin_flamingo: 242, 205, 205;
-  --catppuccin_maroon: 235, 160, 172;
-  --horizon_orange: 240, 147, 131;
-  --orange: 255, 158, 100;
-  --yellow: 246, 202, 107;
-  --sun: 235, 203, 139;
-  --catppuccin_green: 171, 233, 179;
-  --light_green: 186, 232, 129;
-  --green: 66, 190, 101;
-  --vibrant_green: 46, 230, 166;
-  --teal: 26, 188, 156;
-  --green_cyan: 37, 178, 188;
-  --cyan: 24, 184, 217;
-  --pale_blue: 164, 200, 222;
-  --light_blue: 125, 207, 255;
-  --blue: 120, 169, 255;
-  --nord_blue: 107, 156, 242;
-  --purple: 190, 149, 255;
-  --dark_purple: 157, 124, 216;
-  --catppuccin_lavender: 180, 190, 254;
-  --statusline_bg: 29, 30, 41;
-  --lightbg: 50, 51, 62;
-  --pmenu_bg: 59, 219, 162;
-  --folder_bg: 120, 169, 255;
-
-  --primary: 171, 233, 179;
-  --secondary: 66, 190, 101;
-
-  --text-primary: #b6b6b6;
-  --text-secondary: #ececec;
-  --bg-primary: #23232e;
-  --bg-secondary: #141418;
-}
-
-.solar {
-  --text-primary: #576e75;
-  --text-secondary: #35535c;
-  --bg-primary: #fdf6e3;
-  --bg-secondary: #f5e5b8;
-}
-
-.theme-icon {
-  display: none;
-}
-
-.dark #darkIcon {
-  display: block;
-}
-
-.light #lightIcon {
-  display: block;
-}
-
-.solar #solarIcon {
-  display: block;
 }

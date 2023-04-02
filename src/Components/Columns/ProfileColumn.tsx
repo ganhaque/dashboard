@@ -1,9 +1,9 @@
-import Quests from '../../Modules/Quest';
+import Quests from '../Modules/Quest';
 /* import Time from '../Modules/Time'; */
 /* import Weather from '../Modules/Weather'; */
 /* import Time from '../Modules/Time'; */
 import Profile from './Profile';
-import GitHubGraph from '../../Modules/GithubGraph';
+import GitHubGraph from '../Modules/GithubGraph';
 
 function ProfileColumn() {
   return (

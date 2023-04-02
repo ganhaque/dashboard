@@ -1,9 +1,6 @@
-import Quests from './Modules/Quest';
-import Time from './Modules/Time';
-import Weather from './Modules/Weather';
-import ProfileColumn from './Pages/HomePage/ProfileColumn';
-import TimeColumn from './Pages/HomePage/TimeColumn';
-import TaskColumn from './Pages/HomePage/TaskColumn';
+import ProfileColumn from '../Columns/ProfileColumn';
+import TimeColumn from '../Columns/TimeColumn';
+import TaskColumn from '../Columns/TaskColumn';
 
 function HomePage() {
   return (

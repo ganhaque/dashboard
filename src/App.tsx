@@ -1,7 +1,7 @@
 import React from 'react';
 /* import logo from './logo.svg'; */
 import './App.css';
-import HomePage from './Components/HomePage';
+import HomePage from './Components/Pages/HomePage';
 import SideBar from './Components/Sidebar/SideBar';
 /* import SwitchColor from './Components/Theme'; */
 import { useState, useEffect } from 'react';
