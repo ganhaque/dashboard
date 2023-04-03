@@ -2,7 +2,7 @@
 
 > Personal Dashboard Hobby Project (WIP)
 
-My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) using React and Electron.
+My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) while learning React and Electron.
 
 ## Modules
 
