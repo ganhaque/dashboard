@@ -1,5 +1,8 @@
+// TODO: add current_tag
 // TODO: better styling
 import { useState, useEffect } from 'react';
+/* import './TimeWarrior.css'; */
+import formatTime from '../Helpers/formatter';
 
 declare global {
   interface Window {
@@ -7,6 +10,7 @@ declare global {
       timewStartSession?: (tag: string) => Promise<string>;
       timewStop?: () => Promise<string>;
       timewTotal?: () => Promise<string>;
+      timewCurrentTag?: () => Promise<string>;
       timewCurrentTime?: () => Promise<string>;
     };
   }
@@ -16,6 +20,7 @@ function TimeWarrior() {
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [totalTime, setTotalTime] = useState('');
   const [currentTime, setCurrentTime] = useState(''); // to store current time
+  const [curretTag, setCurrentTag] = useState(''); // to store current tag
 
   const tags = [
     'School',
@@ -27,10 +32,10 @@ function TimeWarrior() {
     if (window.electronAPI?.timewTotal) {
       window.electronAPI.timewTotal()
         .then((output) => {
-          const totalHours = parseInt(output.split(':')[0]);
-          const totalMinutes = parseInt(output.split(':')[1]);
-          const formattedTotalTime = `${totalHours}h ${totalMinutes}m`;
-          setTotalTime(formattedTotalTime);
+          /* const totalHours = parseInt(output.split(':')[0]); */
+          /* const totalMinutes = parseInt(output.split(':')[1]); */
+          /* const formattedTotalTime = `${totalHours}h ${totalMinutes}m`; */
+          setTotalTime(formatTime(output));
         })
         .catch((err) => {
           console.error(err);
@@ -43,15 +48,30 @@ function TimeWarrior() {
       window.electronAPI.timewCurrentTime()
         .then((output) => {
           // IDEA: if the minutes reaches a certain threshold, then play a sound
-          const minutes = parseInt(output.split(":")[1], 10);
-          const formattedTime = `${minutes}m`;
-          setCurrentTime(formattedTime);
+          /* const minutes = parseInt(output.split(":")[1], 10); */
+          /* const formattedTime = `${minutes}m`; */
+          setCurrentTime(formatTime(output));
         })
         .catch((err) => {
           console.error(err);
         });
     }
   };
+
+  const updateCurrentTag = async () => {
+    if (window.electronAPI?.timewCurrentTag) {
+      window.electronAPI.timewCurrentTag()
+        .then((output) => {
+          const parts = output.split(" ");
+          const task = parts[1];
+          setCurrentTag(task);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  };
+
 
 
   // check if there is already a session on startup
@@ -72,6 +92,7 @@ function TimeWarrior() {
             setIsSessionActive(true);
             updateTotalTime();
             updateCurrentTime();
+            updateCurrentTag();
           }
         })
         .catch((err) => {
@@ -84,6 +105,7 @@ function TimeWarrior() {
     const intervalId = setInterval(() => {
       updateTotalTime();
       updateCurrentTime();
+      /* updateCurrentTag(); */
     }, 60000); // update every minute
 
     return () => clearInterval(intervalId);
@@ -97,6 +119,7 @@ function TimeWarrior() {
 
           updateTotalTime();
           updateCurrentTime();
+          updateCurrentTag();
         })
         .catch((err) => {
           console.error(err);
@@ -119,28 +142,31 @@ function TimeWarrior() {
   const renderSessionInfo = () => {
     if (isSessionActive) {
       return (
-        <div className="flex-container column-flex-direction">
-          <h2 className="smaller-header header">
-            Current Sesison
-          </h2>
-          <p>
-            {currentTime}
-          </p>
-          <div className="flex-container">
-            <div>
-              <h2 className="smaller-header header">
+        <div className="flex-container column-flex-direction align-item-center flex-no-grow">
+          <div>
+            <h3 className="smaller-header header">
+              Current Sesison
+            </h3>
+            <p id="current-session-time">
+              {currentTime}
+            </p>
+          </div>
+          <div className="flex-container" id="duo-div">
+            <div className="flex-container column-flex-direction flex-no-gap">
+              <h3 className="smaller-header header">
                 Working on
-              </h2>
+              </h3>
+              <p>
+                {curretTag}
+              </p>
             </div>
-            <div className="flex-container column-flex-direction">
-              <div>
-                <h2 className="smaller-header header">
-                  Total Today
-                </h2>
-                <p>
-                  {totalTime}
-                </p>
-              </div>
+            <div className="flex-container column-flex-direction flex-no-gap">
+              <h3 className="smaller-header header">
+                Total Today
+              </h3>
+              <p>
+                {totalTime}
+              </p>
             </div>
           </div>
           <div className="item button" id="stop-button" onClick={handleStopClick}>
@@ -151,28 +177,26 @@ function TimeWarrior() {
     }
 
     return (
-      <>
+      <div className="flex-container column-flex-direction flex-no-grow align-item-center">
         <p>
           Start a new session
         </p>
         {tags.map((tag) => (
-          <div key={tag} className="item button" onClick={handleStartClick(tag)}>
+          <div key={tag} className="item button" id="session-button" onClick={handleStartClick(tag)}>
             {`${tag}`}
           </div>
         ))}
-        </>
+      </div>
     );
   };
 
   return (
 
-    <div className="item flex-container column-flex-direction no-gap-flex" id="TimeKeeper">
+    <div className="item" id="TimeKeeper">
       <h2 className="header">
         Timewarrior
       </h2>
-      <div className="flex-container column-flex-direction" id="timer-button-container">
-        {renderSessionInfo()}
-      </div>
+      {renderSessionInfo()}
     </div>
   );
 }

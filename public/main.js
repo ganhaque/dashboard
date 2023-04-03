@@ -41,7 +41,7 @@ function createWindow () {
   // })
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 }
 
 
@@ -121,6 +121,18 @@ app.whenReady().then(() => {
     });
   });
 
+  ipcMain.handle('timew-current-tag', async () => {
+    return new Promise((resolve, reject) => {
+      exec(`timew | head -n 1`, (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(stdout);
+      });
+    });
+  });
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -137,7 +149,7 @@ app.on('window-all-closed', () => {
 
 
 
-// exec("ls -la", (error, stdout, stderr) => {
+// exec("cd && ls -la", (error, stdout, stderr) => {
 //     if (error) {
 //         console.log(`error: ${error.message}`);
 //         return;

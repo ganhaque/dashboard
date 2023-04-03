@@ -8,11 +8,11 @@ const { contextBridge, ipcRenderer } = require('electron')
 // });
 
 // contextBridge.exposeInMainWorld('electronAPI', {
-  // setTitle: (title) => ipcRenderer.send('set-title', title),
-  // openFile: () => ipcRenderer.invoke('dialog:openFile'),
-  // handleCounter: (callback) => ipcRenderer.on('update-counter', callback),
-  // createFile: (text) => ipcRenderer.invoke('create-file', text),
-  // timewPog: () => ipcRenderer.invoke('timew-pog'),
+// setTitle: (title) => ipcRenderer.send('set-title', title),
+// openFile: () => ipcRenderer.invoke('dialog:openFile'),
+// handleCounter: (callback) => ipcRenderer.on('update-counter', callback),
+// createFile: (text) => ipcRenderer.invoke('create-file', text),
+// timewPog: () => ipcRenderer.invoke('timew-pog'),
 // })
 
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -21,7 +21,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   //   return ipcRenderer.invoke('timew-pog');
   // },
   timewStartSession: (sessionName) => {
-    console.log('starting session...');
+    console.log('starting session with tag', sessionName);
     return ipcRenderer.invoke('timew-start-session', sessionName);
   },
   timewStop: () => {
@@ -29,12 +29,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('timew-stop');
   },
   timewTotal: () => {
-    // console.log('Calling timewStop...');
+    // console.log('Calling timewTotal...');
     return ipcRenderer.invoke('timew-total-all-tags');
   },
   timewCurrentTime: () => {
-    // console.log('Calling timewStop...');
+    // console.log('Calling timewCurrentTime...');
     return ipcRenderer.invoke('timew-current-time');
+  },
+  timewCurrentTag: () => {
+    // console.log('Calling timewCurrentTag...');
+    return ipcRenderer.invoke('timew-current-tag');
   },
 });
 

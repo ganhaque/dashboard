@@ -2,7 +2,17 @@
 
 > Personal Dashboard Hobby Project (WIP)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) using React and Electron.
+
+## Modules
+
+### Quest
+Parse and display a quests.txt file (future update: better location and editability)
+
+### Timewarrior
+Require timewarrior to be installed. Does nothing other wise.
+
+### ... And more
 
 ## Available Scripts
 
