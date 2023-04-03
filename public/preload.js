@@ -16,9 +16,25 @@ const { contextBridge, ipcRenderer } = require('electron')
 // })
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  timewPog: () => {
-    console.log('Calling timewPog...');
-    return ipcRenderer.invoke('timew-pog');
+  // timewPog: () => {
+  //   console.log('Calling timewPog...');
+  //   return ipcRenderer.invoke('timew-pog');
+  // },
+  timewStartSession: (sessionName) => {
+    console.log('starting session...');
+    return ipcRenderer.invoke('timew-start-session', sessionName);
+  },
+  timewStop: () => {
+    console.log('Calling timewStop...');
+    return ipcRenderer.invoke('timew-stop');
+  },
+  timewTotal: () => {
+    // console.log('Calling timewStop...');
+    return ipcRenderer.invoke('timew-total-all-tags');
+  },
+  timewCurrentTime: () => {
+    // console.log('Calling timewStop...');
+    return ipcRenderer.invoke('timew-current-time');
   },
 });
 

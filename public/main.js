@@ -61,9 +61,57 @@ app.whenReady().then(() => {
   //   });
   // });
 
-  ipcMain.handle('timew-pog', async () => {
+  // ipcMain.handle('timew-pog', async () => {
+  //   return new Promise((resolve, reject) => {
+  //     exec('timew start "pog"', (err, stdout, stderr) => {
+  //       if (err) {
+  //         reject(err);
+  //         return;
+  //       }
+  //       resolve(stdout);
+  //     });
+  //   });
+  // });
+
+  ipcMain.handle('timew-start-session', async (event, sessionName) => {
     return new Promise((resolve, reject) => {
-      exec('timew start "pog"', (err, stdout, stderr) => {
+      exec(`timew start "${sessionName}"`, (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(stdout);
+      });
+    });
+  });
+
+  ipcMain.handle('timew-stop', async () => {
+    return new Promise((resolve, reject) => {
+      exec(`timew stop`, (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(stdout);
+      });
+    });
+  });
+
+  ipcMain.handle('timew-total-all-tags', async () => {
+    return new Promise((resolve, reject) => {
+      exec(`timew sum | tail -n 2`, (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(stdout);
+      });
+    });
+  });
+
+  ipcMain.handle('timew-current-time', async () => {
+    return new Promise((resolve, reject) => {
+      exec(`timew | tail -n 1`, (err, stdout, stderr) => {
         if (err) {
           reject(err);
           return;
