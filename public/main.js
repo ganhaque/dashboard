@@ -97,7 +97,7 @@ app.whenReady().then(() => {
     });
   });
 
-  ipcMain.handle('timew-total-all-tags', async () => {
+  ipcMain.handle('timew-total-today', async () => {
     return new Promise((resolve, reject) => {
       exec(`timew sum | tail -n 2`, (err, stdout, stderr) => {
         if (err) {

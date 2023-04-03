@@ -9,7 +9,7 @@ declare global {
     electronAPI: {
       timewStartSession?: (tag: string) => Promise<string>;
       timewStop?: () => Promise<string>;
-      timewTotal?: () => Promise<string>;
+      timewTotalToday?: () => Promise<string>;
       timewCurrentTag?: () => Promise<string>;
       timewCurrentTime?: () => Promise<string>;
     };
@@ -29,8 +29,8 @@ function TimeWarrior() {
   ];
 
   const updateTotalTime = async () => {
-    if (window.electronAPI?.timewTotal) {
-      window.electronAPI.timewTotal()
+    if (window.electronAPI?.timewTotalToday) {
+      window.electronAPI.timewTotalToday()
         .then((output) => {
           /* const totalHours = parseInt(output.split(':')[0]); */
           /* const totalMinutes = parseInt(output.split(':')[1]); */

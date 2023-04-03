@@ -28,9 +28,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     console.log('Calling timewStop...');
     return ipcRenderer.invoke('timew-stop');
   },
-  timewTotal: () => {
+  timewTotalToday: () => {
     // console.log('Calling timewTotal...');
-    return ipcRenderer.invoke('timew-total-all-tags');
+    return ipcRenderer.invoke('timew-total-today');
   },
   timewCurrentTime: () => {
     // console.log('Calling timewCurrentTime...');

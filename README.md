@@ -4,6 +4,8 @@
 
 My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) using React and Electron.
 
+## How to use
+
 ## Modules
 
 ### Quest
