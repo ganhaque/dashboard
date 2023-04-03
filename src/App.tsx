@@ -21,6 +21,10 @@ const colorPalettes : { [key: string]: ColorPalette }= {
   // Add more color palettes here as needed
 };
 
+function getRandomIndex(maxIndex: number) {
+  return Math.floor(Math.random() * maxIndex);
+}
+
 const handleColorChange = (paletteName: string) => {
   const palette = colorPalettes[paletteName] || colorPalettes['green'];
   document.documentElement.style.setProperty('--primary', `var(--${palette.primary})`);
@@ -31,7 +35,8 @@ const handleColorChange = (paletteName: string) => {
 
 const App = () => {
   const [activeItem, setActiveItem] = useState('home');
-  const [colorPaletteIndex, setColorPaletteIndex] = useState(0);
+  /* const [colorPaletteIndex, setColorPaletteIndex] = useState(0); */
+  const [colorPaletteIndex, setColorPaletteIndex] = useState(getRandomIndex(Object.keys(colorPalettes).length));
 
   const handleSidebarItemClick = (itemIndex : string) => {
     if (itemIndex === 'themes') {
