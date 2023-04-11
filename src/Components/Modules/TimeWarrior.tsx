@@ -3,16 +3,11 @@
 import { useState, useEffect } from 'react';
 /* import './TimeWarrior.css'; */
 import formatTime from '../Helpers/formatter';
+import { ElectronAPI } from '../../ElectronAPI';
 
 declare global {
   interface Window {
-    electronAPI: {
-      timewStartSession?: (tag: string) => Promise<string>;
-      timewStop?: () => Promise<string>;
-      timewTotalToday?: () => Promise<string>;
-      timewCurrentTag?: () => Promise<string>;
-      timewCurrentTime?: () => Promise<string>;
-    };
+    electronAPI: ElectronAPI;
   }
 }
 
@@ -192,7 +187,7 @@ function TimeWarrior() {
 
   return (
 
-    <div className="item" id="TimeKeeper">
+    <div className="item" id="">
       <h2 className="header">
         Timewarrior
       </h2>

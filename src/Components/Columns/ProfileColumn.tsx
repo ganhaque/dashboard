@@ -17,7 +17,7 @@ function ProfileColumn() {
         <QuoteOfTheDay />
       </div>
       {/* <GitHubGraph username="your-github-username" year={2023} /> */}
-      <GitHubGraph username="ganhaque" year={2023} />
+      {/* <GitHubGraph username="ganhaque" year={2023} /> */}
       {/* <Time /> */}
       {/* <Weather /> */}
     </div>

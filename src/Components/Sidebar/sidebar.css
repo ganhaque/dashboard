@@ -24,13 +24,15 @@
   margin-right: auto; /* equivalent to mx-auto */
   /* background-color: #9CA3AF; */
   color: rgba(var(--primary),1);
-  background-color: rgba(var(--grey),1);
+  background-color: rgba(var(--one_bg2),1);
   transition-property: background-color, border-radius, box-shadow;
   transition-duration: 0.3s; /* equivalent to duration-300 */
   transition-timing-function: linear; /* equivalent to ease-linear */
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* equivalent to shadow-lg */
-  border-radius: 1.5rem;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); */
+  /* border-radius: 1.5rem; */
+  border-radius: 1rem;
+  border-color: rgba(var(--black),1);
 
   flex-grow: 0;
   flex-shrink: 2;

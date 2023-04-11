@@ -4,6 +4,7 @@
   height: calc(100vh - 2 * var(--gap-size));
   text-align: center;
   gap: 0;
+  /* background-color: rgba(var(--darker-black), 1); */
 }
 
 .App-logo {
@@ -19,7 +20,7 @@
 
 .App-header {
   /* background-color: #282c34; */
-  background-color: rgba(var(--black), 1);
+  background-color: rgba(var(--darker-black), 1);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
