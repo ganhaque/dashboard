@@ -7,7 +7,7 @@
 /*   return formattedTime; */
 /* } */
 
-function formatTime(str: string): string {
+export function formatTime(str: string): string {
   // remove whitespace and seconds
   str = str.replace(/[\sa-zA-Z\n\r]/g, "");
   str = str.replace(/:\d+$/, "");
@@ -24,5 +24,3 @@ function formatTime(str: string): string {
 
   return txt;
 }
-
-export default formatTime;

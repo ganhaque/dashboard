@@ -56,7 +56,7 @@
 import { useState, useEffect } from 'react';
 import ProgressBar from './ProgresBar';
 import './TaskWarrior.css';
-import formatTime from '../Helpers/formatter';
+/* import formatTime from '../Helpers/formatter'; */
 
 import { ElectronAPI } from '../../ElectronAPI';
 

@@ -61,33 +61,10 @@ app.whenReady().then(() => {
   //   });
   // });
 
-  // ipcMain.handle('timew-pog', async () => {
-  //   return new Promise((resolve, reject) => {
-  //     exec('timew start "pog"', (err, stdout, stderr) => {
-  //       if (err) {
-  //         reject(err);
-  //         return;
-  //       }
-  //       resolve(stdout);
-  //     });
-  //   });
-  // });
-
-  const timewCommands = {
-    'timew-start-session': (sessionName) => `timew start "${sessionName}"`,
-    'timew-stop': () => `timew stop`,
-    'timew-total-today': () => `timew sum | tail -n 2`,
-    'timew-current-time': () => `timew | tail -n 1`,
-    'timew-current-tag': () => `timew | head -n 1`,
-    'timew-tag-total-time': (sessionName) => `timew sum :all "${sessionName}" | tail -n 2 | head -n 1`,
-  };
-
-  // ipcMain.handle('timew', async (event, command, ...args) => {
-  ipcMain.handle('timew', async (_, command, ...args) => {
-    const cmd = timewCommands[command](...args);
+  // Expose the executeCommand function
+  ipcMain.handle('execute-command', async (_, commandString) => {
     return new Promise((resolve, reject) => {
-      // exec(cmd, (err, stdout, stderr) => {
-      exec(cmd, (err, stdout, _) => {
+      exec(commandString, (err, stdout, _) => {
         if (err) {
           reject(err);
         } else {
@@ -96,43 +73,6 @@ app.whenReady().then(() => {
       });
     });
   });
-
-  const taskCommands = {
-    // basic export
-    'task-export': () => 'task export',
-    // all pending tasks for a given tag
-    'task-export-tag': (tag) => `task context none; task tags:"${tag}" '(status:pending or status:completed or status:waiting)' count`,
-    // show all tags
-    'task-all-tags': () => 'task tag | head -n -2 | tail -n +4 | cut -f1 -d" "',
-    // get number of all tasks for project - complete and pending
-    'task-count-total-tasks-for-project': (proj, tag) => `task context none; task project:"${proj}" tags:"${tag}" '(status:pending or status:completed or status:waiting)' count`,
-
-
-    // execute_command
-    'task-add': (proj, tag, desc) => `task add proj:"${proj}" tags:"${tag}" ${desc}`,
-    'task-add': (id, desc) => `task ${id} annotate ${desc}`,
-    'task-delete': (id) => `echo 'y' | task delete ${id}`,
-    'task-done': (id) => `echo 'y' | task done ${id}`,
-    'task-undo': () => `echo 'y' | task undo`,
-  };
-
-  ipcMain.handle('task', async (_, command, ...args) => {
-    const cmd = timewCommands[command](...args);
-    return new Promise((resolve, reject) => {
-      // exec(cmd, (err, stdout, stderr) => {
-      exec(cmd, (err, stdout, _) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(stdout);
-        }
-      });
-    });
-  });
-
-
-
-
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

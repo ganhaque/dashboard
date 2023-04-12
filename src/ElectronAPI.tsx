@@ -1,11 +1,10 @@
+
 export interface ElectronAPI {
-  timewStartSession?: (tag: string) => Promise<string>;
-  timewStop?: () => Promise<string>;
-  timewTotalToday?: () => Promise<string>;
-  timewCurrentTag?: () => Promise<string>;
-  timewCurrentTime?: () => Promise<string>;
-  timewTagTotal?: (tag: string) => Promise<string>;
+  executeCommand?: (commandString: string) => Promise<string>;
+}
 
-
-  taskAllTags?: () => Promise<string>;
+declare global {
+  interface Window {
+    electronAPI: ElectronAPI;
+  }
 }
