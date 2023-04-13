@@ -1,4 +1,4 @@
-import TaskWarrior from '../Modules/TaskWarrior';
+import TaskWarrior from "../Modules/TaskWarrior/TaskWarriorCore";
 
 function Task() {
   return (

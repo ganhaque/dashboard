@@ -1,8 +1,15 @@
 // https://medium.com/folkdevelopers/the-ultimate-guide-to-electron-with-react-8df8d73f4c97
 // const { app, BrowserWindow } = require('electron')
-const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
+const {
+  app,
+  BrowserWindow,
+  // Menu,
+  ipcMain,
+  // dialog
+} = require('electron')
+
 const path = require('path');
-const fs = require("fs");
+// const fs = require("fs");
 const { exec } = require('child_process');
 
 function createWindow () {

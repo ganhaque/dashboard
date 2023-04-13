@@ -13,21 +13,21 @@ import { formatTime } from '../Helpers/formatter';
 function TimeWarrior() {
   /* const isElectronAPIAvailable = useElectronAPI(); */
   const [isSessionActive, setIsSessionActive] = useState(false);
-  const [totalTime, setTotalTime] = useState('');
-  const [currentTime, setCurrentSessionTime] = useState('');
-  const [curretTag, setCurrentTag] = useState('');
+  const [totalTimeToday, setTotalTimeToday] = useState('');
+  const [currentSessionDuration, setCurrentSessionDuration] = useState('');
+  const [currentTag, setCurrentTag] = useState('');
 
   const tags = [
-    'School',
     'Hobby',
-    'Personal'
+    'School',
+    'Work'
   ];
 
-  const updateTotalTimeToday = async () => {
+  const updateTotalTimeTodayToday = async () => {
     if (window.electronAPI?.executeCommand) {
       window.electronAPI.executeCommand(`timew sum | tail -n 2`)
         .then((output) => {
-          setTotalTime(formatTime(output));
+          setTotalTimeToday(formatTime(output));
         })
         .catch((err) => {
           console.error(err);
@@ -35,12 +35,12 @@ function TimeWarrior() {
     }
   };
 
-  const updateCurrentSessionTime = async () => {
+  const updateCurrentSessionDuration = async () => {
     if (window.electronAPI?.executeCommand) {
       window.electronAPI.executeCommand(`timew | tail -n 1`)
         .then((output) => {
           // IDEA: if the minutes reaches a certain threshold, then play a sound
-          setCurrentSessionTime(formatTime(output));
+          setCurrentSessionDuration(formatTime(output));
         })
         .catch((err) => {
           console.error(err);
@@ -77,8 +77,8 @@ function TimeWarrior() {
           else {
             /* console.log("there is already a session") */
             setIsSessionActive(true);
-            updateTotalTimeToday();
-            updateCurrentSessionTime();
+            updateTotalTimeTodayToday();
+            updateCurrentSessionDuration();
             updateCurrentTag();
           }
         })
@@ -90,8 +90,8 @@ function TimeWarrior() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      updateTotalTimeToday();
-      updateCurrentSessionTime();
+      updateTotalTimeTodayToday();
+      updateCurrentSessionDuration();
       /* updateCurrentTag(); */
     }, 60000); // update every minute
 
@@ -103,8 +103,8 @@ function TimeWarrior() {
       window.electronAPI.executeCommand(`timew start ${tag}`)
         .then(() => {
           setIsSessionActive(true);
-          updateTotalTimeToday();
-          updateCurrentSessionTime();
+          updateTotalTimeTodayToday();
+          updateCurrentSessionDuration();
           updateCurrentTag();
         })
         .catch((err) => {
@@ -134,7 +134,7 @@ function TimeWarrior() {
               Current Sesison
             </h3>
             <p id="current-session-time">
-              {currentTime}
+              {currentSessionDuration}
             </p>
           </div>
           <div className="flex-container" id="duo-div">
@@ -143,7 +143,7 @@ function TimeWarrior() {
                 Working on
               </h3>
               <p>
-                {curretTag}
+                {currentTag}
               </p>
             </div>
             <div className="flex-container column-flex-direction flex-no-gap">
@@ -151,7 +151,7 @@ function TimeWarrior() {
                 Total Today
               </h3>
               <p>
-                {totalTime}
+                {totalTimeToday}
               </p>
             </div>
           </div>
