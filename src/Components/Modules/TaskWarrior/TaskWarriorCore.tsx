@@ -30,7 +30,7 @@ declare global {
   }
 }
 
-interface TaskWarriorExport {
+interface Task {
   id: number;
   description: string;
   entry: string;
@@ -42,12 +42,8 @@ interface TaskWarriorExport {
   urgency: number;
 }
 
-interface Task {
-  description: string;
-}
-
 interface Project {
-  tasks: Record<string, Task>;
+  tasks: Task[];
   totalTasks: number;
 }
 
@@ -63,11 +59,12 @@ interface Tag {
 /* local proj = tasks[i]["project"] */
 
 
+/* I think the error is with my initialization with tagRecord. I just do {} instead of giving proper project member.   const [tagRecord, setTagRecord] = useState<Record<string, Tag>>({}); */
+
 function TaskWarrior() {
   const [isSessionActive, setIsSessionActive] = useState(false);
 
   const [tagNameArray, setTagNameArray] = useState<string[]>([]);
-  const [projectNameArray, setProjectNameArray] = useState<string[]>([]);
 
   const [completedTasks, setCompletedTasks] = useState(0);
   const [totalTasks, setTotalTasks] = useState(0);
@@ -76,8 +73,7 @@ function TaskWarrior() {
   const [focusedProject, setFocusedProject] = useState<string>('');
 
   const [tagRecord, setTagRecord] = useState<Record<string, Tag>>({});
-  const [projectRecord, setProjectRecord] = useState<Record<string, Project>>({});
-  const [taskRecord, setTaskRecord] = useState<Record<string, Task>>({});
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // initialization
   useEffect(() => {
@@ -87,13 +83,22 @@ function TaskWarrior() {
         console.error(err);
       });
 
-    /* parseTasksForTag(focusedTagName); */
   }, []);
 
   // on change to tagNameArray (handle completed signal)
   useEffect(() => {
     setFocusedTag(tagNameArray[0]);
+    /* console.log(focusedTagName); */
+    /* console.log(tagRecord); */
+    parseTasksForTag(focusedTagName);
   }, [tagNameArray]);
+
+  const addTagName = (tagName:string) => {
+    // cycle through tagNameArray
+    // if match end
+    // if not add to end of array
+    /* setTagNameArray((prevTagNameArray) => [...prevTagNameArray, tagName]); */
+  };
 
   const addNewProject = (tagName: string, projectName: string) => {
     setTagRecord((prevTagRecord) => {
@@ -102,7 +107,7 @@ function TaskWarrior() {
         projectNames: []
       };
       const project = {
-        tasks: {},
+        tasks: [],
         totalTasks: 0,
         /* accent: beautiful.random_accent_color() */
       };
@@ -112,46 +117,51 @@ function TaskWarrior() {
     });
   }
 
+  const addNewTag = (tagName: string) => {
+    return new Promise((resolve) => {
+      setTagRecord((prevTagRecord) => {
+        const tag = prevTagRecord[tagName] ?? {
+          projects: {},
+          projectNames: []
+        };
+        resolve(tag);
+        console.log("done");
+        return { ...prevTagRecord, [tagName]: tag };
+      });
+    });
+  };
+
   // Parse all pending tasks for a given tag and then sort them by project
-  // (this is the way to initially obtain the list of projects for a tag) 
-  const parseTasksForTag = (tagName: string) => {
+  const parseTasksForTag = async (tag: string) => {
     const unsetContext = `task context none; `;
-    const filters = `task tag:'${tagName}' `;
+    const filters = `task tag:'${tag}' `;
     const status = `'(status:pending or status:waiting)' `
     const cmd = unsetContext + filters + status + `export rc.json.array=on`;
     if (window.electronAPI?.executeCommand) {
-      window.electronAPI.executeCommand(cmd)
-        .then((output) => {
-          const isOutputEmpty = output === EMPTY_JSON || output === '';
-          if (isOutputEmpty) return;
+      try {
+        const output = await window.electronAPI.executeCommand(cmd);
+        const isOutputEmpty = output === EMPTY_JSON || output === '';
+        if (isOutputEmpty) return;
 
-          /* console.log(output); */
-          const outputJSONArr = JSON.parse(output);
-          setTagRecord((prevTagRecord) => {
-            const tag = prevTagRecord[tagName] ?? { projects: {}, projectNames: [] };
-            for (const task of outputJSONArr) {
-              const projectName = task.project || 'Unsorted';
-              if (!tag.projects[projectName]) {
-                const newProject = {
-                  tasks: {},
-                  totalTasks: 0,
-                  /* accent: beautiful.random_accent_color() */
-                };
-                tag.projects[projectName] = newProject;
-                tag.projectNames.push(projectName);
-              }
-              tag.projects[projectName].tasks[task.description] = task;
-              tag.projects[projectName].totalTasks++;
-              setTaskRecord((prevTaskRecord) => {
-                return { ...prevTaskRecord, [task.description]: task };
-              });
-            }
-            return { ...prevTagRecord, [tagName]: tag };
-          });
-        })
-        .catch((err) => {
-          console.error(err);
+        if(!tagRecord[tag]) {
+          console.log("processing");
+          console.log(await addNewTag(tag));
+        }
+
+        console.log("after done");
+
+        const outputJSONArr = JSON.parse(output);
+        outputJSONArr.map((line: Task) => {
+          const newProjectName = line.project || 'Unsorted';
+          console.log("tag record: ", tagRecord[tag]);
+          if (!tagRecord[tag].projects[newProjectName]) {
+            addNewProject(tag, newProjectName);
+          }
+          tagRecord[tag].projects[newProjectName].tasks.push(line);
         });
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
