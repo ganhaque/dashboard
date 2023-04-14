@@ -21,30 +21,30 @@ import { GoCalendar } from "react-icons/go";
 import './sidebar.css';
 
 interface SidebarProps {
-  activeItem: string;
-  onItemClick: (item: string) => void;
+  activeItem: number;
+  onItemClick: (item: number) => void;
 }
 
-const sidebarItems = [
-  { name: 'Home', index: 'home', icon: <BsRocketTakeoff size="28" /> },
-  { name: 'Lightning', index: 'lightning', icon: <BsFillLightningFill size="20" /> },
-  { name: 'Finance', index: 'finance', icon: <FaDollarSign size="20" /> },
-  { name: 'Calendar', index: 'calendar', icon: <GoCalendar size="24" /> },
-  { name: 'Timew', index: 'timew', icon: <BsClock size="24" /> },
-  { name: 'Add', index: 'add', icon: <BsPlus size="32" /> },
-  { name: 'Themes', index: 'themes', icon: <BsSunFill size="22" /> },
+export const sidebarItems = [
+  { name: 'Home', icon: <BsRocketTakeoff size="28" /> },
+  { name: 'Lightning', icon: <BsFillLightningFill size="20" /> },
+  { name: 'Finance', icon: <FaDollarSign size="20" /> },
+  { name: 'Calendar', icon: <GoCalendar size="24" /> },
+  { name: 'Timew', icon: <BsClock size="24" /> },
+  { name: 'Add', icon: <BsPlus size="32" /> },
+  { name: 'Themes', icon: <BsSunFill size="22" /> },
 ];
 
 const Sidebar = ({ activeItem, onItemClick }: SidebarProps): JSX.Element => {
   return (
     <div className="sidebar">
-      {sidebarItems.map((item) => (
+      {sidebarItems.map((item, index) => (
         <SidebarIcon
-          key={item.index}
+          key={index}
           icon={item.icon}
           name={item.name}
-          active={activeItem === item.index}
-          onClick={() => onItemClick(item.index)}
+          active={activeItem === index}
+          onClick={() => onItemClick(index)}
           />
       ))}
     </div>
