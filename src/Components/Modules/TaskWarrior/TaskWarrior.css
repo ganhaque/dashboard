@@ -12,20 +12,20 @@
 }
 
 #tag-project-column {
-  min-width: 16rem;
+  min-width: 12rem;
 }
 
-.tag {
+.hover-button {
   padding: 0.6rem;
   border-radius: 0.8rem;
 }
 
-.focused-tag {
+.focused-hover-button {
   color: rgba(var(--secondary));
   /* background-color: rgba(var(--one_bg)) */
 }
 
-.tag:hover {
+.hover-button:hover {
   cursor: pointer;
   background-color: rgba(var(--one_bg))
 }

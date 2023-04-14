@@ -52,6 +52,10 @@ interface Tag {
   projectNames: string[];
 }
 
+interface TagRecord {
+  [key: string]: Tag;
+}
+
 /* local desc = tasks[i]["description"] */
 /* local due  = tasks[i]["due"] */
 /* local urg  = tasks[i]["urgency"] */
@@ -64,117 +68,92 @@ interface Tag {
 function TaskWarrior() {
   const [isSessionActive, setIsSessionActive] = useState(false);
 
-  const [tagNameArray, setTagNameArray] = useState<string[]>([]);
+  const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
+  const [tagNameArrayInitialized, setTagNameArrayInitialized] = useState(false);
 
   const [completedTasks, setCompletedTasks] = useState(0);
   const [totalTasks, setTotalTasks] = useState(0);
 
-  const [focusedTagName, setFocusedTag] = useState<string>('');
-  const [focusedProject, setFocusedProject] = useState<string>('');
-
-  const [tagRecord, setTagRecord] = useState<Record<string, Tag>>({});
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [focusedTagName, setFocusedTag] = useState<string>("");
+  const [focusedProjectName, setFocusedProjectName] = useState<string>("");
+  const { tagRecord, updateTagRecord } = parser.useParseTasksForTag(focusedTagName);
+  /* const [tagRecord, setTagRecord] = useState<TagRecord>({}); */
+  /* const { tagRecord, setFocusedTagName } = parser.useParseTasksForTag("myTag"); */
+  /* const [isProcessing, setIsProcessing] = useState(false); */
 
   // initialization
   useEffect(() => {
     parser.parseTags()
-      .then((tagNames: string[]) => setTagNameArray(tagNames))
+      .then((tagNames: string[]) => {
+        setTagNameArray(tagNames);
+        setTagNameArrayInitialized(true);
+      })
       .catch((err) => {
         console.error(err);
       });
-
   }, []);
+
+  async function fetchTagRecords(tagNameArray: string[]) {
+    for (const tagName of tagNameArray) {
+      await updateTagRecord(tagName);
+    }
+  }
 
   // on change to tagNameArray (handle completed signal)
   useEffect(() => {
-    setFocusedTag(tagNameArray[0]);
-    /* console.log(focusedTagName); */
-    /* console.log(tagRecord); */
-    parseTasksForTag(focusedTagName);
-  }, [tagNameArray]);
-
-  const addTagName = (tagName:string) => {
-    // cycle through tagNameArray
-    // if match end
-    // if not add to end of array
-    /* setTagNameArray((prevTagNameArray) => [...prevTagNameArray, tagName]); */
-  };
-
-  const addNewProject = (tagName: string, projectName: string) => {
-    setTagRecord((prevTagRecord) => {
-      const tag = prevTagRecord[tagName] ?? {
-        projects: {},
-        projectNames: []
-      };
-      const project = {
-        tasks: [],
-        totalTasks: 0,
-        /* accent: beautiful.random_accent_color() */
-      };
-      tag.projects[projectName] = project;
-      tag.projectNames.push(projectName);
-      return { ...prevTagRecord, [tagName]: tag };
-    });
-  }
-
-  const addNewTag = (tagName: string) => {
-    return new Promise((resolve) => {
-      setTagRecord((prevTagRecord) => {
-        const tag = prevTagRecord[tagName] ?? {
-          projects: {},
-          projectNames: []
-        };
-        resolve(tag);
-        console.log("done");
-        return { ...prevTagRecord, [tagName]: tag };
-      });
-    });
-  };
-
-  // Parse all pending tasks for a given tag and then sort them by project
-  const parseTasksForTag = async (tag: string) => {
-    const unsetContext = `task context none; `;
-    const filters = `task tag:'${tag}' `;
-    const status = `'(status:pending or status:waiting)' `
-    const cmd = unsetContext + filters + status + `export rc.json.array=on`;
-    if (window.electronAPI?.executeCommand) {
-      try {
-        const output = await window.electronAPI.executeCommand(cmd);
-        const isOutputEmpty = output === EMPTY_JSON || output === '';
-        if (isOutputEmpty) return;
-
-        if(!tagRecord[tag]) {
-          console.log("processing");
-          console.log(await addNewTag(tag));
-        }
-
-        console.log("after done");
-
-        const outputJSONArr = JSON.parse(output);
-        outputJSONArr.map((line: Task) => {
-          const newProjectName = line.project || 'Unsorted';
-          console.log("tag record: ", tagRecord[tag]);
-          if (!tagRecord[tag].projects[newProjectName]) {
-            addNewProject(tag, newProjectName);
-          }
-          tagRecord[tag].projects[newProjectName].tasks.push(line);
-        });
-      } catch (err) {
-        console.error(err);
-      }
+    if (tagNameArrayInitialized) {
+      console.log(tagNameArray);
+      setFocusedTag(tagNameArray[0])
+      fetchTagRecords(tagNameArray);
     }
-  };
+  }, [tagNameArrayInitialized]);
+
 
   const handleTagClick = (tag: string) => {
+    console.log("handle is called for tag:", tag);
     setFocusedTag(tag);
+    /* updateTagRecord(tag); */
+  }
+
+  const handleProjectClick = (project: string) => {
+    console.log("handle is called for project:", project);
+    if (focusedProjectName === project) {
+      setFocusedProjectName('');
+    }
+    else {
+      setFocusedProjectName(project);
+    }
+    /* updateTagRecord(project); */
+  }
+
+  const debugClick = () => {
+    console.log("Debug");
+    console.log(tagRecord);
   }
 
   function renderTags() {
     return tagNameArray.map((tag) => 
       <p
         key={tag}
-        className={`tag ${tag === focusedTagName ? 'focused-tag' : ''}`}
-        onClick={() => handleTagClick(tag)}>{tag}
+        className={`hover-button ${tag === focusedTagName ? 'focused-hover-button' : ''}`}
+        onClick={() => handleTagClick(tag)}
+      >
+        {tag}
+      </p>
+    );
+  }
+
+  function renderProjects() {
+    if (!tagRecord[focusedTagName]?.projectNames) {
+      return <div> Loading... </div>
+    }
+    return tagRecord[focusedTagName].projectNames.map((project: string) => 
+      <p
+        key={project}
+        className={`hover-button ${project === focusedProjectName ? 'focused-hover-button' : ''}`}
+        onClick={() => handleProjectClick(project)}
+      >
+        {project}
       </p>
     );
   }
@@ -200,13 +179,100 @@ function TaskWarrior() {
     )
   }
 
+  function renderHeader() {
+    if (!tagRecord[focusedTagName]?.totalTasks) {
+      return <p> No Tag or Project Selected... </p>
+    }
+
+    if (tagRecord[focusedTagName]?.projects[focusedProjectName]?.totalTasks) {
+      const completedTasks = tagRecord[focusedTagName]
+        .projects[focusedProjectName]
+        .completedTasks;
+      const totalTasks = tagRecord[focusedTagName]
+        .projects[focusedProjectName]
+        .totalTasks;
+      const percent = Math.floor((completedTasks / totalTasks) * 100);
+      return (
+        <>
+          <div className='flex-container' id="">
+            <div>
+              <h2 className="header" id="task-header">
+                Tasks
+              </h2>
+              <div className="" id="task-header">
+                <p> {
+                  `${focusedTagName} - ${completedTasks} / ${totalTasks} REMAINING`
+                } </p>
+              </div>
+            </div>
+
+            <h1 className='header' id="percent-header">
+              {percent}%
+            </h1>
+          </div>
+
+          <ProgressBar
+            key={""}
+            bgcolor="rgba(var(--secondary))"
+            completed={
+              percent
+            } />
+        </>
+      )
+    }
+
+    const completedTasks = tagRecord[focusedTagName]
+      .completedTasks;
+    const totalTasks = tagRecord[focusedTagName]
+      .totalTasks;
+    const percent = Math.floor((completedTasks / totalTasks) * 100);
+    return (
+      <>
+        <div className='flex-container' id="">
+          <div>
+            <h2 className="header" id="task-header">
+              Tasks
+            </h2>
+            <div className="" id="task-header">
+              <p> {
+                `${focusedTagName} - ${completedTasks} / ${totalTasks} REMAINING`
+              } </p>
+            </div>
+          </div>
+
+          <h1 className='header' id="percent-header">
+            {percent}%
+          </h1>
+        </div>
+
+        <ProgressBar
+          key={""}
+          bgcolor="rgba(var(--secondary))"
+          completed={
+            percent
+          } />
+      </>
+
+      /*       <p> */
+      /*         {`${focusedTagName} -  */
+      /* ${tagRecord[focusedTagName].projects[focusedProjectName].completedTasks}/${tagRecord[focusedTagName].projects[focusedProjectName].totalTasks} */
+      /* REMAINING`} */
+      /*       </p> */
+    );
+  }
+
   return (
     <div className="flex-container" id="bigbox">
       <div className="flex-container column-flex-direction flex-no-grow" id="tag-project-column">
-        <h2 className="header">
-          Questlog
-        </h2>
-        <div className="item">
+        <div className="flex-no-grow">
+          <h2 className="header">
+            Questlog
+          </h2>
+          <div className="hover-button" onClick={() => debugClick()}>
+            Debug
+          </div>
+        </div>
+        <div className="item flex-no-grow">
           <h2 className="header">
             Tags
           </h2>
@@ -216,6 +282,7 @@ function TaskWarrior() {
           <h2 className="header">
             Projects
           </h2>
+          {renderProjects()}
           {/* <p> */}
           {/*   render projects here */}
           {/* </p> */}
@@ -223,22 +290,7 @@ function TaskWarrior() {
       </div>
       <div className="flex-container column-flex-direction" id="column-2">
         <div className="item justify-content-flex-start">
-          <div className='flex-container' id="">
-            <div>
-              <h2 className="header" id="task-header">
-                Tasks
-              </h2>
-              <p className="" id="task-header">
-                {focusedTagName} - 1/?? REMAINING
-              </p>
-            </div>
-            <h1 className='header' id="percent-header">
-              72%
-            </h1>
-          </div>
-
-          <ProgressBar key={"thing"} bgcolor="rgba(var(--secondary))" completed={72} />
-
+          {renderHeader()}
           {renderTasks()}
         </div>
       </div>

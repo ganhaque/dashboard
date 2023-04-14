@@ -1,4 +1,5 @@
 import Task from "../../Pages/Task";
+import { useState, useEffect } from "react";
 
 const EMPTY_JSON = "[\n]\n";
 
@@ -94,3 +95,99 @@ export const parseTotalTasksForProject = (tag: string, project: string) => {
   }
 };
 
+
+interface Task {
+  id: number;
+  description: string;
+  entry: string;
+  modified: string;
+  project?: string;
+  status: string;
+  uuid: string;
+  tags?: string[];
+  urgency: number;
+}
+
+interface Project {
+  tasks: Task[];
+  totalTasks: number;
+  completedTasks: number;
+}
+
+interface Tag {
+  projects: Record<string, Project>;
+  projectNames: string[];
+  totalTasks: number;
+  completedTasks: number;
+}
+
+interface TagRecord {
+  [key: string]: Tag;
+}
+
+export function useParseTasksForTag(tagName: string) {
+  const [tagRecord, setTagRecord] = useState<TagRecord>({});
+  const [focusedTag, setFocusedTag] = useState<string>(tagName);
+
+  useEffect(() => {
+    const parseTasksForTag = async () => {
+      const unsetContext = `task context none; `;
+      const filters = `task tag:'${focusedTag}' `;
+      const status = `'(status:pending or status:waiting)' `;
+      const cmd = unsetContext + filters + status + `export rc.json.array=on`;
+      if (window.electronAPI?.executeCommand) {
+        try {
+          const output = await window.electronAPI.executeCommand(cmd);
+          const isOutputEmpty = output === "" || output === EMPTY_JSON;
+          if (isOutputEmpty) return;
+
+          setTagRecord((prevTagRecord) => {
+            const tag = prevTagRecord[focusedTag] ?? {
+              projects: {},
+              projectNames: [],
+              totalTasks: 0,
+              completedTasks: 0,
+            };
+
+            const outputJSONArr = JSON.parse(output);
+            outputJSONArr.map((line: Task) => {
+              const newProjectName = line.project || "Unsorted";
+              if (!tag.projects[newProjectName]) {
+                tag.projectNames.push(newProjectName);
+                tag.projects[newProjectName] = {
+                  tasks: [],
+                  totalTasks: 0,
+                  completedTasks: 0,
+                };
+              }
+              const taskExists = tag.projects[newProjectName].tasks.some(
+                (task) => task.uuid === line.uuid
+              );
+              if (!taskExists) {
+                if (line.status === "completed") {
+                  tag.completedTasks += 1;
+                  tag.projects[newProjectName].completedTasks += 1;
+                }
+                tag.totalTasks += 1;
+                tag.projects[newProjectName].totalTasks += 1;
+                tag.projects[newProjectName].tasks.push(line);
+              }
+            });
+
+            return { ...prevTagRecord, [focusedTag]: tag };
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    parseTasksForTag();
+  }, [focusedTag]);
+
+  const updateTagRecord = async (tagName: string) => {
+    setFocusedTag(tagName);
+  };
+
+  return { tagRecord, updateTagRecord };
+}
