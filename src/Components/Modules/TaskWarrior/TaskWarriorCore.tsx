@@ -12,74 +12,18 @@ import './TaskWarrior.css';
 /* import formatTime from '../Helpers/formatter'; */
 /* import { parseTasksForTag } from './Parser'; */
 import * as parser from './Parser';
+import * as helper from './Helper';
 import * as database from './Database';
-
-/* const items = [ */
-/*   { name: 'Home', index: 'home', description: 'where the heart is' }, */
-/*   { name: 'Themes', index: 'themes', description: 'colorful' }, */
-/* ]; */
 
 const EMPTY_JSON = "[\n]\n";
 
-declare global {
-  interface Window {
-    /* electronAPI: { */
-    /* taskAllTags?: (tag: string) => Promise<string>; */
-    timewTagTotal?: (tag: string) => Promise<string>;
-    /* }; */
-  }
-}
-
-interface Task {
-  id: number;
-  description: string;
-  entry: string;
-  modified: string;
-  project?: string;
-  status: string;
-  uuid: string;
-  tags?: string[];
-  urgency: number;
-}
-
-interface Project {
-  tasks: Task[];
-  totalTasks: number;
-}
-
-interface Tag {
-  projects: Record<string, Project>;
-  projectNames: string[];
-}
-
-interface TagRecord {
-  [key: string]: Tag;
-}
-
-/* local desc = tasks[i]["description"] */
-/* local due  = tasks[i]["due"] */
-/* local urg  = tasks[i]["urgency"] */
-/* local tag  = tasks[i]["tag"] */
-/* local proj = tasks[i]["project"] */
-
-
-/* I think the error is with my initialization with tagRecord. I just do {} instead of giving proper project member.   const [tagRecord, setTagRecord] = useState<Record<string, Tag>>({}); */
-
 function TaskWarrior() {
-  const [isSessionActive, setIsSessionActive] = useState(false);
-
   const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
   const [tagNameArrayInitialized, setTagNameArrayInitialized] = useState(false);
-
-  const [completedTasks, setCompletedTasks] = useState(0);
-  const [totalTasks, setTotalTasks] = useState(0);
 
   const [focusedTagName, setFocusedTag] = useState<string>("");
   const [focusedProjectName, setFocusedProjectName] = useState<string>("");
   const { tagRecord, updateTagRecord } = parser.useParseTasksForTag(focusedTagName);
-  /* const [tagRecord, setTagRecord] = useState<TagRecord>({}); */
-  /* const { tagRecord, setFocusedTagName } = parser.useParseTasksForTag("myTag"); */
-  /* const [isProcessing, setIsProcessing] = useState(false); */
 
   // initialization
   useEffect(() => {
@@ -131,6 +75,10 @@ function TaskWarrior() {
     console.log(tagRecord);
   }
 
+  const debugClick2 = () => {
+    console.log("Debug");
+  }
+
   function renderTags() {
     return tagNameArray.map((tag) => 
       <p
@@ -159,22 +107,38 @@ function TaskWarrior() {
   }
 
   const renderTasks = () => {
+    if (focusedProjectName === "") {
+      return <p> no project selected </p>
+    }
+    if (!tagRecord[focusedTagName]?.projects) {
+      return <p> no </p>
+    }
+    if (!tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks) {
+      return <p> no2 </p>
+    }
+    const tasks = tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks;
     return (
       <div className="flex-container column-flex-direction">
-        <div className="flex-container">
-          <p>
-            No tags or project selected
-          </p>
-          <p>
-            Due
-          </p>
-          <p>
-            urgency#
-          </p>
-        </div>
-        <p>
-          No tags or project selected
-        </p>
+        {tasks.map((task) => (
+          <div className="flex-container" id="task-row">
+            <div id="task-description">
+              <p>
+                {task.description}
+              </p>
+            </div>
+            <div className="flex-no-grow" id="task-due">
+              <p>
+                {task.due ? `due: ${helper.formatDueDate(task.due)}` : ''}
+              </p>
+            </div>
+            <div className="flex-no-grow" id="task-urgency">
+              <p>
+                {/* TODO: changes text color based on urgency */}
+                {Number(task.urgency).toFixed(1)}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     )
   }
@@ -212,7 +176,6 @@ function TaskWarrior() {
           </div>
 
           <ProgressBar
-            key={""}
             bgcolor="rgba(var(--secondary))"
             completed={
               percent
@@ -246,18 +209,12 @@ function TaskWarrior() {
         </div>
 
         <ProgressBar
-          key={""}
           bgcolor="rgba(var(--secondary))"
           completed={
             percent
           } />
       </>
 
-      /*       <p> */
-      /*         {`${focusedTagName} -  */
-      /* ${tagRecord[focusedTagName].projects[focusedProjectName].completedTasks}/${tagRecord[focusedTagName].projects[focusedProjectName].totalTasks} */
-      /* REMAINING`} */
-      /*       </p> */
     );
   }
 
@@ -270,6 +227,9 @@ function TaskWarrior() {
           </h2>
           <div className="hover-button" onClick={() => debugClick()}>
             Debug
+          </div>
+          <div className="hover-button" onClick={() => debugClick2()}>
+            Debug2
           </div>
         </div>
         <div className="item flex-no-grow">

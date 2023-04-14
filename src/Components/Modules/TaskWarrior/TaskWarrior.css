@@ -15,6 +15,10 @@
   min-width: 12rem;
 }
 
+#task-description {
+  text-align: left;
+}
+
 .hover-button {
   padding: 0.6rem;
   border-radius: 0.8rem;
@@ -28,4 +32,13 @@
 .hover-button:hover {
   cursor: pointer;
   background-color: rgba(var(--one_bg))
+}
+
+#task-row {
+  border-radius: 0.8rem;
+}
+
+#task-row:hover {
+  cursor: pointer;
+  background-color: rgba(var(--one_bg));
 }

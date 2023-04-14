@@ -106,6 +106,7 @@ interface Task {
   uuid: string;
   tags?: string[];
   urgency: number;
+  due?: string;
 }
 
 interface Project {
@@ -172,7 +173,10 @@ export function useParseTasksForTag(tagName: string) {
                 tag.projects[newProjectName].totalTasks += 1;
                 tag.projects[newProjectName].tasks.push(line);
               }
+              // sort tasks by urgency
+              tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency);
             });
+
 
             return { ...prevTagRecord, [focusedTag]: tag };
           });
@@ -191,3 +195,4 @@ export function useParseTasksForTag(tagName: string) {
 
   return { tagRecord, updateTagRecord };
 }
+
