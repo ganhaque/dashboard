@@ -128,71 +128,99 @@ interface TagRecord {
 
 export function useParseTasksForTag(tagName: string) {
   const [tagRecord, setTagRecord] = useState<TagRecord>({});
-  const [focusedTag, setFocusedTag] = useState<string>(tagName);
+  /* const [focusedTag, setFocusedTag] = useState<string>(tagName); */
+
+  const parseTasksForTag = async (tagName: string) => {
+    const unsetContext = `task context none; `;
+    /* const filters = `task tag:'${focusedTag}' `; */
+    const filters = `task tag:'${tagName}' `;
+    const status = `'(status:pending or status:waiting or status:completed)' `;
+    const cmd = unsetContext + filters + status + `export rc.json.array=on`;
+    if (window.electronAPI?.executeCommand) {
+      try {
+        const output = await window.electronAPI.executeCommand(cmd);
+        const isOutputEmpty = output === "" || output === EMPTY_JSON;
+        if (isOutputEmpty) return;
+
+        setTagRecord((prevTagRecord) => {
+          /* console.log("focusedTag is", focusedTag); */
+          const tag = prevTagRecord[tagName] ?? {
+            projects: {},
+            projectNames: [],
+            totalTasks: 0,
+            completedTasks: 0,
+          };
+
+          const outputJSONArr = JSON.parse(output);
+          outputJSONArr.map((line: Task) => {
+            const newProjectName = line.project || "Unsorted";
+            if (!tag.projects[newProjectName]) {
+              tag.projectNames.push(newProjectName);
+              tag.projects[newProjectName] = {
+                tasks: [],
+                totalTasks: 0,
+                completedTasks: 0,
+              };
+            }
+            const isTaskExists = tag.projects[newProjectName].tasks.some(
+              (task) => task.uuid === line.uuid
+            );
+            if (!isTaskExists) {
+              if (line.status === "completed") {
+                tag.completedTasks += 1;
+                tag.projects[newProjectName].completedTasks += 1;
+              }
+              tag.totalTasks += 1;
+              tag.projects[newProjectName].totalTasks += 1;
+              tag.projects[newProjectName].tasks.push(line);
+            }
+            // sort tasks by urgency
+            tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency);
+          });
+
+
+          return { ...prevTagRecord, [tagName]: tag };
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   useEffect(() => {
-    const parseTasksForTag = async () => {
-      const unsetContext = `task context none; `;
-      const filters = `task tag:'${focusedTag}' `;
-      const status = `'(status:pending or status:waiting)' `;
-      const cmd = unsetContext + filters + status + `export rc.json.array=on`;
-      if (window.electronAPI?.executeCommand) {
-        try {
-          const output = await window.electronAPI.executeCommand(cmd);
-          const isOutputEmpty = output === "" || output === EMPTY_JSON;
-          if (isOutputEmpty) return;
-
-          setTagRecord((prevTagRecord) => {
-            const tag = prevTagRecord[focusedTag] ?? {
-              projects: {},
-              projectNames: [],
-              totalTasks: 0,
-              completedTasks: 0,
-            };
-
-            const outputJSONArr = JSON.parse(output);
-            outputJSONArr.map((line: Task) => {
-              const newProjectName = line.project || "Unsorted";
-              if (!tag.projects[newProjectName]) {
-                tag.projectNames.push(newProjectName);
-                tag.projects[newProjectName] = {
-                  tasks: [],
-                  totalTasks: 0,
-                  completedTasks: 0,
-                };
-              }
-              const taskExists = tag.projects[newProjectName].tasks.some(
-                (task) => task.uuid === line.uuid
-              );
-              if (!taskExists) {
-                if (line.status === "completed") {
-                  tag.completedTasks += 1;
-                  tag.projects[newProjectName].completedTasks += 1;
-                }
-                tag.totalTasks += 1;
-                tag.projects[newProjectName].totalTasks += 1;
-                tag.projects[newProjectName].tasks.push(line);
-              }
-              // sort tasks by urgency
-              tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency);
-            });
+    parseTasksForTag(tagName);
+  }, [tagName]);
 
 
-            return { ...prevTagRecord, [focusedTag]: tag };
-          });
-        } catch (err) {
-          console.error(err);
-        }
+  const updateTagRecord = async (newTagName: string) => {
+    setTagRecord((prevTagRecord) => {
+      // copy the previous `tagRecord` state
+      const newTagRecord = { ...prevTagRecord };
+      // if `newTagName` already exists in `newTagRecord`, return the current state
+      if (newTagName in newTagRecord) {
+        return newTagRecord;
       }
-    };
-
-    parseTasksForTag();
-  }, [focusedTag]);
-
-  const updateTagRecord = async (tagName: string) => {
-    setFocusedTag(tagName);
+      // add the new tag to `newTagRecord`
+      newTagRecord[newTagName] = {
+        projects: {},
+        projectNames: [],
+        totalTasks: 0,
+        completedTasks: 0,
+      };
+      // call `parseTasksForTag` to update the new tag's data
+      parseTasksForTag(newTagName);
+      return newTagRecord;
+    });
   };
+
+  /* const updateTagRecord = async (tagName: string) => { */
+  /*   console.log("update tagRecord for tag", tagName); */
+  /*   setFocusedTag(tagName); */
+  /* }; */
 
   return { tagRecord, updateTagRecord };
 }
+
+
+
 

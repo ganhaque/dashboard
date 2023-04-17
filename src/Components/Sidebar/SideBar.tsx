@@ -1,7 +1,7 @@
 /* import { useState } from 'react'; */
 import {
   BsPlus,
-  BsFillLightningFill,
+  /* BsFillLightningFill, */
   /* BsGearFill, */
   /* BsCalendarHeart, */
   /* BsJournalBookmarkFill, */
@@ -17,7 +17,20 @@ import {
   /* FaCalendar, */
   FaDollarSign
 } from 'react-icons/fa';
-import { GoCalendar } from "react-icons/go";
+import {
+  GiSpartanHelmet,
+  /* GiHeavyHelm */
+  GiRollingDices
+} from 'react-icons/gi'
+import {
+  /* MdTaskAlt */
+  /* MdLeaderboard */
+  MdOutlineBookmarks
+} from 'react-icons/md'
+import {
+  GoCalendar,
+  GoKey
+} from "react-icons/go";
 import './sidebar.css';
 
 interface SidebarProps {
@@ -27,12 +40,14 @@ interface SidebarProps {
 
 export const sidebarItems = [
   { name: 'Home', icon: <BsRocketTakeoff size="28" /> },
-  { name: 'Lightning', icon: <BsFillLightningFill size="20" /> },
-  { name: 'Finance', icon: <FaDollarSign size="20" /> },
-  { name: 'Calendar', icon: <GoCalendar size="24" /> },
-  { name: 'Timew', icon: <BsClock size="24" /> },
-  { name: 'Add', icon: <BsPlus size="32" /> },
-  { name: 'Themes', icon: <BsSunFill size="22" /> },
+  { name: 'Taskwarrior', icon: <GiSpartanHelmet size="30" /> },
+  { name: 'Finance', icon: <FaDollarSign size="24" /> },
+  { name: 'Calendar', icon: <GoCalendar size="28" /> },
+  { name: 'Bookmark', icon: <MdOutlineBookmarks size="28" /> },
+  /* { name: 'Add', icon: <BsPlus size="32" /> }, */
+  { name: 'Game', icon: <GiRollingDices size="32" /> },
+  { name: 'Journals', icon: <GoKey size="24" /> },
+  { name: 'Themes', icon: <BsSunFill size="24" /> },
 ];
 
 const Sidebar = ({ activeItem, onItemClick }: SidebarProps): JSX.Element => {
@@ -45,7 +60,7 @@ const Sidebar = ({ activeItem, onItemClick }: SidebarProps): JSX.Element => {
           name={item.name}
           active={activeItem === index}
           onClick={() => onItemClick(index)}
-          />
+        />
       ))}
     </div>
   );

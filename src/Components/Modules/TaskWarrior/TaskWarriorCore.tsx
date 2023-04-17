@@ -2,6 +2,8 @@
 // TODO:
 // parse task export
 // selective reload
+// currently, the init run everytime the taskwarrior page (sidebar) is opened
+// can be optimized by doing init in the main app.tsx?
 
 // ▀█▀ ▄▀█ █▀ █▄▀ █░█░█ ▄▀█ █▀█ █▀█ █ █▀█ █▀█ 
 // ░█░ █▀█ ▄█ █░█ ▀▄▀▄▀ █▀█ █▀▄ █▀▄ █ █▄█ █▀▄ 
@@ -9,6 +11,9 @@
 import { useState, useEffect } from 'react';
 import ProgressBar from '../ProgresBar';
 import './TaskWarrior.css';
+import {
+  BsPlus
+} from 'react-icons/bs'
 /* import formatTime from '../Helpers/formatter'; */
 /* import { parseTasksForTag } from './Parser'; */
 import * as parser from './Parser';
@@ -23,6 +28,8 @@ function TaskWarrior() {
 
   const [focusedTagName, setFocusedTag] = useState<string>("");
   const [focusedProjectName, setFocusedProjectName] = useState<string>("");
+  const [focusedTaskID, setFocusedTaskID] = useState<number>(0);
+
   const { tagRecord, updateTagRecord } = parser.useParseTasksForTag(focusedTagName);
 
   // initialization
@@ -39,6 +46,7 @@ function TaskWarrior() {
 
   async function fetchTagRecords(tagNameArray: string[]) {
     for (const tagName of tagNameArray) {
+      console.log("do", tagName);
       await updateTagRecord(tagName);
     }
   }
@@ -54,13 +62,15 @@ function TaskWarrior() {
 
 
   const handleTagClick = (tag: string) => {
-    console.log("handle is called for tag:", tag);
+    /* console.log("handle is called for tag:", tag); */
     setFocusedTag(tag);
+    // reset project when tag change
+    setFocusedProjectName('');
     /* updateTagRecord(tag); */
   }
 
   const handleProjectClick = (project: string) => {
-    console.log("handle is called for project:", project);
+    /* console.log("handle is called for project:", project); */
     if (focusedProjectName === project) {
       setFocusedProjectName('');
     }
@@ -72,7 +82,16 @@ function TaskWarrior() {
 
   const debugClick = () => {
     console.log("Debug");
+    console.log("tagNameArray:");
+    console.log(tagNameArray);
+    console.log("tagRecord:");
     console.log(tagRecord);
+    console.log("focusedTagName");
+    console.log(focusedTagName);
+    console.log("focusedProjectName");
+    console.log(focusedProjectName);
+    console.log("focusedTaskID");
+    console.log(focusedTaskID);
   }
 
   const debugClick2 = () => {
@@ -80,6 +99,9 @@ function TaskWarrior() {
   }
 
   function renderTags() {
+    if (!tagRecord[focusedTagName]) {
+      return <div> Loading... </div>
+    }
     return tagNameArray.map((tag) => 
       <p
         key={tag}
@@ -108,30 +130,49 @@ function TaskWarrior() {
 
   const renderTasks = () => {
     if (focusedProjectName === "") {
-      return <p> no project selected </p>
+      // TODO: when no project, render all tasks of tag instead
+      return (
+        <div id="not-found">
+          <p>
+            no project selected...
+          </p>
+        </div>
+      )
     }
     if (!tagRecord[focusedTagName]?.projects) {
-      return <p> no </p>
+      return (
+        <div id="not-found">
+          <p>
+            no tasks exist for current tag
+          </p>
+        </div>
+      )
     }
     if (!tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks) {
-      return <p> no2 </p>
+      return (
+        <div id="not-found">
+          <p>
+            no tasks for current project (this should not happen)
+          </p>
+        </div>
+      )
     }
     const tasks = tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks;
     return (
-      <div className="flex-container column-flex-direction">
+      <div className="flex-container column-flex-direction flex-no-gap">
         {tasks.map((task) => (
-          <div className="flex-container" id="task-row">
+          <div key={task.id} className={task.status === 'completed' ? 'completed-task' : ''} id="task-grid">
             <div id="task-description">
               <p>
                 {task.description}
               </p>
             </div>
-            <div className="flex-no-grow" id="task-due">
+            <div className="" id="task-due">
               <p>
                 {task.due ? `due: ${helper.formatDueDate(task.due)}` : ''}
               </p>
             </div>
-            <div className="flex-no-grow" id="task-urgency">
+            <div className="" id="task-urgency">
               <p>
                 {/* TODO: changes text color based on urgency */}
                 {Number(task.urgency).toFixed(1)}
@@ -145,7 +186,13 @@ function TaskWarrior() {
 
   function renderHeader() {
     if (!tagRecord[focusedTagName]?.totalTasks) {
-      return <p> No Tag or Project Selected... </p>
+      return (
+        <div id="not-found">
+          <p>
+            No Tag or Project Selected... (no taskwarrior?)
+          </p>
+        </div>
+      )
     }
 
     if (tagRecord[focusedTagName]?.projects[focusedProjectName]?.totalTasks) {
@@ -165,7 +212,7 @@ function TaskWarrior() {
               </h2>
               <div className="" id="task-header">
                 <p> {
-                  `${focusedTagName} - ${completedTasks} / ${totalTasks} REMAINING`
+                  `${focusedTagName} - ${completedTasks}/${totalTasks} REMAINING`
                 } </p>
               </div>
             </div>
@@ -229,7 +276,7 @@ function TaskWarrior() {
             Debug
           </div>
           <div className="hover-button" onClick={() => debugClick2()}>
-            Debug2
+            <BsPlus size="32" />
           </div>
         </div>
         <div className="item flex-no-grow">

@@ -14,7 +14,7 @@ const App = () => {
   /* const currentPageIndex = useRef(pageOrder.indexOf(activeItem)); // use a ref to keep track of the current page index */
 
   const handleSidebarItemClick = (itemIndex: number) => {
-    console.log(sidebarItems.length);
+    /* console.log(itemIndex); */
     if (itemIndex === sidebarItems.length - 1) { // The last item is the 'Themes' item
       const numPalettes = Object.keys(colorPalettes).length;
       const nextIndex = (colorPaletteIndex + 1) % numPalettes;
@@ -27,29 +27,35 @@ const App = () => {
     }
   };
 
-const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.key === 'Tab') {
-    event.preventDefault();
-    if (event.shiftKey) {
-      // go to the previous page
-      setActiveItemIndex((activeItemIndex + sidebarItems.length - 2) % (sidebarItems.length - 1));
-    } else {
-      // go to the next page
-      setActiveItemIndex((activeItemIndex + 1) % (sidebarItems.length - 1));
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      if (event.shiftKey) {
+        // go to the previous page
+        setActiveItemIndex((activeItemIndex + sidebarItems.length - 2) % (sidebarItems.length - 1));
+      } else {
+        // go to the next page
+        setActiveItemIndex((activeItemIndex + 1) % (sidebarItems.length - 1));
+      }
     }
-  }
-};
-
-useEffect(() => {
-  // add event listener for Tab and Shift-Tab keys
-  document.addEventListener('keydown', handleKeyDown);
-
-  // remove event listener on component unmount
-  return () => {
-    document.removeEventListener('keydown', handleKeyDown);
   };
 
-}, [activeItemIndex]);
+  useEffect(() => {
+    const paletteNames = Object.keys(colorPalettes);
+    const currentPaletteName = paletteNames[colorPaletteIndex];
+    handleColorChange(currentPaletteName);
+  }, [colorPaletteIndex]);
+
+  useEffect(() => {
+    // add event listener for Tab and Shift-Tab keys
+    document.addEventListener('keydown', handleKeyDown);
+
+    // remove event listener on component unmount
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+
+  }, [activeItemIndex]);
 
   return (
     <div className="App flex-container">

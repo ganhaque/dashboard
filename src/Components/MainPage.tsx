@@ -14,7 +14,10 @@ const pages = [
 ];
 
 const MainPage = ({ activeItemIndex }: MainPageProps) => {
-  const activeComponent = pages[activeItemIndex] || <h1>404 Page Not Found</h1>;
+  const activeComponent = pages[activeItemIndex] ||
+    <div id="not-found">
+      <h1>404 Page Not Found</h1>
+    </div>;
   return activeComponent;
 };
 

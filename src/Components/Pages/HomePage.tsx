@@ -1,13 +1,13 @@
 import ProfileColumn from '../Columns/ProfileColumn';
 import TimeColumn from '../Columns/TimeColumn';
-import TaskColumn from '../Columns/TaskColumn';
+import LedgerColumn from '../Columns/LedgerColumn';
 
 function HomePage() {
   return (
     <div className="main">
       <div className="flex-container" id="bigbox">
         <ProfileColumn />
-        {/* <TaskColumn /> */}
+        <LedgerColumn />
         <TimeColumn />
 
         {/* <h2> */}
