@@ -325,6 +325,7 @@ p {
 }
 
 .hover-button {
+  user-select: none;
   padding: 0.6rem;
   border-radius: 0.8rem;
 }

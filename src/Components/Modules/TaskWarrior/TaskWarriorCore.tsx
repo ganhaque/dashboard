@@ -8,7 +8,7 @@
 // ▀█▀ ▄▀█ █▀ █▄▀ █░█░█ ▄▀█ █▀█ █▀█ █ █▀█ █▀█ 
 // ░█░ █▀█ ▄█ █░█ ▀▄▀▄▀ █▀█ █▀▄ █▀▄ █ █▄█ █▀▄ 
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProgressBar from '../ProgresBar';
 import './TaskWarrior.css';
 import {
@@ -19,6 +19,7 @@ import {
 import * as parser from './Parser';
 import * as helper from './Helper';
 import * as database from './Database';
+import { PopUp } from './PopUp';
 
 const EMPTY_JSON = "[\n]\n";
 
@@ -31,6 +32,12 @@ function TaskWarrior() {
   const [focusedTaskID, setFocusedTaskID] = useState<number>(0);
 
   const { tagRecord, updateTagRecord } = parser.useParseTasksForTag(focusedTagName);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  function handleClose() {
+    setIsOpen(false);
+  }
 
   // initialization
   useEffect(() => {
@@ -95,7 +102,8 @@ function TaskWarrior() {
   }
 
   const debugClick2 = () => {
-    console.log("Debug");
+    console.log("Debug2");
+    setIsOpen(true);
   }
 
   function renderTags() {
@@ -129,22 +137,41 @@ function TaskWarrior() {
   }
 
   const renderTasks = () => {
-    if (focusedProjectName === "") {
-      // TODO: when no project, render all tasks of tag instead
-      return (
-        <div id="not-found">
-          <p>
-            no project selected...
-          </p>
-        </div>
-      )
-    }
-    if (!tagRecord[focusedTagName]?.projects) {
+    if (!tagRecord[focusedTagName]) {
       return (
         <div id="not-found">
           <p>
             no tasks exist for current tag
           </p>
+        </div>
+      )
+    }
+
+    if (focusedProjectName === "") {
+      // TODO: when no project, render all tasks of tag instead
+      const tasks = tagRecord[focusedTagName]?.tasks;
+      return (
+        <div className="flex-container column-flex-direction flex-no-gap">
+          {tasks.map((task) => (
+            <div key={task.id} className={task.status === 'completed' ? 'completed-task' : ''} id="task-grid">
+              <div id="task-description">
+                <p>
+                  {task.description}
+                </p>
+              </div>
+              <div className="" id="task-due">
+                <p>
+                  {task.due ? `due: ${helper.formatDueDate(task.due)}` : ''}
+                </p>
+              </div>
+              <div className="" id="task-urgency">
+                <p>
+                  {/* TODO: changes text color based on urgency */}
+                  {Number(task.urgency).toFixed(1)}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       )
     }
@@ -212,7 +239,7 @@ function TaskWarrior() {
               </h2>
               <div className="" id="task-header">
                 <p> {
-                  `${focusedTagName} - ${completedTasks}/${totalTasks} REMAINING`
+                  `${focusedTagName} - ${focusedProjectName} - ${completedTasks}/${totalTasks} REMAINING`
                 } </p>
               </div>
             </div>
@@ -245,7 +272,7 @@ function TaskWarrior() {
             </h2>
             <div className="" id="task-header">
               <p> {
-                `${focusedTagName} - ${completedTasks} / ${totalTasks} REMAINING`
+                `${focusedTagName} - ${completedTasks}/${totalTasks} REMAINING`
               } </p>
             </div>
           </div>
@@ -277,6 +304,7 @@ function TaskWarrior() {
           </div>
           <div className="hover-button" onClick={() => debugClick2()}>
             <BsPlus size="32" />
+            <PopUp isOpen={isOpen} onClose={handleClose} />
           </div>
         </div>
         <div className="item flex-no-grow">
