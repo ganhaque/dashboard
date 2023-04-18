@@ -8,8 +8,8 @@
 // ▀█▀ ▄▀█ █▀ █▄▀ █░█░█ ▄▀█ █▀█ █▀█ █ █▀█ █▀█ 
 // ░█░ █▀█ ▄█ █░█ ▀▄▀▄▀ █▀█ █▀▄ █▀▄ █ █▄█ █▀▄ 
 
-import { useState, useEffect, useRef } from 'react';
-import ProgressBar from '../ProgresBar';
+import { useState, useEffect, useRef, useCallback } from 'react';
+/* import ProgressBar from '../ProgresBar'; */
 import './TaskWarrior.css';
 import {
   BsPlus
@@ -17,11 +17,12 @@ import {
 /* import formatTime from '../Helpers/formatter'; */
 /* import { parseTasksForTag } from './Parser'; */
 import * as parser from './Parser';
-import * as helper from './Helper';
-import * as database from './Database';
-import { PopUp } from './PopUp';
+/* import * as helper from './Helper'; */
+import * as render from './Render';
+/* import TagRenderer from './Render'; */
+/* import * as database from './Database'; */
 
-const EMPTY_JSON = "[\n]\n";
+/* const EMPTY_JSON = "[\n]\n"; */
 
 function TaskWarrior() {
   const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
@@ -71,9 +72,7 @@ function TaskWarrior() {
   const handleTagClick = (tag: string) => {
     /* console.log("handle is called for tag:", tag); */
     setFocusedTag(tag);
-    // reset project when tag change
     setFocusedProjectName('');
-    /* updateTagRecord(tag); */
   }
 
   const handleProjectClick = (project: string) => {
@@ -84,8 +83,63 @@ function TaskWarrior() {
     else {
       setFocusedProjectName(project);
     }
-    /* updateTagRecord(project); */
   }
+
+  function PopUp({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+    const [text, setText] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if (isOpen && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [isOpen]);
+
+    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+      setText(event.target.value);
+    }
+
+    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+      if (event.key === 'Enter') {
+        console.log('User input:', text);
+        // reset text
+        setText('');
+        onClose();
+        // exec command add task with current focused tag and proj
+        // update tagRecord (and other dependent components on the page)
+      }
+      else if (event.key === 'Escape') {
+        // reset text
+        setText('');
+        onClose();
+      }
+      // if u then dont reset text and call modify command instead of add for the next enter
+    }
+
+    return (
+      <div className="popup-input-div" style={{
+        display: isOpen ? 'block' : 'none',
+      }}>
+        <input className="popup-input-box" type="text" value={text} onChange={handleInputChange} onKeyDown={handleKeyDown} ref={inputRef} />
+        {/* <button onClick={onClose}>Close</button> */}
+      </div>
+    );
+  }
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (!isOpen) {
+      if (event.key === 'a') {
+        console.log("pressed a");
+      }
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   const debugClick = () => {
     console.log("Debug");
@@ -106,192 +160,6 @@ function TaskWarrior() {
     setIsOpen(true);
   }
 
-  function renderTags() {
-    if (!tagRecord[focusedTagName]) {
-      return <div> Loading... </div>
-    }
-    return tagNameArray.map((tag) => 
-      <p
-        key={tag}
-        className={`hover-button ${tag === focusedTagName ? 'focused-hover-button' : ''}`}
-        onClick={() => handleTagClick(tag)}
-      >
-        {tag}
-      </p>
-    );
-  }
-
-  function renderProjects() {
-    if (!tagRecord[focusedTagName]?.projectNames) {
-      return <div> Loading... </div>
-    }
-    return tagRecord[focusedTagName].projectNames.map((project: string) => 
-      <p
-        key={project}
-        className={`hover-button ${project === focusedProjectName ? 'focused-hover-button' : ''}`}
-        onClick={() => handleProjectClick(project)}
-      >
-        {project}
-      </p>
-    );
-  }
-
-  const renderTasks = () => {
-    if (!tagRecord[focusedTagName]) {
-      return (
-        <div id="not-found">
-          <p>
-            no tasks exist for current tag
-          </p>
-        </div>
-      )
-    }
-
-    if (focusedProjectName === "") {
-      // TODO: when no project, render all tasks of tag instead
-      const tasks = tagRecord[focusedTagName]?.tasks;
-      return (
-        <div className="flex-container column-flex-direction flex-no-gap">
-          {tasks.map((task) => (
-            <div key={task.id} className={task.status === 'completed' ? 'completed-task' : ''} id="task-grid">
-              <div id="task-description">
-                <p>
-                  {task.description}
-                </p>
-              </div>
-              <div className="" id="task-due">
-                <p>
-                  {task.due ? `due: ${helper.formatDueDate(task.due)}` : ''}
-                </p>
-              </div>
-              <div className="" id="task-urgency">
-                <p>
-                  {/* TODO: changes text color based on urgency */}
-                  {Number(task.urgency).toFixed(1)}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )
-    }
-    if (!tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks) {
-      return (
-        <div id="not-found">
-          <p>
-            no tasks for current project (this should not happen)
-          </p>
-        </div>
-      )
-    }
-    const tasks = tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks;
-    return (
-      <div className="flex-container column-flex-direction flex-no-gap">
-        {tasks.map((task) => (
-          <div key={task.id} className={task.status === 'completed' ? 'completed-task' : ''} id="task-grid">
-            <div id="task-description">
-              <p>
-                {task.description}
-              </p>
-            </div>
-            <div className="" id="task-due">
-              <p>
-                {task.due ? `due: ${helper.formatDueDate(task.due)}` : ''}
-              </p>
-            </div>
-            <div className="" id="task-urgency">
-              <p>
-                {/* TODO: changes text color based on urgency */}
-                {Number(task.urgency).toFixed(1)}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  function renderHeader() {
-    if (!tagRecord[focusedTagName]?.totalTasks) {
-      return (
-        <div id="not-found">
-          <p>
-            No Tag or Project Selected... (no taskwarrior?)
-          </p>
-        </div>
-      )
-    }
-
-    if (tagRecord[focusedTagName]?.projects[focusedProjectName]?.totalTasks) {
-      const completedTasks = tagRecord[focusedTagName]
-        .projects[focusedProjectName]
-        .completedTasks;
-      const totalTasks = tagRecord[focusedTagName]
-        .projects[focusedProjectName]
-        .totalTasks;
-      const percent = Math.floor((completedTasks / totalTasks) * 100);
-      return (
-        <>
-          <div className='flex-container' id="">
-            <div>
-              <h2 className="header" id="task-header">
-                Tasks
-              </h2>
-              <div className="" id="task-header">
-                <p> {
-                  `${focusedTagName} - ${focusedProjectName} - ${completedTasks}/${totalTasks} REMAINING`
-                } </p>
-              </div>
-            </div>
-
-            <h1 className='header' id="percent-header">
-              {percent}%
-            </h1>
-          </div>
-
-          <ProgressBar
-            bgcolor="rgba(var(--secondary))"
-            completed={
-              percent
-            } />
-        </>
-      )
-    }
-
-    const completedTasks = tagRecord[focusedTagName]
-      .completedTasks;
-    const totalTasks = tagRecord[focusedTagName]
-      .totalTasks;
-    const percent = Math.floor((completedTasks / totalTasks) * 100);
-    return (
-      <>
-        <div className='flex-container' id="">
-          <div>
-            <h2 className="header" id="task-header">
-              Tasks
-            </h2>
-            <div className="" id="task-header">
-              <p> {
-                `${focusedTagName} - ${completedTasks}/${totalTasks} REMAINING`
-              } </p>
-            </div>
-          </div>
-
-          <h1 className='header' id="percent-header">
-            {percent}%
-          </h1>
-        </div>
-
-        <ProgressBar
-          bgcolor="rgba(var(--secondary))"
-          completed={
-            percent
-          } />
-      </>
-
-    );
-  }
-
   return (
     <div className="flex-container" id="bigbox">
       <div className="flex-container column-flex-direction flex-no-grow" id="tag-project-column">
@@ -304,20 +172,19 @@ function TaskWarrior() {
           </div>
           <div className="hover-button" onClick={() => debugClick2()}>
             <BsPlus size="32" />
-            <PopUp isOpen={isOpen} onClose={handleClose} />
           </div>
         </div>
         <div className="item flex-no-grow">
           <h2 className="header">
             Tags
           </h2>
-          {renderTags()}
+          {render.renderTags(tagRecord, focusedTagName, tagNameArray, handleTagClick)}
         </div>
         <div className="item">
           <h2 className="header">
             Projects
           </h2>
-          {renderProjects()}
+          {render.renderProjects(tagRecord, focusedTagName, focusedProjectName, handleProjectClick)}
           {/* <p> */}
           {/*   render projects here */}
           {/* </p> */}
@@ -325,8 +192,9 @@ function TaskWarrior() {
       </div>
       <div className="flex-container column-flex-direction" id="column-2">
         <div className="item justify-content-flex-start">
-          {renderHeader()}
-          {renderTasks()}
+          {render.renderHeader(tagRecord, focusedTagName, focusedProjectName)}
+          <PopUp isOpen={isOpen} onClose={handleClose} />
+          {render.renderTasks(focusedTagName, focusedProjectName, tagRecord)}
         </div>
       </div>
     </div>
