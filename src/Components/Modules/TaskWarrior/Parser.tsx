@@ -69,7 +69,7 @@ export function useParseTasksForTag(tagName: string) {
     const filters = `task tag:'${tagName}' `;
     const status = `'(status:pending or status:waiting or status:completed)' `;
     const cmd = unsetContext + filters + status + `export rc.json.array=on`;
-    console.log(cmd);
+    /* console.log(cmd); */
     if (window.electronAPI?.executeCommand) {
       try {
         const output = await window.electronAPI.executeCommand(cmd);

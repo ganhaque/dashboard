@@ -52,6 +52,7 @@
 #task-urgency,
 #task-due {
   color: rgba(var(--darker-white));
+  margin: auto;
 }
 
 .completed-task {

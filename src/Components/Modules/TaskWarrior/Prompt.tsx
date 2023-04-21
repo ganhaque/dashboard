@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-type PopUpProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmitHandler: (inputText: string) => void;
+interface PromptHandlerMap {
+  [prompt: string]: (inputText: string) => void;
 }
 
-export function TextPrompt({ isOpen, onClose, onSubmitHandler }: PopUpProps) {
+type PromptProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  promptType: string;
+  handlers: PromptHandlerMap;
+};
+
+function Prompt({ isOpen, onClose, promptType, handlers }: PromptProps) {
   const [text, setText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -22,10 +27,26 @@ export function TextPrompt({ isOpen, onClose, onSubmitHandler }: PopUpProps) {
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
-      onSubmitHandler(text);
+      const handler = handlers[promptType];
+      if (handler) {
+        handler(text);
+      }
       onClose();
       setText('');
-    } else if (event.key === 'Escape') {
+    }
+    else if (event.key === 'y' && promptType.includes('(y/n)')) {
+      const handler = handlers[promptType];
+      if (handler) {
+        // it should be handler() since text is always ''
+        // but it doesn't matter anyway
+        handler(text);
+      }
+      onClose();
+      setText('');
+    }
+    else if (
+      event.key === 'Escape' || promptType.includes('(y/n)')
+    ) {
       onClose();
       setText('');
     }
@@ -36,7 +57,7 @@ export function TextPrompt({ isOpen, onClose, onSubmitHandler }: PopUpProps) {
       display: isOpen ? 'flex' : 'none',
     }}>
       <p className="popup-input-text">
-        new task:
+        {promptType}
       </p>
       <input
         className="popup-input-box"
@@ -50,4 +71,4 @@ export function TextPrompt({ isOpen, onClose, onSubmitHandler }: PopUpProps) {
   );
 }
 
-export default TextPrompt;
+export default Prompt;

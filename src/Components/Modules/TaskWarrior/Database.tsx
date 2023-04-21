@@ -30,3 +30,19 @@ export async function addTask(tag: string, project: string, description: string)
     return Promise.reject(new Error("window.electronAPI.executeCommand is not defined"));
   }
 }
+
+export function completeTask(taskID: number) {
+  /* const cmd = `task done ` + taskID; */
+  const cmd = `task done ` + taskID;
+  console.log(cmd);
+
+  if (window.electronAPI?.executeCommand) {
+    window.electronAPI.executeCommand(cmd)
+      .then((output) => {
+        console.log(output);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+}

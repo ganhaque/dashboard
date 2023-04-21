@@ -46,7 +46,7 @@ const renderTaskList = (tasks: any[], focusedTaskID:number, handleTaskClick: (ta
     <div className="flex-container column-flex-direction flex-no-gap">
       {tasks.map((task) => (
         <div
-          key={task.id}
+          key={task.uuid}
           className={`
 ${
 task.id ===  focusedTaskID ? "selected-task" : ""

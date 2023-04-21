@@ -1,4 +1,3 @@
-
 // TODO:
 // parse task export
 // selective reload
@@ -21,9 +20,19 @@ import * as parser from './Parser';
 import * as render from './Render';
 /* import TagRenderer from './Render'; */
 import * as database from './Database';
-import TextPrompt from './Prompts/TextPrompt';
+import Prompt from './Prompt';
 
-/* const EMPTY_JSON = "[\n]\n"; */
+
+interface PromptHandlerMap {
+  [prompt: string]: (inputText: string) => void;
+}
+
+type PromptProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  promptType: string;
+  handlers: PromptHandlerMap;
+};
 
 function TaskWarrior() {
   const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
@@ -36,8 +45,7 @@ function TaskWarrior() {
 
   const { tagRecord, updateTagRecord, resetTagRecord } = parser.useParseTasksForTag('');
 
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [isConfirmationPromptOpen, setIsConfirmationPromptOpen] = useState(false);
+  const [currentPrompt, setCurrentPrompt] = useState('');
 
   // initialization
   useEffect(() => {
@@ -93,20 +101,18 @@ function TaskWarrior() {
     setFocusedTaskID(taskID);
   }
 
-  function onSubmitHandler(inputText: string) {
+  function addTaskSubmitHandler(inputText: string) {
     // how to format your input:
     // t:something p:"complex project" long long desc
     // p: can take "" or '' to have space between your words
     // t: does not do that since the parse for tagName only take single word tag
+
+    // this is not optimized if not adding new tag or project
+    // but making it work for those 3 different cases is not worth it lol
+
     console.log('User input:', inputText);
-    /* const tagMatch = inputText.match(/t:(\w+)/); */
-    /* const tag = tagMatch ? tagMatch[1] : focusedTagName; */
     const tagMatch = inputText.match(/t:(\w+)/);
     const tag = tagMatch ? tagMatch[1] : focusedTagName;
-    /* const projectMatch = inputText.match(/p:(\w+)/); */
-    /* const project = projectMatch ? projectMatch[1] : focusedProjectName; */
-    /* const projectMatch = inputText.match(/p:(\w+)/); */
-    /* const project = projectMatch ? projectMatch[1] : ""; */
     const projectMatch = inputText.match(/p:(['"])?(\w+\s*\w*)(['"])?/);
     const project = projectMatch ? projectMatch[2] : focusedProjectName;
     const description = inputText.replace(/t:\w+\s*/, "").replace(/p:(['"])?\w+\s*\w*(['"])?\s*/, "");
@@ -139,20 +145,38 @@ function TaskWarrior() {
       .catch((err) => {
         console.error(err);
       });
+  }
 
-    // exec command add task with current focused tag and proj
-    // update tagRecord (and other dependent components on the page)
+  const completeTaskHandler = () => {
+    database.completeTask(focusedTaskID);
+
+    resetTagRecord();
+    setTagNameArrayUpdated(false);
+    parser.parseTags()
+      .then((tagNames: string[]) => {
+        setTagNameArray(tagNames);
+        setTagNameArrayUpdated(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    setFocusedTaskID(-1);
   }
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (!isPopUpOpen) {
+    if (currentPrompt === '') {
       if (event.key === 'a') {
-        setIsPopUpOpen(true);
+        setCurrentPrompt('Add new task:');
         // prevent 'a' from being inserted into input box
         event.preventDefault();
       }
+      else if (event.key === 'd') {
+        setCurrentPrompt('Mark task as complete. Are you sure? (y/n)');
+        event.preventDefault();
+      }
     }
-  }, [isPopUpOpen]);
+  }, [currentPrompt]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -177,12 +201,24 @@ function TaskWarrior() {
 
   const debugClick2 = () => {
     console.log("Debug2");
-    setIsPopUpOpen(true);
+    setCurrentPrompt('a');
   }
 
-  function resetClick() {
-    resetTagRecord();
-  }
+  const handleSubmitName = (name: string) => {
+    console.log(`Hello, ${name}!`);
+  };
+
+  const handleSubmitColor = (color: string) => {
+    console.log(`Your favorite color is ${color}.`);
+  };
+
+  const promptHandlers: PromptHandlerMap = {
+    'Add new task:': addTaskSubmitHandler,
+    'name': handleSubmitName,
+    'color': () => handleSubmitColor,
+    'Mark task as complete. Are you sure? (y/n)': completeTaskHandler
+    // add more prompts here
+  };
 
   return (
     <div className="flex-container" id="bigbox">
@@ -193,9 +229,6 @@ function TaskWarrior() {
           </h2>
           <div className="hover-button" onClick={() => debugClick()}>
             Debug
-          </div>
-          <div className="hover-button" onClick={() => resetClick()}>
-            Reset
           </div>
           <div className="hover-button" onClick={() => debugClick2()}>
             <BsPlus size="32" />
@@ -220,8 +253,13 @@ function TaskWarrior() {
       <div className="flex-container column-flex-direction" id="column-2">
         <div className="item justify-content-flex-start">
           {render.renderHeader(tagRecord, focusedTagName, focusedProjectName)}
-          <TextPrompt isOpen={isPopUpOpen} onClose={() => setIsPopUpOpen(false)} onSubmitHandler={onSubmitHandler} />
-          {/* <ConfirmationPrompt isOpen={isConfirmationPromptOpen} onClose={() => setIsConfirmationPromptOpen(false)} /> */}
+          <Prompt
+            isOpen={currentPrompt !== ''}
+            onClose={() => setCurrentPrompt('')}
+            promptType={currentPrompt}
+            handlers={promptHandlers}
+          />
+
           {render.renderTasks(focusedTagName, focusedProjectName, focusedTaskID, tagRecord, handleTaskClick)}
 
         </div>
