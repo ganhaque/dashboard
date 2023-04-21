@@ -57,25 +57,20 @@ export function formatDueDate(due: string): string {
   const absTimeDifference = Math.abs(timeDifference);
   const daysRem = Math.floor(absTimeDifference / 86400000);
   const hoursRem = Math.floor(absTimeDifference / 3600000);
+  /* const minutesRem = Math.floor(absTimeDifference / 600000); */
+  const minutesRem = Math.floor((absTimeDifference - hoursRem * 3600000) / 60000); // subtract hours from time difference
   const hoursRemDay = hoursRem % 24;
 
   let dueDateText: string;
   if (daysRem >= 1) {
     dueDateText = `${daysRem} day${daysRem > 1 ? 's' : ''}`;
     if (daysRem <= 3) {
-      dueDateText += ` & ${hoursRemDay} hr`;
+      dueDateText += ` ${hoursRemDay} hour${hoursRemDay > 1 ? 's' : ''}`;
     }
   }
-  else {
-    if (hoursRem === 1) {
-      dueDateText = '1 hour';
-    }
-    else if (hoursRem < 1) {
-      dueDateText = '<1 hour';
-    }
-    else {
-      dueDateText = `${hoursRem} hours`;
-    }
+  else { // day < 1
+    dueDateText = ` ${hoursRemDay} hour${hoursRemDay > 1 ? 's' : ''}`;
+    dueDateText += ` ${minutesRem} minute${minutesRem > 1 ? 's' : ''}`;
   }
 
   if (timeDifference < 0) {

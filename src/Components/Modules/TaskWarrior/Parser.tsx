@@ -57,7 +57,11 @@ export const parseTags = (): Promise<string[]> => {
 
 export function useParseTasksForTag(tagName: string) {
   const [tagRecord, setTagRecord] = useState<TagRecord>({});
-  /* const [focusedTag, setFocusedTag] = useState<string>(tagName); */
+
+  const resetTagRecord = async () => {
+    setTagRecord({});
+    await parseTasksForTag(tagName);
+  };
 
   const parseTasksForTag = async (tagName: string) => {
     const unsetContext = `task context none; `;
@@ -65,6 +69,7 @@ export function useParseTasksForTag(tagName: string) {
     const filters = `task tag:'${tagName}' `;
     const status = `'(status:pending or status:waiting or status:completed)' `;
     const cmd = unsetContext + filters + status + `export rc.json.array=on`;
+    console.log(cmd);
     if (window.electronAPI?.executeCommand) {
       try {
         const output = await window.electronAPI.executeCommand(cmd);
@@ -84,7 +89,7 @@ export function useParseTasksForTag(tagName: string) {
 
           const outputJSONArr = JSON.parse(output);
           outputJSONArr.map((line: Task) => {
-            const newProjectName = line.project || "Unsorted";
+            const newProjectName = line.project || "unsorted";
             if (!tag.projects[newProjectName]) {
               tag.projectNames.push(newProjectName);
               tag.projects[newProjectName] = {
@@ -151,7 +156,7 @@ export function useParseTasksForTag(tagName: string) {
   /*   setFocusedTag(tagName); */
   /* }; */
 
-  return { tagRecord, updateTagRecord };
+  return { tagRecord, updateTagRecord, resetTagRecord };
 }
 
 

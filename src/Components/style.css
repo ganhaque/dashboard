@@ -166,7 +166,9 @@ p {
 .flex-no-gap {
   gap: 0;
 }
-
+.flex-double-gap {
+  gap: calc(2 * var(--gap-size));
+}
 
 .item {
   /* disable these to not center module if grow */

@@ -1,7 +1,12 @@
 import * as helper from './Helper';
 import ProgressBar from '../ProgresBar';
 
-export function renderTags(tagRecord: any, focusedTagName: string, tagNameArray: string[], handleTagClick: (tag: string) => void) {
+export function renderTags(
+  tagRecord: any,
+  focusedTagName: string,
+  tagNameArray: string[], 
+  handleTagClick: (tag: string) => void
+) {
   if (!tagRecord[focusedTagName]) {
     return <div> Loading... </div>
   }
@@ -36,22 +41,30 @@ export function renderProjects(
   );
 }
 
-const renderTaskList = (tasks: any[]) => {
+const renderTaskList = (tasks: any[], focusedTaskID:number, handleTaskClick: (taskID: number) => void) => {
   return (
     <div className="flex-container column-flex-direction flex-no-gap">
       {tasks.map((task) => (
         <div
           key={task.id}
-          className={task.status === "completed" ? "completed-task" : ""}
-          id="task-grid"
+          className={`
+${
+task.id ===  focusedTaskID ? "selected-task" : ""
+}
+${
+task.status === "completed" ? "completed-task" : ""
+}
+flex-container flex-double-gap`}
+          id="task-row"
+          onClick={() => handleTaskClick(task.id)}
         >
-          <div id="task-description">
-            <p>{task.description}</p>
+          <div className="" id="task-description">
+            <p className="">{task.description}</p>
           </div>
-          <div className="" id="task-due">
+          <div className="flex-no-grow" id="task-due">
             <p>{task.due ? `due ${helper.formatDueDate(task.due)}` : ""}</p>
           </div>
-          <div className="" id="task-urgency">
+          <div className="flex-no-grow" id="task-urgency">
             <p>
               {/* TODO: changes text color based on urgency */}
               {Number(task.urgency).toFixed(1)}
@@ -65,8 +78,11 @@ const renderTaskList = (tasks: any[]) => {
 export function renderTasks (
   focusedTagName: string,
   focusedProjectName: string,
-  tagRecord: any
+  focusedTaskID: number,
+  tagRecord: any,
+  handleTaskClick: (taskID: number) => void
 ) {
+  /* console.log("render task is called"); */
   if (!tagRecord[focusedTagName]) {
     return (
       <div id="not-found">
@@ -77,11 +93,19 @@ export function renderTasks (
 
   if (focusedProjectName === "") {
     const tasks = tagRecord[focusedTagName]?.tasks;
-    return renderTaskList(tasks);
+    return renderTaskList(tasks, focusedTaskID, handleTaskClick);
+  }
+
+  if(!tagRecord[focusedTagName].projects[focusedProjectName]) {
+    return (
+      <div id="not-found">
+        <p>no tasks exist for current project</p>
+      </div>
+    );
   }
 
   const tasks = tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks;
-  return renderTaskList(tasks);
+  return renderTaskList(tasks, focusedTaskID, handleTaskClick);
 };
 
 export function renderHeader(

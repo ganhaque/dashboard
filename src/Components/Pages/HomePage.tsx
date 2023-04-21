@@ -7,7 +7,7 @@ function HomePage() {
     <div className="main">
       <div className="flex-container" id="bigbox">
         <ProfileColumn />
-        <LedgerColumn />
+        {/* <LedgerColumn /> */}
         <TimeColumn />
 
         {/* <h2> */}

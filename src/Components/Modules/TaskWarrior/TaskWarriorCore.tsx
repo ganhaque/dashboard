@@ -8,7 +8,7 @@
 // ▀█▀ ▄▀█ █▀ █▄▀ █░█░█ ▄▀█ █▀█ █▀█ █ █▀█ █▀█ 
 // ░█░ █▀█ ▄█ █░█ ▀▄▀▄▀ █▀█ █▀▄ █▀▄ █ █▄█ █▀▄ 
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 /* import ProgressBar from '../ProgresBar'; */
 import './TaskWarrior.css';
 import {
@@ -20,25 +20,24 @@ import * as parser from './Parser';
 /* import * as helper from './Helper'; */
 import * as render from './Render';
 /* import TagRenderer from './Render'; */
-/* import * as database from './Database'; */
+import * as database from './Database';
+import TextPrompt from './Prompts/TextPrompt';
 
 /* const EMPTY_JSON = "[\n]\n"; */
 
 function TaskWarrior() {
   const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
   const [tagNameArrayInitialized, setTagNameArrayInitialized] = useState(false);
+  const [tagNameArrayUpdated, setTagNameArrayUpdated] = useState(false);
 
   const [focusedTagName, setFocusedTag] = useState<string>("");
   const [focusedProjectName, setFocusedProjectName] = useState<string>("");
-  const [focusedTaskID, setFocusedTaskID] = useState<number>(0);
+  const [focusedTaskID, setFocusedTaskID] = useState<number>(-1);
 
-  const { tagRecord, updateTagRecord } = parser.useParseTasksForTag(focusedTagName);
+  const { tagRecord, updateTagRecord, resetTagRecord } = parser.useParseTasksForTag('');
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  function handleClose() {
-    setIsOpen(false);
-  }
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [isConfirmationPromptOpen, setIsConfirmationPromptOpen] = useState(false);
 
   // initialization
   useEffect(() => {
@@ -54,7 +53,7 @@ function TaskWarrior() {
 
   async function fetchTagRecords(tagNameArray: string[]) {
     for (const tagName of tagNameArray) {
-      console.log("do", tagName);
+      /* console.log("processing tagName:", tagName); */
       await updateTagRecord(tagName);
     }
   }
@@ -62,77 +61,98 @@ function TaskWarrior() {
   // on change to tagNameArray (handle completed signal)
   useEffect(() => {
     if (tagNameArrayInitialized) {
-      console.log(tagNameArray);
+      /* console.log(tagNameArray); */
       setFocusedTag(tagNameArray[0])
+      setFocusedProjectName('');
       fetchTagRecords(tagNameArray);
     }
   }, [tagNameArrayInitialized]);
+  useEffect(() => {
+    if (tagNameArrayUpdated) {
+      /* console.log(tagNameArray); */
+      fetchTagRecords(tagNameArray);
+    }
+  }, [tagNameArrayUpdated]);
 
 
   const handleTagClick = (tag: string) => {
-    /* console.log("handle is called for tag:", tag); */
     setFocusedTag(tag);
     setFocusedProjectName('');
+    setFocusedTaskID(-1);
   }
-
   const handleProjectClick = (project: string) => {
-    /* console.log("handle is called for project:", project); */
     if (focusedProjectName === project) {
       setFocusedProjectName('');
     }
     else {
       setFocusedProjectName(project);
     }
+    setFocusedTaskID(-1);
+  }
+  const handleTaskClick = (taskID: number) => {
+    setFocusedTaskID(taskID);
   }
 
-  function PopUp({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
-    const [text, setText] = useState('');
-    const inputRef = useRef<HTMLInputElement>(null);
+  function onSubmitHandler(inputText: string) {
+    // how to format your input:
+    // t:something p:"complex project" long long desc
+    // p: can take "" or '' to have space between your words
+    // t: does not do that since the parse for tagName only take single word tag
+    console.log('User input:', inputText);
+    /* const tagMatch = inputText.match(/t:(\w+)/); */
+    /* const tag = tagMatch ? tagMatch[1] : focusedTagName; */
+    const tagMatch = inputText.match(/t:(\w+)/);
+    const tag = tagMatch ? tagMatch[1] : focusedTagName;
+    /* const projectMatch = inputText.match(/p:(\w+)/); */
+    /* const project = projectMatch ? projectMatch[1] : focusedProjectName; */
+    /* const projectMatch = inputText.match(/p:(\w+)/); */
+    /* const project = projectMatch ? projectMatch[1] : ""; */
+    const projectMatch = inputText.match(/p:(['"])?(\w+\s*\w*)(['"])?/);
+    const project = projectMatch ? projectMatch[2] : focusedProjectName;
+    const description = inputText.replace(/t:\w+\s*/, "").replace(/p:(['"])?\w+\s*\w*(['"])?\s*/, "");
 
-    useEffect(() => {
-      if (isOpen && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, [isOpen]);
+    console.log("tag:", tag);
+    console.log("project:", project);
+    console.log("description:", description);
 
-    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setText(event.target.value);
-    }
+    let taskID: number = -1;
+    database.addTask(tag, project, description)
+      .then((result) => {
+        taskID = result;
+        resetTagRecord();
+        setTagNameArrayUpdated(false);
 
-    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-      if (event.key === 'Enter') {
-        console.log('User input:', text);
-        // reset text
-        setText('');
-        onClose();
-        // exec command add task with current focused tag and proj
-        // update tagRecord (and other dependent components on the page)
-      }
-      else if (event.key === 'Escape') {
-        // reset text
-        setText('');
-        onClose();
-      }
-      // if u then dont reset text and call modify command instead of add for the next enter
-    }
+        parser.parseTags()
+          .then((tagNames: string[]) => {
+            setTagNameArray(tagNames);
+            setTagNameArrayUpdated(true);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
 
-    return (
-      <div className="popup-input-div" style={{
-        display: isOpen ? 'block' : 'none',
-      }}>
-        <input className="popup-input-box" type="text" value={text} onChange={handleInputChange} onKeyDown={handleKeyDown} ref={inputRef} />
-        {/* <button onClick={onClose}>Close</button> */}
-      </div>
-    );
+        setFocusedTag(tag);
+        setFocusedProjectName(project);
+        console.log(taskID);
+        setFocusedTaskID(taskID);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    // exec command add task with current focused tag and proj
+    // update tagRecord (and other dependent components on the page)
   }
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (!isOpen) {
+    if (!isPopUpOpen) {
       if (event.key === 'a') {
-        console.log("pressed a");
+        setIsPopUpOpen(true);
+        // prevent 'a' from being inserted into input box
+        event.preventDefault();
       }
     }
-  }, [isOpen]);
+  }, [isPopUpOpen]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -157,7 +177,11 @@ function TaskWarrior() {
 
   const debugClick2 = () => {
     console.log("Debug2");
-    setIsOpen(true);
+    setIsPopUpOpen(true);
+  }
+
+  function resetClick() {
+    resetTagRecord();
   }
 
   return (
@@ -169,6 +193,9 @@ function TaskWarrior() {
           </h2>
           <div className="hover-button" onClick={() => debugClick()}>
             Debug
+          </div>
+          <div className="hover-button" onClick={() => resetClick()}>
+            Reset
           </div>
           <div className="hover-button" onClick={() => debugClick2()}>
             <BsPlus size="32" />
@@ -193,8 +220,10 @@ function TaskWarrior() {
       <div className="flex-container column-flex-direction" id="column-2">
         <div className="item justify-content-flex-start">
           {render.renderHeader(tagRecord, focusedTagName, focusedProjectName)}
-          <PopUp isOpen={isOpen} onClose={handleClose} />
-          {render.renderTasks(focusedTagName, focusedProjectName, tagRecord)}
+          <TextPrompt isOpen={isPopUpOpen} onClose={() => setIsPopUpOpen(false)} onSubmitHandler={onSubmitHandler} />
+          {/* <ConfirmationPrompt isOpen={isConfirmationPromptOpen} onClose={() => setIsConfirmationPromptOpen(false)} /> */}
+          {render.renderTasks(focusedTagName, focusedProjectName, focusedTaskID, tagRecord, handleTaskClick)}
+
         </div>
       </div>
     </div>
