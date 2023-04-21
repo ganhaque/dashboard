@@ -160,6 +160,45 @@ export function useParseTasksForTag(tagName: string) {
 }
 
 
+export function parseUserInput(
+  userInput: string,
+  focusedTagName: string,
+  focusedProjectName: string
+): {
+  tag: string,
+  project: string,
+  description: string,
+  due: string
+} {
+  console.log('User input:', userInput);
+
+  const tagMatch = userInput.match(/t:(\w+)/);
+  const tag: string = tagMatch ? tagMatch[1] : focusedTagName;
+
+  let project: string = focusedProjectName;
+  const projectMatch = userInput.match(/p:(["'])(.*?)\1|\bp:(\w+)/);
+  if (projectMatch) {
+    project = projectMatch[2] || projectMatch[3];
+  }
+
+  const dueMatch = userInput.match(/d:(\d{4}-\d{2}-\d{2})/);
+  const due: string = dueMatch ? dueMatch[1] : '';
+
+  const description: string = userInput
+  .replace(/t:\w+\s*/, "")
+  .replace(/p:(["'])(.*?)\1|\bp:(\w+)\b/, "")
+  .replace(/d:\d{4}-\d{2}-\d{2}\s*/, "")
+  .trim();
+
+  console.log("tag:", tag);
+  console.log("project:", project);
+  console.log("description:", description);
+  console.log("due:", due);
+
+  return { tag, project, description, due };
+}
+
+
 
 
 

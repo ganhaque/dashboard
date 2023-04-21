@@ -1,12 +1,18 @@
-export async function addTask(tag: string, project: string, description: string): Promise<number> {
+export async function addTask(
+  tag: string,
+  project: string,
+  description: string,
+  due: string
+): Promise<number> {
   const newTag = tag !== '' ? `tag:'${tag}' ` : '';
   const newProject = project !== '' ? `project:'${project}' ` : '';
   if (description === '') {
     console.error("a task must have a description");
     return Promise.reject(new Error("a task must have a description"));
   }
-  const newDescription = `description:'${description}'`;
-  const cmd = `task add ` + newTag + newProject + newDescription;
+  const newDescription = `description:'${description}' `;
+  const newDueDate = due !== '' ? `due:'${due}' ` : '';
+  const cmd = `task add ` + newTag + newProject + newDescription + newDueDate;
   console.log(cmd);
 
   if (window.electronAPI?.executeCommand) {
@@ -32,8 +38,36 @@ export async function addTask(tag: string, project: string, description: string)
 }
 
 export function completeTask(taskID: number) {
-  /* const cmd = `task done ` + taskID; */
   const cmd = `task done ` + taskID;
+  console.log(cmd);
+
+  if (window.electronAPI?.executeCommand) {
+    window.electronAPI.executeCommand(cmd)
+      .then((output) => {
+        console.log(output);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+}
+
+export function modifyTask(
+  taskID: number,
+  tag: string,
+  project: string,
+  description: string,
+  due: string
+) {
+  const newTag = tag !== '' ? `tag:'${tag}' ` : '';
+  const newProject = project !== '' ? `project:'${project}' ` : '';
+  if (description === '') {
+    console.error("a task must have a description");
+    return;
+  }
+  const newDescription = `description:'${description}' `;
+  const newDueDate = due !== '' ? `due:'${due}' ` : '';
+  const cmd = `task modify ` + taskID + ` ` + newTag + newProject + newDescription + newDueDate;
   console.log(cmd);
 
   if (window.electronAPI?.executeCommand) {

@@ -101,7 +101,7 @@ function TaskWarrior() {
     setFocusedTaskID(taskID);
   }
 
-  function addTaskSubmitHandler(inputText: string) {
+  function addTaskSubmitHandler(userInput: string) {
     // how to format your input:
     // t:something p:"complex project" long long desc
     // p: can take "" or '' to have space between your words
@@ -109,36 +109,16 @@ function TaskWarrior() {
 
     // this is not optimized if not adding new tag or project
     // but making it work for those 3 different cases is not worth it lol
-
-    console.log('User input:', inputText);
-    const tagMatch = inputText.match(/t:(\w+)/);
-    const tag = tagMatch ? tagMatch[1] : focusedTagName;
-    const projectMatch = inputText.match(/p:(['"])?(\w+\s*\w*)(['"])?/);
-    const project = projectMatch ? projectMatch[2] : focusedProjectName;
-    const description = inputText.replace(/t:\w+\s*/, "").replace(/p:(['"])?\w+\s*\w*(['"])?\s*/, "");
-
-    console.log("tag:", tag);
-    console.log("project:", project);
-    console.log("description:", description);
+    const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
 
     let taskID: number = -1;
-    database.addTask(tag, project, description)
+    database.addTask(parsed.tag, parsed.project, parsed.description, parsed.due)
       .then((result) => {
         taskID = result;
-        resetTagRecord();
-        setTagNameArrayUpdated(false);
+        reloadTagRecord();
 
-        parser.parseTags()
-          .then((tagNames: string[]) => {
-            setTagNameArray(tagNames);
-            setTagNameArrayUpdated(true);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-
-        setFocusedTag(tag);
-        setFocusedProjectName(project);
+        setFocusedTag(parsed.tag);
+        setFocusedProjectName(parsed.project);
         console.log(taskID);
         setFocusedTaskID(taskID);
       })
@@ -149,7 +129,17 @@ function TaskWarrior() {
 
   const completeTaskHandler = () => {
     database.completeTask(focusedTaskID);
+    reloadTagRecord();
+    setFocusedTaskID(-1);
+  }
 
+  const modifyTaskHandler = (userInput: string) => {
+    const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
+    database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
+    reloadTagRecord();
+  }
+
+  const reloadTagRecord = () => {
     resetTagRecord();
     setTagNameArrayUpdated(false);
     parser.parseTags()
@@ -160,8 +150,6 @@ function TaskWarrior() {
       .catch((err) => {
         console.error(err);
       });
-
-    setFocusedTaskID(-1);
   }
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -173,6 +161,10 @@ function TaskWarrior() {
       }
       else if (event.key === 'd') {
         setCurrentPrompt('Mark task as complete. Are you sure? (y/n)');
+        event.preventDefault();
+      }
+      else if (event.key === 'm') {
+        setCurrentPrompt('Change task attributes:');
         event.preventDefault();
       }
     }
@@ -216,8 +208,8 @@ function TaskWarrior() {
     'Add new task:': addTaskSubmitHandler,
     'name': handleSubmitName,
     'color': () => handleSubmitColor,
-    'Mark task as complete. Are you sure? (y/n)': completeTaskHandler
-    // add more prompts here
+    'Mark task as complete. Are you sure? (y/n)': completeTaskHandler,
+    'Change task attributes:': modifyTaskHandler
   };
 
   return (
