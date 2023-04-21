@@ -4,7 +4,22 @@
 
 My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) while learning about React and Electron.
 
-## How to use
+## Usage
+
+There are no released build yet. If you want to use it in the current version, you can do the following
+```bash
+# git clone & cd into the repo
+git clone https://github.com/ganhaque/port-moon.git && cd port-moon
+
+# install dependencies
+npm install
+
+# start the web version of the dashboard
+npm start
+
+# run the electron version
+npm run electron-dev
+```
 
 ## Modules
 
