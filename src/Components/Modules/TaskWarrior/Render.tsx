@@ -58,6 +58,9 @@ flex-container flex-double-gap`}
           id="task-row"
           onClick={() => handleTaskClick(task.id)}
         >
+          <div className="flex-no-grow" id="task-id">
+            <p className="">{task.id}</p>
+          </div>
           <div className="" id="task-description">
             <p className="">{task.description}</p>
           </div>
