@@ -24,6 +24,11 @@
   text-align: left;
 }
 
+#task-row-container {
+  max-height: calc(100vh - 7.5rem);
+  overflow: scroll;
+}
+
 #task-row {
   border-radius: 0.8rem;
 }

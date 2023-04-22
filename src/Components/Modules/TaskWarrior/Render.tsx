@@ -43,7 +43,7 @@ export function renderProjects(
 
 const renderTaskList = (tasks: any[], focusedTaskID:number, handleTaskClick: (taskID: number) => void) => {
   return (
-    <div className="flex-container column-flex-direction flex-no-gap">
+    <div className="flex-container column-flex-direction flex-no-gap" id="task-row-container">
       {tasks.map((task) => (
         <div
           key={task.uuid}
