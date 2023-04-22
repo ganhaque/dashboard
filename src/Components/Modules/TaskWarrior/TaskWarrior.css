@@ -15,6 +15,11 @@
   min-width: 12rem;
 }
 
+#task-id {
+  min-width: 1.5rem;
+  text-align: left;
+}
+
 #task-description {
   text-align: left;
 }
