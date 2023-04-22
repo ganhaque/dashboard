@@ -139,6 +139,19 @@ function TaskWarrior() {
       });
   }
 
+  /* const keybindsMap: { [key: string]: string } = { */
+  /*   'a': 'Add new task:', */
+  /*   'd': 'Mark task as complete. Are you sure? (y/n)', */
+  /*   'c': 'Change task attributes:', */
+  /*   'u': 'Revert to the previous state? (y/n)', */
+  /*   'x': 'Delete task? (y/n)', */
+  /* }; */
+  /* const modifyKeybindsMap: { [key: string]: string } = { */
+  /*   'd': 'Change task due:', */
+  /*   'm': 'Change task description:', */
+  /*   'p': 'Change task project:', */
+  /*   't': 'Change task tag:', */
+  /* }; */
   const promptHandlers: PromptHandlerMap = {
     'Add new task:': addTaskSubmitHandler,
     'Change task attributes:': modifyTaskHandler,
@@ -159,63 +172,60 @@ function TaskWarrior() {
     },
   };
 
+  const keybindsMap: { [key: string]: string } = {
+    'a': 'Add new task:',
+    'd': 'Mark task as complete. Are you sure? (y/n)',
+    'c': 'Change task attributes:',
+    'u': 'Revert to the previous state? (y/n)',
+    'x': 'Delete task? (y/n)',
+    'md': 'Change task due:',
+    'mm': 'Change task description:',
+    'mp': 'Change task project:',
+    'mt': 'Change task tag:',
+  };
 
-  const [keySequence, setKeySequence] = useState('');
-
+  const [keySequence, setKeySequence] = useState<string[]>([]);
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (currentPrompt === '') {
       if (/\d/.test(event.key)) { // if a digit is pressed
-        setKeySequence(keySequence + event.key);
-        /* console.log('current sequence:', keySequence); */
+        setKeySequence([...keySequence, event.key]);
+        return;
+      }
+      if (keySequence) {
+        if (event.key === 'g') {
+          let parsedNumber: number = parseInt(keySequence.join(''));
+          if (parsedNumber) {
+            console.log(parsedNumber);
+          }
+          else {
+            console.log("not a number");
+          }
+        }
+      }
+
+      const prompt = keybindsMap[keySequence.join('') + event.key];
+      if (prompt) {
+        setCurrentPrompt(prompt);
+        setKeySequence([]);
+        event.preventDefault();
         return;
       }
 
-      if (keySequence === '') {
-        if (event.key === 'm' || event.key === 'z') {
-          setKeySequence(keySequence + event.key);
-          event.preventDefault();
-        }
-        else if (event.key === 'a') {
-          setCurrentPrompt('Add new task:');
-          event.preventDefault();
-        }
-        else if (event.key === 'd') {
-          setCurrentPrompt('Mark task as complete. Are you sure? (y/n)');
-          event.preventDefault();
-        }
-        else if (event.key === 'c') {
-          setCurrentPrompt('Change task attributes:');
-          event.preventDefault();
-        }
-        else if (event.key === 'u') {
-          setCurrentPrompt('Revert to the previous state? (y/n)');
-          event.preventDefault();
-        }
-        else if (event.key === 'x') {
-          setCurrentPrompt('Delete task? (y/n)');
-          event.preventDefault();
-        }
-      } 
-      else if (keySequence === 'm' && event.key === 'd') {
-        console.log('hello');
-        setKeySequence('');
+      if (event.key === 'm' || event.key === 'z') {
+        setKeySequence([...keySequence, event.key]);
+        event.preventDefault();
+        return;
       }
-      else if (event.key === 'g') {
-        let parsedNumber: number = parseInt(keySequence);
-        if (parsedNumber) {
-          console.log(parsedNumber);
-        }
-        else {
-          console.log("not a number");
-        }
-        setKeySequence('');
-      }
-      else {
-        setKeySequence('');
-      }
+
+      setKeySequence([]);
     }
   }, [currentPrompt, keySequence]);
 
+  useEffect(() => {
+    if (keySequence.length !== 0) {
+      console.log(keySequence);
+    }
+  }, [keySequence]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
