@@ -89,5 +89,32 @@ export function undoTask() {
         console.error(err);
       });
   }
+}
+
+// MAYBE: delete tag and project functionality
+// if so then scan last line of output and return
+// how many tasks was deleted
+export function deleteTask(
+  taskID: number
+) {
+  if (!taskID || taskID < 0) {
+    console.error("taskID is invalid");
+    return;
+  }
+  else if (taskID === 0) {
+    console.error("not a good idea to delete all completed task");
+    return;
+  }
+  const cmd = `echo 'y' | task delete ` + taskID;
+  console.log(cmd);
+  if (window.electronAPI?.executeCommand) {
+    window.electronAPI.executeCommand(cmd)
+      .then((output) => {
+        console.log(output);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 
 }

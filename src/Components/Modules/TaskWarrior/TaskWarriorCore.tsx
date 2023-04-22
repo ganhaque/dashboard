@@ -120,18 +120,6 @@ function TaskWarrior() {
       });
   }
 
-  const completeTaskHandler = () => {
-    database.completeTask(focusedTaskID);
-    reloadTagRecord();
-    setFocusedTaskID(-1);
-  }
-
-  const undoTaskHandler = () => {
-    database.undoTask();
-    reloadTagRecord();
-    setFocusedTaskID(-1);
-  }
-
   const modifyTaskHandler = (userInput: string) => {
     const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
     database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
@@ -153,9 +141,22 @@ function TaskWarrior() {
 
   const promptHandlers: PromptHandlerMap = {
     'Add new task:': addTaskSubmitHandler,
-    'Mark task as complete. Are you sure? (y/n)': completeTaskHandler,
     'Change task attributes:': modifyTaskHandler,
-    'Are you sure you want to revert to the previous state? (y/n)': undoTaskHandler
+    'Mark task as complete. Are you sure? (y/n)': () => {
+      database.completeTask(focusedTaskID);
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
+    'Revert to the previous state? (y/n)': () => {
+      database.undoTask();
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
+    'Delete task? (y/n)': () => {
+      database.deleteTask(focusedTaskID);
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
   };
 
 
@@ -187,7 +188,11 @@ function TaskWarrior() {
           event.preventDefault();
         }
         else if (event.key === 'u') {
-          setCurrentPrompt('Are you sure you want to revert to the previous state? (y/n)');
+          setCurrentPrompt('Revert to the previous state? (y/n)');
+          event.preventDefault();
+        }
+        else if (event.key === 'x') {
+          setCurrentPrompt('Delete task? (y/n)');
           event.preventDefault();
         }
       } 
