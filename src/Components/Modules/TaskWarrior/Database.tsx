@@ -61,11 +61,7 @@ export function modifyTask(
 ) {
   const newTag = tag !== '' ? `tag:'${tag}' ` : '';
   const newProject = project !== '' ? `project:'${project}' ` : '';
-  if (description === '') {
-    console.error("a task must have a description");
-    return;
-  }
-  const newDescription = `description:'${description}' `;
+  const newDescription = description !== '' ? `description:'${description}' ` : '';
   const newDueDate = due !== '' ? `due:'${due}' ` : '';
   const cmd = `task modify ` + taskID + ` ` + newTag + newProject + newDescription + newDueDate;
   console.log(cmd);
