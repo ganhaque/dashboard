@@ -112,6 +112,7 @@ export function useParseTasksForTag(tagName: string) {
               tag.tasks.push(line);
             }
             // sort tasks by urgency
+            tag.tasks.sort((a, b) => b.urgency - a.urgency);
             tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency);
           });
 
@@ -181,13 +182,13 @@ export function parseUserInput(
     project = projectMatch[2] || projectMatch[3];
   }
 
-  const dueMatch = userInput.match(/d:(\d{4}-\d{2}-\d{2})/);
+  const dueMatch = userInput.match(/d:(\S+?)(?:\s|$)/);
   const due: string = dueMatch ? dueMatch[1] : '';
 
   const description: string = userInput
   .replace(/t:\w+\s*/, "")
   .replace(/p:(["'])(.*?)\1|\bp:(\w+)\b/, "")
-  .replace(/d:\d{4}-\d{2}-\d{2}\s*/, "")
+  .replace(/d:(\S+?)(?:\s|$)/, "")
   .trim();
 
   console.log("tag:", tag);
