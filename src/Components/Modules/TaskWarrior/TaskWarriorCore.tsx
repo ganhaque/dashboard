@@ -27,13 +27,6 @@ interface PromptHandlerMap {
   [prompt: string]: (inputText: string) => void;
 }
 
-type PromptProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  promptType: string;
-  handlers: PromptHandlerMap;
-};
-
 function TaskWarrior() {
   const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
   const [tagNameArrayInitialized, setTagNameArrayInitialized] = useState(false);
@@ -152,23 +145,53 @@ function TaskWarrior() {
       });
   }
 
+  const [keySequence, setKeySequence] = useState('');
+
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (currentPrompt === '') {
-      if (event.key === 'a') {
-        setCurrentPrompt('Add new task:');
-        // prevent 'a' from being inserted into input box
-        event.preventDefault();
+      if (/\d/.test(event.key)) { // if a digit is pressed
+        setKeySequence(keySequence + event.key);
+        /* console.log('current sequence:', keySequence); */
+        return;
       }
-      else if (event.key === 'd') {
-        setCurrentPrompt('Mark task as complete. Are you sure? (y/n)');
-        event.preventDefault();
+
+      if (keySequence === '') {
+        if (event.key === 'm' || event.key === 'z') {
+          setKeySequence(keySequence + event.key);
+        }
+        else if (event.key === 'a') {
+          setCurrentPrompt('Add new task:');
+          event.preventDefault();
+        }
+        else if (event.key === 'd') {
+          setCurrentPrompt('Mark task as complete. Are you sure? (y/n)');
+          event.preventDefault();
+        }
+        else if (event.key === 'c') {
+          setCurrentPrompt('Change task attributes:');
+          event.preventDefault();
+        }
+      } 
+      else if (keySequence === 'm' && event.key === 'd') {
+        console.log('hello');
+        setKeySequence('');
       }
-      else if (event.key === 'm') {
-        setCurrentPrompt('Change task attributes:');
-        event.preventDefault();
+      else if (event.key === 'g') {
+        let parsedNumber: number = parseInt(keySequence);
+        if (parsedNumber) {
+          console.log(parsedNumber);
+        }
+        else {
+          console.log("not a number");
+        }
+        setKeySequence('');
+      }
+      else {
+        setKeySequence('');
       }
     }
-  }, [currentPrompt]);
+  }, [currentPrompt, keySequence]);
+
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
