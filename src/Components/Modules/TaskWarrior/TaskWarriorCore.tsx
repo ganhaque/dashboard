@@ -126,6 +126,12 @@ function TaskWarrior() {
     setFocusedTaskID(-1);
   }
 
+  const undoTaskHandler = () => {
+    database.undoTask();
+    reloadTagRecord();
+    setFocusedTaskID(-1);
+  }
+
   const modifyTaskHandler = (userInput: string) => {
     const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
     database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
@@ -145,6 +151,14 @@ function TaskWarrior() {
       });
   }
 
+  const promptHandlers: PromptHandlerMap = {
+    'Add new task:': addTaskSubmitHandler,
+    'Mark task as complete. Are you sure? (y/n)': completeTaskHandler,
+    'Change task attributes:': modifyTaskHandler,
+    'Are you sure you want to revert to the previous state? (y/n)': undoTaskHandler
+  };
+
+
   const [keySequence, setKeySequence] = useState('');
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -158,6 +172,7 @@ function TaskWarrior() {
       if (keySequence === '') {
         if (event.key === 'm' || event.key === 'z') {
           setKeySequence(keySequence + event.key);
+          event.preventDefault();
         }
         else if (event.key === 'a') {
           setCurrentPrompt('Add new task:');
@@ -169,6 +184,10 @@ function TaskWarrior() {
         }
         else if (event.key === 'c') {
           setCurrentPrompt('Change task attributes:');
+          event.preventDefault();
+        }
+        else if (event.key === 'u') {
+          setCurrentPrompt('Are you sure you want to revert to the previous state? (y/n)');
           event.preventDefault();
         }
       } 
@@ -218,22 +237,6 @@ function TaskWarrior() {
     console.log("Debug2");
     setCurrentPrompt('a');
   }
-
-  const handleSubmitName = (name: string) => {
-    console.log(`Hello, ${name}!`);
-  };
-
-  const handleSubmitColor = (color: string) => {
-    console.log(`Your favorite color is ${color}.`);
-  };
-
-  const promptHandlers: PromptHandlerMap = {
-    'Add new task:': addTaskSubmitHandler,
-    'name': handleSubmitName,
-    'color': () => handleSubmitColor,
-    'Mark task as complete. Are you sure? (y/n)': completeTaskHandler,
-    'Change task attributes:': modifyTaskHandler
-  };
 
   return (
     <div className="flex-container" id="bigbox">

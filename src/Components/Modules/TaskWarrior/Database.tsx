@@ -76,3 +76,18 @@ export function modifyTask(
       });
   }
 }
+
+export function undoTask() {
+  const cmd = `echo 'y' | task undo`;
+  console.log(cmd);
+  if (window.electronAPI?.executeCommand) {
+    window.electronAPI.executeCommand(cmd)
+      .then((output) => {
+        console.log(output);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+}
