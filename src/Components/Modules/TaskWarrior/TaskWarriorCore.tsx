@@ -337,6 +337,11 @@ function TaskWarrior() {
 
         </div>
       </div>
+      {keySequence.length > 0 &&
+        <div className="key-sequence">
+          {keySequence.join('')}
+        </div>
+      }
     </div>
   );
 }

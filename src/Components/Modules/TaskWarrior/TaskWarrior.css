@@ -105,3 +105,9 @@
   border-width: 0;
 }
 
+.key-sequence {
+  position: fixed;
+  top: calc(100vh - 1.6rem);
+  right: calc(1.2rem);
+  /* color: rgba(var(--secondary)); */
+}
