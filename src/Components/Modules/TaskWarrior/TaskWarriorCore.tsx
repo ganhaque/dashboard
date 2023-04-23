@@ -184,6 +184,15 @@ function TaskWarrior() {
     'mt': 'Change task tag:',
   };
 
+  const numberKeybindsMap: { [key: string]: (num: number) => void } = {
+    'g': (num: number) => {
+      console.log(num);
+    },
+    'h': (num: number) => {
+      console.log(`number: ${num}`);
+    },
+  };
+
   const [keySequence, setKeySequence] = useState<string[]>([]);
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (currentPrompt === '') {
@@ -192,13 +201,14 @@ function TaskWarrior() {
         return;
       }
       if (keySequence) {
-        if (event.key === 'g') {
-          let parsedNumber: number = parseInt(keySequence.join(''));
-          if (parsedNumber) {
-            console.log(parsedNumber);
-          }
-          else {
-            console.log("not a number");
+        let parsedNumber: number = parseInt(keySequence.join(''));
+        if (parsedNumber) {
+          const numberHandler = numberKeybindsMap[event.key];
+          if (numberHandler) {
+            numberHandler(parsedNumber);
+            setKeySequence([]);
+            event.preventDefault(); // not necessary?
+            return;
           }
         }
       }
