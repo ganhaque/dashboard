@@ -75,6 +75,23 @@ function TaskWarrior() {
     }
   }, [tagNameArrayUpdated]);
 
+  const scrollIntoView = (taskID: number): void => {
+    const taskElement = document.getElementById(`task-row-${taskID}`);
+    if (taskElement) {
+      const containerElement = document.getElementById("task-row-container");
+      if (!containerElement) return;
+      const containerRect = containerElement.getBoundingClientRect();
+      const taskRect = taskElement.getBoundingClientRect();
+      const taskTop = taskRect.top - containerRect.top;
+      /* const taskBottom = taskTop + taskElement.offsetHeight; */
+      const containerCenter = containerRect.height / 2;
+      const scrollToY = taskTop - containerCenter + (taskElement.offsetHeight / 2);
+      containerElement.scrollTo({
+        top: scrollToY,
+        behavior: "smooth"
+      });
+    }
+  }
 
   const handleTagClick = (tag: string) => {
     setFocusedTag(tag);
@@ -92,7 +109,12 @@ function TaskWarrior() {
   }
   const handleTaskClick = (taskID: number) => {
     setFocusedTaskID(taskID);
+    /* scrollIntoView(taskID); */
   }
+
+  useEffect(() => {
+    scrollIntoView(focusedTaskID);
+  }, [focusedTaskID]);
 
   function addTaskSubmitHandler(userInput: string) {
     // how to format your input:

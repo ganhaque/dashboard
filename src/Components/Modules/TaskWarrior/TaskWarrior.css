@@ -29,27 +29,19 @@
   overflow: scroll;
 }
 
-#task-row {
-  border-radius: 0.8rem;
-}
-
-#task-row:hover {
+.task-row:hover {
   cursor: pointer;
   background-color: rgba(var(--one_bg));
 }
 
-#task-row {
+.task-row {
   /* display: grid; */
   /* grid-template-columns: 4fr 2fr 0.2fr; */
 
   border-radius: 0.8rem;
-  padding: 0.4rem;
+  padding: 0.3rem;
 }
 
-#task-row:hover {
-  cursor: pointer;
-  background-color: rgba(var(--one_bg));
-}
 
 .selected-task {
   color: rgba(var(--secondary));

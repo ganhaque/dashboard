@@ -54,8 +54,9 @@ task.id ===  focusedTaskID ? "selected-task" : ""
 ${
 task.status === "completed" ? "completed-task" : ""
 }
+task-row
 flex-container flex-double-gap`}
-          id="task-row"
+          id={`task-row-${task.id}`}
           onClick={() => handleTaskClick(task.id)}
         >
           <div className="flex-no-grow" id="task-id">
