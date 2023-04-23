@@ -39,6 +39,9 @@ function TaskWarrior() {
   const { tagRecord, updateTagRecord, resetTagRecord } = parser.useParseTasksForTag('');
 
   const [currentPrompt, setCurrentPrompt] = useState('');
+  const [filterSet, setFilterSet] = useState<Set<string>>(new Set());
+  const [fuzzySearchString, setFuzzySearchString] = useState('');
+  const [searchString, setSearchString] = useState('');
 
   // initialization
   useEffect(() => {
@@ -196,9 +199,14 @@ function TaskWarrior() {
       reloadTagRecord();
       setFocusedTag(userInput);
     },
+    'Fuzzy-search:': (userInput: string) => {
+      setFuzzySearchString(userInput);
+    },
+    'Search:': (userInput: string) => {
+      setSearchString(userInput);
+    },
   };
-
-  const keybindsMap: { [key: string]: string } = {
+  const promptKeybindMap: { [key: string]: string } = {
     'a': 'Add new task:',
     'd': 'Mark task as complete? (y/n)',
     'u': 'Undo? (y/n)',
@@ -208,10 +216,24 @@ function TaskWarrior() {
     'mq': 'Modify task description:',
     'mp': 'Modify task project:',
     'mt': 'Modify task tag:',
-    // f* command to switch between filters
+    'g': 'Fuzzy-search:',
+    '/': 'Search:',
   };
 
-  const numberKeybindsMap: { [key: string]: (num: number) => void } = {
+  const nonPromptKeybindMap: { [key: string]: () => void } = {
+    'fc': () => { // togle display completed task
+      if (filterSet.has("exclude-completed-tasks")) {
+        filterSet.delete("exclude-completed-tasks");
+        setFilterSet(new Set(filterSet));
+      }
+      else {
+        filterSet.add("exclude-completed-tasks");
+        setFilterSet(new Set(filterSet));
+      }
+    },
+  };
+
+  const numberKeybindMap: { [key: string]: (num: number) => void } = {
     't': (num: number) => {
       console.log(`number: ${num}`);
       if (num === 0 || num > tagNameArray.length) {
@@ -246,6 +268,10 @@ function TaskWarrior() {
 
   const [keySequence, setKeySequence] = useState<string[]>([]);
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setSearchString('');
+      setFuzzySearchString('');
+    }
     if (currentPrompt === '') {
       if (/\d/.test(event.key)) { // if a digit is pressed
         setKeySequence([...keySequence, event.key]);
@@ -255,7 +281,7 @@ function TaskWarrior() {
         /* let parsedNumber: number = parseInt(keySequence.join('')); */
         let parsedNumber: number = parseInt(keySequence.join(''), 10);
         if (!isNaN(parsedNumber)) {
-          const numberHandler = numberKeybindsMap[event.key];
+          const numberHandler = numberKeybindMap[event.key];
           if (numberHandler) {
             numberHandler(parsedNumber);
             setKeySequence([]);
@@ -265,15 +291,19 @@ function TaskWarrior() {
         }
       }
 
-      const prompt = keybindsMap[keySequence.join('') + event.key];
+      const prompt = promptKeybindMap[keySequence.join('') + event.key];
       if (prompt) {
         setCurrentPrompt(prompt);
         setKeySequence([]);
         event.preventDefault();
         return;
       }
+      const filterHandler = nonPromptKeybindMap[keySequence.join('') + event.key];
+      if (filterHandler) {
+        filterHandler();
+      }
 
-      if (event.key === 'm' || event.key === 'z') {
+      if (event.key === 'm' || event.key === 'f') {
         setKeySequence([...keySequence, event.key]);
         event.preventDefault();
         return;
@@ -284,12 +314,6 @@ function TaskWarrior() {
   }, [currentPrompt, keySequence]);
 
   useEffect(() => {
-    if (keySequence.length !== 0) {
-      console.log(keySequence);
-    }
-  }, [keySequence]);
-
-  useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
@@ -297,17 +321,18 @@ function TaskWarrior() {
   }, [handleKeyDown]);
 
   const debugClick = () => {
-    console.log("Debug");
-    console.log("tagNameArray:");
-    console.log(tagNameArray);
-    console.log("tagRecord:");
-    console.log(tagRecord);
-    console.log("focusedTagName");
-    console.log(focusedTagName);
-    console.log("focusedProjectName");
-    console.log(focusedProjectName);
-    console.log("focusedTaskID");
-    console.log(focusedTaskID);
+    /* console.log("Debug"); */
+    /* console.log("tagNameArray:"); */
+    /* console.log(tagNameArray); */
+    /* console.log("tagRecord:"); */
+    /* console.log(tagRecord); */
+    /* console.log("focusedTagName"); */
+    /* console.log(focusedTagName); */
+    /* console.log("focusedProjectName"); */
+    /* console.log(focusedProjectName); */
+    /* console.log("focusedTaskID"); */
+    /* console.log(focusedTaskID); */
+    console.log(fuzzySearchString);
   }
 
   const debugClick2 = () => {
@@ -355,7 +380,9 @@ function TaskWarrior() {
             handlers={promptHandlers}
           />
 
-          {render.renderTasks(focusedTagName, focusedProjectName, focusedTaskID, tagRecord, handleTaskClick)}
+          {render.renderTasks(
+            focusedTagName, focusedProjectName, focusedTaskID, tagRecord,
+            handleTaskClick, filterSet, fuzzySearchString, searchString)}
 
         </div>
       </div>

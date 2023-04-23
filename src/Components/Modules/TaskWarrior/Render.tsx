@@ -1,5 +1,19 @@
+import Fuse from 'fuse.js';
 import * as helper from './Helper';
 import ProgressBar from '../ProgresBar';
+
+interface Task {
+  id: number;
+  description: string;
+  entry: string;
+  modified: string;
+  project?: string;
+  status: string;
+  uuid: string;
+  tags?: string[];
+  urgency: number;
+  due?: string;
+}
 
 export function renderTags(
   tagRecord: any,
@@ -41,7 +55,84 @@ export function renderProjects(
   );
 }
 
-const renderTaskList = (tasks: any[], focusedTaskID:number, handleTaskClick: (taskID: number) => void) => {
+const FILTER_MAP: { [filter: string]: (tasks: any[]) => any[] } = {
+  "exclude-completed-tasks": (tasks) => {
+    return tasks.filter((task) => task.status !== "completed");
+  },
+};
+export function renderTasks (
+  focusedTagName: string,
+  focusedProjectName: string,
+  focusedTaskID: number,
+  tagRecord: any,
+  handleTaskClick: (taskID: number) => void,
+  filters: Set<string>,
+  fuzzySearchString: string,
+  searchString: string
+) {
+  /* console.log("render task is called"); */
+  if (!tagRecord[focusedTagName]) {
+    return (
+      <div id="not-found">
+        <p>no tasks exist for current tag</p>
+      </div>
+    );
+  }
+
+  let tasks = tagRecord[focusedTagName]?.tasks;
+
+  if (focusedProjectName !== "") {
+    if(!tagRecord[focusedTagName].projects[focusedProjectName]) {
+      return (
+        <div id="not-found">
+          <p>no tasks exist for current project</p>
+        </div>
+      );
+    }
+    tasks = tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks;
+  }
+  // apply filters
+  filters.forEach((filterName) => {
+    const filterHandler = FILTER_MAP[filterName];
+    if (filterHandler) {
+      tasks = filterHandler(tasks);
+    }
+  });
+
+  // perform fuzzy search
+  if (fuzzySearchString) {
+    const options = {
+      includeScore: true,
+      keys: ['name', 'description']
+    };
+
+    const fuse = new Fuse(tasks, options);
+    tasks = fuse.search(fuzzySearchString).map(result => result.item);
+  }
+
+  // apply search string
+  if (searchString.trim() !== '') {
+    tasks = tasks.filter((task: Task) => {
+      const taskTitle = task.description.toLowerCase();
+      const searchTerm = searchString.toLowerCase();
+      if (taskTitle.includes(searchTerm)) {
+        return true;
+      }
+      if (searchTerm.length > 1 && taskTitle.includes(searchTerm.toUpperCase())) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  return renderTaskList(tasks, focusedTaskID, handleTaskClick);
+};
+
+const renderTaskList = (
+  tasks: any[],
+  focusedTaskID:number,
+  handleTaskClick: (taskID: number) => void
+) => {
   return (
     <div className="flex-container column-flex-direction flex-no-gap" id="task-row-container">
       {tasks.map((task) => (
@@ -78,38 +169,6 @@ flex-container flex-double-gap`}
       ))}
     </div>
   );
-};
-export function renderTasks (
-  focusedTagName: string,
-  focusedProjectName: string,
-  focusedTaskID: number,
-  tagRecord: any,
-  handleTaskClick: (taskID: number) => void
-) {
-  /* console.log("render task is called"); */
-  if (!tagRecord[focusedTagName]) {
-    return (
-      <div id="not-found">
-        <p>no tasks exist for current tag</p>
-      </div>
-    );
-  }
-
-  if (focusedProjectName === "") {
-    const tasks = tagRecord[focusedTagName]?.tasks;
-    return renderTaskList(tasks, focusedTaskID, handleTaskClick);
-  }
-
-  if(!tagRecord[focusedTagName].projects[focusedProjectName]) {
-    return (
-      <div id="not-found">
-        <p>no tasks exist for current project</p>
-      </div>
-    );
-  }
-
-  const tasks = tagRecord[focusedTagName]?.projects[focusedProjectName]?.tasks;
-  return renderTaskList(tasks, focusedTaskID, handleTaskClick);
 };
 
 export function renderHeader(

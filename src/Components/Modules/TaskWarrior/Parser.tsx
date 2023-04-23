@@ -65,11 +65,9 @@ export function useParseTasksForTag(tagName: string) {
 
   const parseTasksForTag = async (tagName: string) => {
     const unsetContext = `task context none; `;
-    /* const filters = `task tag:'${focusedTag}' `; */
     const filters = `task tag:'${tagName}' `;
     const status = `'(status:pending or status:waiting or status:completed)' `;
     const cmd = unsetContext + filters + status + `export rc.json.array=on`;
-    /* console.log(cmd); */
     if (window.electronAPI?.executeCommand) {
       try {
         const output = await window.electronAPI.executeCommand(cmd);
@@ -77,7 +75,6 @@ export function useParseTasksForTag(tagName: string) {
         if (isOutputEmpty) return;
 
         setTagRecord((prevTagRecord) => {
-          /* console.log("focusedTag is", focusedTag); */
           const tag = prevTagRecord[tagName] ?? {
             projects: {},
             projectNames: [],
@@ -112,8 +109,10 @@ export function useParseTasksForTag(tagName: string) {
               tag.tasks.push(line);
             }
             // sort tasks by urgency
-            tag.tasks.sort((a, b) => b.urgency - a.urgency);
-            tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency);
+            /* tag.tasks.sort((a, b) => b.urgency - a.urgency); */
+            /* tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency); */
+            /* tag.tasks.sort((a, b) => b.id - a.id); */
+            /* tag.projects[newProjectName].tasks.sort((a, b) => b.id - a.id); */
           });
 
 
@@ -151,11 +150,6 @@ export function useParseTasksForTag(tagName: string) {
       return newTagRecord;
     });
   };
-
-  /* const updateTagRecord = async (tagName: string) => { */
-  /*   console.log("update tagRecord for tag", tagName); */
-  /*   setFocusedTag(tagName); */
-  /* }; */
 
   return { tagRecord, updateTagRecord, resetTagRecord };
 }
