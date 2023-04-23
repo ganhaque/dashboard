@@ -159,22 +159,20 @@ function TaskWarrior() {
     'Modify task due:': (userInput: string) => {
       database.modifyTask(focusedTaskID, '', '', '', userInput);
       reloadTagRecord();
-      setFocusedTaskID(-1);
     },
     'Modify task description:': (userInput: string) => {
       database.modifyTask(focusedTaskID, '', '', userInput, '');
       reloadTagRecord();
-      setFocusedTaskID(-1);
     },
     'Modify task project:': (userInput: string) => {
       database.modifyTask(focusedTaskID, '', userInput, '', '');
       reloadTagRecord();
-      setFocusedTaskID(-1);
+      setFocusedProjectName(userInput);
     },
     'Modify task tag:': (userInput: string) => {
       database.modifyTask(focusedTaskID, userInput, '', '', '');
       reloadTagRecord();
-      setFocusedTaskID(-1);
+      setFocusedTag(userInput);
     },
   };
 
