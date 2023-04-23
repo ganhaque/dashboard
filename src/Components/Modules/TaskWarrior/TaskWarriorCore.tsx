@@ -120,12 +120,6 @@ function TaskWarrior() {
       });
   }
 
-  const modifyTaskHandler = (userInput: string) => {
-    const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
-    database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
-    reloadTagRecord();
-  }
-
   const reloadTagRecord = () => {
     resetTagRecord();
     setTagNameArrayUpdated(false);
@@ -139,28 +133,20 @@ function TaskWarrior() {
       });
   }
 
-  /* const keybindsMap: { [key: string]: string } = { */
-  /*   'a': 'Add new task:', */
-  /*   'd': 'Mark task as complete. Are you sure? (y/n)', */
-  /*   'c': 'Change task attributes:', */
-  /*   'u': 'Revert to the previous state? (y/n)', */
-  /*   'x': 'Delete task? (y/n)', */
-  /* }; */
-  /* const modifyKeybindsMap: { [key: string]: string } = { */
-  /*   'd': 'Change task due:', */
-  /*   'm': 'Change task description:', */
-  /*   'p': 'Change task project:', */
-  /*   't': 'Change task tag:', */
-  /* }; */
+  // TODO: combine promptHandlers & keybindsMap rework
   const promptHandlers: PromptHandlerMap = {
     'Add new task:': addTaskSubmitHandler,
-    'Change task attributes:': modifyTaskHandler,
-    'Mark task as complete. Are you sure? (y/n)': () => {
+    'Change task attributes:': (userInput) => {
+      const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
+      database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
+      reloadTagRecord();
+    },
+    'Mark task as complete? (y/n)': () => {
       database.completeTask(focusedTaskID);
       reloadTagRecord();
       setFocusedTaskID(-1);
     },
-    'Revert to the previous state? (y/n)': () => {
+    'Undo? (y/n)': () => {
       database.undoTask();
       reloadTagRecord();
       setFocusedTaskID(-1);
@@ -170,26 +156,71 @@ function TaskWarrior() {
       reloadTagRecord();
       setFocusedTaskID(-1);
     },
+    'Modify task due:': (userInput: string) => {
+      database.modifyTask(focusedTaskID, '', '', '', userInput);
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
+    'Modify task description:': (userInput: string) => {
+      database.modifyTask(focusedTaskID, '', '', userInput, '');
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
+    'Modify task project:': (userInput: string) => {
+      database.modifyTask(focusedTaskID, '', userInput, '', '');
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
+    'Modify task tag:': (userInput: string) => {
+      database.modifyTask(focusedTaskID, userInput, '', '', '');
+      reloadTagRecord();
+      setFocusedTaskID(-1);
+    },
   };
 
   const keybindsMap: { [key: string]: string } = {
     'a': 'Add new task:',
-    'd': 'Mark task as complete. Are you sure? (y/n)',
-    'c': 'Change task attributes:',
-    'u': 'Revert to the previous state? (y/n)',
+    'd': 'Mark task as complete? (y/n)',
+    'u': 'Undo? (y/n)',
     'x': 'Delete task? (y/n)',
-    'md': 'Change task due:',
-    'mm': 'Change task description:',
-    'mp': 'Change task project:',
-    'mt': 'Change task tag:',
+    'c': 'Change task attributes:',
+    'md': 'Modify task due:',
+    'mq': 'Modify task description:',
+    'mp': 'Modify task project:',
+    'mt': 'Modify task tag:',
+    // f* command to switch between filters
   };
 
   const numberKeybindsMap: { [key: string]: (num: number) => void } = {
-    'g': (num: number) => {
-      console.log(num);
-    },
-    'h': (num: number) => {
+    't': (num: number) => {
       console.log(`number: ${num}`);
+      if (num === 0 || num > tagNameArray.length) {
+        console.error('invalid number');
+        return;
+      }
+      else {
+        setFocusedTag(tagNameArray[num - 1]);
+      }
+    },
+    'p': (num: number) => {
+      console.log(`number: ${num}`);
+      const projectNamesArray = tagRecord[focusedTagName].projectNames;
+      if (num === 0 || num > projectNamesArray.length) {
+        console.error('invalid number');
+        return;
+      }
+      else {
+        if (projectNamesArray[num - 1] === focusedProjectName) {
+          setFocusedProjectName('');
+        }
+        else {
+          setFocusedProjectName(projectNamesArray[num - 1]);
+        }
+      }
+    },
+    'q': (num: number) => {
+      console.log(`number: ${num}`);
+      setFocusedTaskID(num);
     },
   };
 
@@ -200,9 +231,10 @@ function TaskWarrior() {
         setKeySequence([...keySequence, event.key]);
         return;
       }
-      if (keySequence) {
-        let parsedNumber: number = parseInt(keySequence.join(''));
-        if (parsedNumber) {
+      if (keySequence.length > 0) {
+        /* let parsedNumber: number = parseInt(keySequence.join('')); */
+        let parsedNumber: number = parseInt(keySequence.join(''), 10);
+        if (!isNaN(parsedNumber)) {
           const numberHandler = numberKeybindsMap[event.key];
           if (numberHandler) {
             numberHandler(parsedNumber);
