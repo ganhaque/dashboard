@@ -21,7 +21,9 @@ import * as render from './Render';
 /* import TagRenderer from './Render'; */
 import * as database from './Database';
 import Prompt from './Prompt';
+import Error from './Error';
 
+const ERROR_DURATION_MS = 1600;
 
 interface PromptHandlerMap {
   [prompt: string]: (inputText: string) => void;
@@ -35,6 +37,7 @@ function TaskWarrior() {
   const [focusedTagName, setFocusedTag] = useState<string>("");
   const [focusedProjectName, setFocusedProjectName] = useState<string>("");
   const [focusedTaskID, setFocusedTaskID] = useState<number>(-1);
+  const [focusedTaskIndex, setFocusedTaskIndex] = useState<number>(0);
 
   const { tagRecord, updateTagRecord, resetTagRecord } = parser.useParseTasksForTag('');
 
@@ -42,6 +45,8 @@ function TaskWarrior() {
   const [filterSet, setFilterSet] = useState<Set<string>>(new Set());
   const [fuzzySearchString, setFuzzySearchString] = useState('');
   const [searchString, setSearchString] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   // initialization
   useEffect(() => {
@@ -324,15 +329,17 @@ function TaskWarrior() {
     /* console.log("Debug"); */
     /* console.log("tagNameArray:"); */
     /* console.log(tagNameArray); */
-    /* console.log("tagRecord:"); */
-    /* console.log(tagRecord); */
+    console.log("tagRecord:");
+    console.log(tagRecord);
     /* console.log("focusedTagName"); */
     /* console.log(focusedTagName); */
     /* console.log("focusedProjectName"); */
     /* console.log(focusedProjectName); */
     /* console.log("focusedTaskID"); */
     /* console.log(focusedTaskID); */
-    console.log(fuzzySearchString);
+    /* console.log(fuzzySearchString); */
+    /* setErrorMessage('test error'); */
+    /* setTimeout(() => setErrorMessage(''), ERROR_DURATION_MS); // Clear the error message after 1.2 seconds */
   }
 
   const debugClick2 = () => {
@@ -379,6 +386,7 @@ function TaskWarrior() {
             promptType={currentPrompt}
             handlers={promptHandlers}
           />
+          <Error errorMessage={errorMessage} duration={ERROR_DURATION_MS}/>
 
           {render.renderTasks(
             focusedTagName, focusedProjectName, focusedTaskID, tagRecord,
