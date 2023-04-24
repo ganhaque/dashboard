@@ -1,6 +1,6 @@
 # Port Moon Dashboard
 
-> Personal Dashboard Hobby Project (WIP)
+> A Linux dashboard made using React Typescript & Electron (WIP)
 
 My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) while learning about React and Electron.
 
