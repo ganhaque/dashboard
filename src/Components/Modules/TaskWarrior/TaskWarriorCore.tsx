@@ -83,23 +83,22 @@ function TaskWarrior() {
     }
   }, [tagNameArrayUpdated]);
 
+
   const scrollIntoView = (taskID: number): void => {
     const taskElement = document.getElementById(`task-row-${taskID}`);
     if (taskElement) {
       const containerElement = document.getElementById("task-row-container");
       if (!containerElement) return;
-      const containerRect = containerElement.getBoundingClientRect();
-      const taskRect = taskElement.getBoundingClientRect();
-      const taskTop = taskRect.top - containerRect.top;
-      /* const taskBottom = taskTop + taskElement.offsetHeight; */
-      const containerCenter = containerRect.height / 2;
+      const containerCenter = containerElement.offsetHeight / 2;
+      const taskTop = taskElement.offsetTop;
+      const taskBottom = taskTop + taskElement.offsetHeight;
       const scrollToY = taskTop - containerCenter + (taskElement.offsetHeight / 2);
       containerElement.scrollTo({
         top: scrollToY,
         behavior: "smooth"
       });
     }
-  }
+  };
 
   const handleTagClick = (tag: string) => {
     setFocusedTag(tag);
@@ -124,32 +123,6 @@ function TaskWarrior() {
     scrollIntoView(focusedTaskID);
   }, [focusedTaskID]);
 
-  function addTaskSubmitHandler(userInput: string) {
-    // how to format your input:
-    // t:something p:"complex project" long long desc
-    // p: can take "" or '' to have space between your words
-    // t: does not do that since the parse for tagName only take single word tag
-
-    // this is not optimized if not adding new tag or project
-    // but making it work for those 3 different cases is not worth it lol
-    const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
-
-    let taskID: number = -1;
-    database.addTask(parsed.tag, parsed.project, parsed.description, parsed.due)
-      .then((result) => {
-        taskID = result;
-        reloadTagRecord();
-
-        setFocusedTag(parsed.tag);
-        setFocusedProjectName(parsed.project);
-        console.log(taskID);
-        setFocusedTaskID(taskID);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-
   const reloadTagRecord = () => {
     resetTagRecord();
     setTagNameArrayUpdated(false);
@@ -163,9 +136,26 @@ function TaskWarrior() {
       });
   }
 
-  // TODO: combine promptHandlers & keybindsMap rework
   const promptHandlers: PromptHandlerMap = {
-    'Add new task:': addTaskSubmitHandler,
+    'Add new task:': (userInput) => {
+      const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
+
+      let taskID: number = -1;
+      database.addTask(parsed.tag, parsed.project, parsed.description, parsed.due)
+        .then((result) => {
+          taskID = result;
+          reloadTagRecord();
+
+          setFocusedTag(parsed.tag);
+          setFocusedProjectName(parsed.project);
+          /* console.log(taskID); */
+          setFocusedTaskID(taskID);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+    },
     'Change task attributes:': (userInput) => {
       const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
       database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
