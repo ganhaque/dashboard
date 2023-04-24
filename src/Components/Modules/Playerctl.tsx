@@ -46,7 +46,7 @@ function Playerctl() {
 
   // initialization
   useEffect(() => {
-    console.log("init");
+    /* console.log("init"); */
     fetchCurrentSongInfo();
   }, []);
 
