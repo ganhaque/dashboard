@@ -7,11 +7,17 @@ interface PromptHandlerMap {
 type PromptProps = {
   isOpen: boolean;
   onClose: () => void;
-  promptType: string;
-  handlers: PromptHandlerMap;
+  /* promptType: string; */
+  /* handlers: PromptHandlerMap; */
+  promptType: PromptHandler;
 };
 
-function Prompt({ isOpen, onClose, promptType, handlers }: PromptProps) {
+interface PromptHandler {
+  prompt: string,
+  handler: (userInput: string) => void
+}
+
+function Prompt({ isOpen, onClose, promptType}: PromptProps) {
   const [text, setText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,25 +33,19 @@ function Prompt({ isOpen, onClose, promptType, handlers }: PromptProps) {
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
-      const handler = handlers[promptType];
-      if (handler) {
-        handler(text);
-      }
+      promptType.handler(text);
       onClose();
       setText('');
     }
-    else if (event.key === 'y' && promptType.includes('(y/n)')) {
-      const handler = handlers[promptType];
-      if (handler) {
-        // it should be handler() since text is always ''
-        // but it doesn't matter anyway
-        handler(text);
-      }
+    else if (event.key === 'y' && promptType.prompt.includes('(y/n)')) {
+      // it should be handler() since text is always ''
+      // but it doesn't matter anyway
+      promptType.handler(text);
       onClose();
       setText('');
     }
     else if (
-      event.key === 'Escape' || promptType.includes('(y/n)')
+      event.key === 'Escape' || promptType.prompt.includes('(y/n)')
     ) {
       onClose();
       setText('');
@@ -57,7 +57,7 @@ function Prompt({ isOpen, onClose, promptType, handlers }: PromptProps) {
       display: isOpen ? 'flex' : 'none',
     }}>
       <p className="popup-input-text">
-        {promptType}
+        {promptType.prompt}
       </p>
       <input
         className="popup-input-box"

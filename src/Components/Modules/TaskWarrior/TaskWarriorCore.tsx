@@ -25,8 +25,16 @@ import Error from './Error';
 
 const ERROR_DURATION_MS = 1600;
 
-interface PromptHandlerMap {
-  [prompt: string]: (inputText: string) => void;
+interface PromptMapProps {
+  [key: string]: {
+    prompt: string,
+    handler: (userInput: string) => void
+  }
+}
+
+interface PromptHandler {
+  prompt: string,
+  handler: (userInput: string) => void
 }
 
 function TaskWarrior() {
@@ -41,7 +49,10 @@ function TaskWarrior() {
 
   const { tagRecord, updateTagRecord, resetTagRecord } = parser.useParseTasksForTag('');
 
-  const [currentPrompt, setCurrentPrompt] = useState('');
+  const [currentPrompt, setCurrentPrompt] = useState<PromptHandler>({
+    prompt: '',
+    handler: () => {}
+  });
   const [filterSet, setFilterSet] = useState<Set<string>>(new Set());
   const [fuzzySearchString, setFuzzySearchString] = useState('');
   const [searchString, setSearchString] = useState('');
@@ -163,66 +174,85 @@ function TaskWarrior() {
       });
   }
 
-  // TODO: combine promptHandlers & keybindsMap rework
-  const promptHandlers: PromptHandlerMap = {
-    'Add new task:': addTaskSubmitHandler,
-    'Change task attributes:': (userInput) => {
-      const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
-      database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
-      reloadTagRecord();
+  const promptMap: PromptMapProps = {
+    'a': {
+      prompt: 'Add new task:',
+      handler: addTaskSubmitHandler
     },
-    'Mark task as complete? (y/n)': () => {
-      database.completeTask(focusedTaskID);
-      reloadTagRecord();
-      setFocusedTaskID(-1);
+    'd': {
+      prompt: 'Mark task as complete? (y/n)',
+      handler: () => {
+        database.completeTask(focusedTaskID);
+        reloadTagRecord();
+        setFocusedTaskID(-1);
+      }
     },
-    'Undo? (y/n)': () => {
-      database.undoTask();
-      reloadTagRecord();
-      setFocusedTaskID(-1);
+    'u': {
+      prompt: 'Undo? (y/n)',
+      handler: () => {
+        database.undoTask();
+        reloadTagRecord();
+        setFocusedTaskID(-1);
+      }
     },
-    'Delete task? (y/n)': () => {
-      database.deleteTask(focusedTaskID);
-      reloadTagRecord();
-      setFocusedTaskID(-1);
+    'x': {
+      prompt: 'Delete task? (y/n)',
+      handler: () => {
+        database.deleteTask(focusedTaskID);
+        reloadTagRecord();
+        setFocusedTaskID(-1);
+      }
     },
-    'Modify task due:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, '', '', '', userInput);
-      reloadTagRecord();
+    'c': {
+      prompt: 'Change task attributes:',
+      handler: (userInput) => {
+        const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
+        database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
+        reloadTagRecord();
+      }
     },
-    'Modify task description:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, '', '', userInput, '');
-      reloadTagRecord();
+    'md': {
+      prompt: 'Modify task due:',
+      handler: (userInput) => {
+        database.modifyTask(focusedTaskID, '', '', '', userInput);
+        reloadTagRecord();
+      }
     },
-    'Modify task project:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, '', userInput, '', '');
-      reloadTagRecord();
-      setFocusedProjectName(userInput);
+    'mq': {
+      prompt: 'Modify task description:',
+      handler: (userInput) => {
+        database.modifyTask(focusedTaskID, '', '', userInput, '');
+        reloadTagRecord();
+      }
     },
-    'Modify task tag:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, userInput, '', '', '');
-      reloadTagRecord();
-      setFocusedTag(userInput);
+    'mp': {
+      prompt: 'Modify task project:',
+      handler: (userInput) => {
+        database.modifyTask(focusedTaskID, '', userInput, '', '');
+        reloadTagRecord();
+        setFocusedProjectName(userInput);
+      }
     },
-    'Fuzzy-search:': (userInput: string) => {
-      setFuzzySearchString(userInput);
+    'mt': {
+      prompt: 'Modify task tag:',
+      handler: (userInput) => {
+        database.modifyTask(focusedTaskID, userInput, '', '', '');
+        reloadTagRecord();
+        setFocusedTag(userInput);
+      }
     },
-    'Search:': (userInput: string) => {
-      setSearchString(userInput);
+    'g': {
+      prompt: 'Fuzzy-search:',
+      handler: (userInput) => {
+        setFuzzySearchString(userInput);
+      }
     },
-  };
-  const promptKeybindMap: { [key: string]: string } = {
-    'a': 'Add new task:',
-    'd': 'Mark task as complete? (y/n)',
-    'u': 'Undo? (y/n)',
-    'x': 'Delete task? (y/n)',
-    'c': 'Change task attributes:',
-    'md': 'Modify task due:',
-    'mq': 'Modify task description:',
-    'mp': 'Modify task project:',
-    'mt': 'Modify task tag:',
-    'g': 'Fuzzy-search:',
-    '/': 'Search:',
+    '/': {
+      prompt: 'Search:',
+      handler: (userInput) => {
+        setSearchString(userInput);
+      }
+    },
   };
 
   const nonPromptKeybindMap: { [key: string]: () => void } = {
@@ -276,8 +306,12 @@ function TaskWarrior() {
     if (event.key === 'Escape') {
       setSearchString('');
       setFuzzySearchString('');
+      setCurrentPrompt({
+        prompt: '',
+        handler: (userInput: string) => {}
+      })
     }
-    if (currentPrompt === '') {
+    if (!currentPrompt.prompt) {
       if (/\d/.test(event.key)) { // if a digit is pressed
         setKeySequence([...keySequence, event.key]);
         return;
@@ -296,7 +330,7 @@ function TaskWarrior() {
         }
       }
 
-      const prompt = promptKeybindMap[keySequence.join('') + event.key];
+      const prompt = promptMap[keySequence.join('') + event.key];
       if (prompt) {
         setCurrentPrompt(prompt);
         setKeySequence([]);
@@ -344,7 +378,7 @@ function TaskWarrior() {
 
   const debugClick2 = () => {
     console.log("Debug2");
-    setCurrentPrompt('a');
+    /* setCurrentPrompt('a'); */
   }
 
   return (
@@ -381,10 +415,14 @@ function TaskWarrior() {
         <div className="item justify-content-flex-start">
           {render.renderHeader(tagRecord, focusedTagName, focusedProjectName)}
           <Prompt
-            isOpen={currentPrompt !== ''}
-            onClose={() => setCurrentPrompt('')}
+            isOpen={!!currentPrompt.prompt}
+            onClose={() =>
+              setCurrentPrompt({
+                prompt: '',
+                handler: (userInput: string) => {}
+              })
+            }
             promptType={currentPrompt}
-            handlers={promptHandlers}
           />
           <Error errorMessage={errorMessage} duration={ERROR_DURATION_MS}/>
 
