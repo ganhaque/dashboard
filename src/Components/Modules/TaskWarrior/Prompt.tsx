@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+interface KeybindMap {
+  [key: string]: {
+    prompt: string;
+    handler: (inputText: string) => void;
+  };
+};
+
+
 interface PromptHandlerMap {
   [prompt: string]: (inputText: string) => void;
 }

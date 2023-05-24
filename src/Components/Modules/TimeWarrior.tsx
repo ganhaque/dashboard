@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { formatTime } from '../Helpers/formatter';
+import { formatTime } from './Helpers/formatter';
 
 /* const timewCommands = { */
 /*   'timew-start-session': (sessionName) => `timew start "${sessionName}"`, */

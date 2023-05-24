@@ -1,0 +1,75 @@
+import React, { useState, useEffect } from 'react';
+import './Alert.css'; // Import your custom CSS for styling
+
+interface AlertProps {
+  color: string;
+  autohide?: boolean;
+  width?: number;
+  position?: string;
+  offset?: number;
+  delay?: number;
+  appendToBody?: boolean;
+  triggerRef?: React.RefObject<any>;
+  children?: React.ReactNode; // Add children prop
+}
+
+type Position = 'static' | 'absolute' | 'fixed' | 'relative';
+
+const Alert: React.FC<AlertProps> = ({
+  color,
+  autohide,
+  width,
+  position,
+  offset,
+  delay,
+  appendToBody,
+  triggerRef,
+  children,
+}) => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (autohide) {
+      timeoutId = setTimeout(() => {
+        setVisible(false);
+      }, delay || 2000);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [autohide, delay]);
+
+  const handleClose = () => {
+    setVisible(false);
+  };
+
+  if (!visible) {
+    return null;
+  }
+
+  const alertStyle: React.CSSProperties = {
+    backgroundColor: color,
+    width: width ? `${width}px` : 'auto',
+    position: position as Position || 'static',
+    top: offset ? `${offset}px` : 'auto',
+  };
+
+  const alertClassName = `alert-danger alert${appendToBody ? ' alert-append' : ''}`;
+
+  return (
+    <div className={alertClassName} style={alertStyle} role="alert">
+      {children}
+      {autohide && (
+        <button type="button" className="close" onClick={handleClose}>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default Alert;
+

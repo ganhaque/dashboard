@@ -8,6 +8,7 @@ interface Task {
   description: string;
   entry: string;
   modified: string;
+  priority?: string;
   project?: string;
   status: string;
   uuid: string;
@@ -26,7 +27,10 @@ interface Tag {
   projects: Record<string, Project>;
   projectNames: string[];
 
+  // all tasks with this tag
   tasks: Task[];
+
+  // stats
   totalTasks: number;
   completedTasks: number;
 }
@@ -109,8 +113,8 @@ export function useParseTasksForTag(tagName: string) {
               tag.tasks.push(line);
             }
             // sort tasks by urgency
-            /* tag.tasks.sort((a, b) => b.urgency - a.urgency); */
-            /* tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency); */
+            tag.tasks.sort((a, b) => b.urgency - a.urgency);
+            tag.projects[newProjectName].tasks.sort((a, b) => b.urgency - a.urgency);
             /* tag.tasks.sort((a, b) => b.id - a.id); */
             /* tag.projects[newProjectName].tasks.sort((a, b) => b.id - a.id); */
           });
@@ -167,7 +171,7 @@ export function parseUserInput(
 } {
   console.log('User input:', userInput);
 
-  const tagMatch = userInput.match(/t:(\w+)/);
+  const tagMatch = userInput.match(/tag:(\w+)/);
   const tag: string = tagMatch ? tagMatch[1] : focusedTagName;
 
   let project: string = focusedProjectName;
@@ -180,7 +184,7 @@ export function parseUserInput(
   const due: string = dueMatch ? dueMatch[1] : '';
 
   const description: string = userInput
-  .replace(/t:\w+\s*/, "")
+  .replace(/tag:\w+\s*/, "")
   .replace(/p:(["'])(.*?)\1|\bp:(\w+)\b/, "")
   .replace(/d:(\S+?)(?:\s|$)/, "")
   .trim();

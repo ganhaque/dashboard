@@ -7,21 +7,17 @@
 // ▀█▀ ▄▀█ █▀ █▄▀ █░█░█ ▄▀█ █▀█ █▀█ █ █▀█ █▀█ 
 // ░█░ █▀█ ▄█ █░█ ▀▄▀▄▀ █▀█ █▀▄ █▀▄ █ █▄█ █▀▄ 
 
-import { useState, useEffect, useCallback } from 'react';
-/* import ProgressBar from '../ProgresBar'; */
+import { useState, useEffect, useCallback, useRef } from 'react';
 import './TaskWarrior.css';
 import {
   BsPlus
 } from 'react-icons/bs'
-/* import formatTime from '../Helpers/formatter'; */
-/* import { parseTasksForTag } from './Parser'; */
 import * as parser from './Parser';
-/* import * as helper from './Helper'; */
 import * as render from './Render';
-/* import TagRenderer from './Render'; */
 import * as database from './Database';
 import Prompt from './Prompt';
 import Error from './Error';
+/* import Alert from '../../Alert'; */
 
 const ERROR_DURATION_MS = 1600;
 
@@ -30,14 +26,14 @@ interface PromptHandlerMap {
 }
 
 function TaskWarrior() {
-  const [tagNameArray, setTagNameArray] = useState<string[]>([""]);
+  const [tagNameArray, setTagNameArray] = useState<string[]>([]);
   const [tagNameArrayInitialized, setTagNameArrayInitialized] = useState(false);
   const [tagNameArrayUpdated, setTagNameArrayUpdated] = useState(false);
 
   const [focusedTagName, setFocusedTag] = useState<string>("");
   const [focusedProjectName, setFocusedProjectName] = useState<string>("");
   const [focusedTaskID, setFocusedTaskID] = useState<number>(-1);
-  const [focusedTaskIndex, setFocusedTaskIndex] = useState<number>(0);
+  /* const [focusedTaskIndex, setFocusedTaskIndex] = useState<number>(0); */
 
   const { tagRecord, updateTagRecord, resetTagRecord } = parser.useParseTasksForTag('');
 
@@ -47,6 +43,7 @@ function TaskWarrior() {
   const [searchString, setSearchString] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
+  const debugItem = useRef(null);
 
   // initialization
   useEffect(() => {
@@ -62,7 +59,6 @@ function TaskWarrior() {
 
   async function fetchTagRecords(tagNameArray: string[]) {
     for (const tagName of tagNameArray) {
-      /* console.log("processing tagName:", tagName); */
       await updateTagRecord(tagName);
     }
   }
@@ -70,7 +66,6 @@ function TaskWarrior() {
   // on change to tagNameArray (handle completed signal)
   useEffect(() => {
     if (tagNameArrayInitialized) {
-      /* console.log(tagNameArray); */
       setFocusedTag(tagNameArray[0])
       setFocusedProjectName('');
       fetchTagRecords(tagNameArray);
@@ -78,11 +73,9 @@ function TaskWarrior() {
   }, [tagNameArrayInitialized]);
   useEffect(() => {
     if (tagNameArrayUpdated) {
-      /* console.log(tagNameArray); */
       fetchTagRecords(tagNameArray);
     }
   }, [tagNameArrayUpdated]);
-
 
   const scrollIntoView = (taskID: number): void => {
     const taskElement = document.getElementById(`task-row-${taskID}`);
@@ -91,7 +84,7 @@ function TaskWarrior() {
       if (!containerElement) return;
       const containerCenter = containerElement.offsetHeight / 2;
       const taskTop = taskElement.offsetTop;
-      const taskBottom = taskTop + taskElement.offsetHeight;
+      /* const taskBottom = taskTop + taskElement.offsetHeight; */
       const scrollToY = taskTop - containerCenter + (taskElement.offsetHeight / 2);
       containerElement.scrollTo({
         top: scrollToY,
@@ -156,11 +149,11 @@ function TaskWarrior() {
         });
 
     },
-    'Change task attributes:': (userInput) => {
-      const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
-      database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due)
-      reloadTagRecord();
-    },
+    /* 'Change task attributes:': (userInput) => { */
+    /* const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName); */
+    /* database.modifyTask(focusedTaskID, parsed.tag, parsed.project, parsed.description, parsed.due) */
+    /*   reloadTagRecord(); */
+    /* }, */
     'Mark task as complete? (y/n)': () => {
       database.completeTask(focusedTaskID);
       reloadTagRecord();
@@ -176,24 +169,33 @@ function TaskWarrior() {
       reloadTagRecord();
       setFocusedTaskID(-1);
     },
+
     'Modify task due:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, '', '', '', userInput);
+      database.modifyTask(focusedTaskID, '', '', '', userInput, '');
       reloadTagRecord();
     },
     'Modify task description:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, '', '', userInput, '');
+      database.modifyTask(focusedTaskID, '', '', userInput, '', '');
       reloadTagRecord();
     },
     'Modify task project:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, '', userInput, '', '');
+      database.modifyTask(focusedTaskID, '', userInput, '', '', '');
       reloadTagRecord();
       setFocusedProjectName(userInput);
     },
     'Modify task tag:': (userInput: string) => {
-      database.modifyTask(focusedTaskID, userInput, '', '', '');
+      database.modifyTask(focusedTaskID, userInput, '', '', '', '');
       reloadTagRecord();
       setFocusedTag(userInput);
     },
+    'Modify task priority/severity:': (userInput: string) => {
+      if (userInput === '') {
+        userInput = ' ';
+      }
+      database.modifyTask(focusedTaskID, '', '', '', '', userInput);
+      reloadTagRecord();
+    },
+
     'Fuzzy-search:': (userInput: string) => {
       setFuzzySearchString(userInput);
     },
@@ -206,13 +208,120 @@ function TaskWarrior() {
     'd': 'Mark task as complete? (y/n)',
     'u': 'Undo? (y/n)',
     'x': 'Delete task? (y/n)',
-    'c': 'Change task attributes:',
+    /* 'c': 'Change task attributes:', */
     'md': 'Modify task due:',
+    'mh': 'Modify task due hour:',
     'mq': 'Modify task description:',
     'mp': 'Modify task project:',
     'mt': 'Modify task tag:',
+    'ms': 'Modify task priority/severity:',
     'g': 'Fuzzy-search:',
     '/': 'Search:',
+  };
+
+  const keybindMap: { [key: string]: { prompt: string, handler: (inputText: string) => void } } = {
+    'a': {
+      prompt: 'Add new task:',
+      handler: (userInput) => {
+        const parsed = parser.parseUserInput(userInput, focusedTagName, focusedProjectName);
+
+        let taskID: number = -1;
+        database.addTask(parsed.tag, parsed.project, parsed.description, parsed.due)
+          .then((result) => {
+            taskID = result;
+            reloadTagRecord();
+
+            setFocusedTag(parsed.tag);
+            setFocusedProjectName(parsed.project);
+            setFocusedTaskID(taskID);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    },
+    'd': {
+      prompt: 'Mark task as complete? (y/n)',
+      handler: () => {
+        database.completeTask(focusedTaskID);
+        reloadTagRecord();
+        setFocusedTaskID(-1);
+      }
+    },
+    'u': {
+      prompt: 'Undo? (y/n)',
+      handler: () => {
+        database.undoTask();
+        reloadTagRecord();
+        setFocusedTaskID(-1);
+      }
+    },
+    'x': {
+      prompt: 'Delete task? (y/n)',
+      handler: () => {
+        database.deleteTask(focusedTaskID);
+        reloadTagRecord();
+        setFocusedTaskID(-1);
+      }
+    },
+    'md': {
+      prompt: 'Modify task due:',
+      handler: (userInput: string) => {
+        database.modifyTask(focusedTaskID, '', '', '', userInput, '');
+        reloadTagRecord();
+      }
+    },
+    'mh': {
+      prompt: 'Modify task due hour:',
+      handler: (userInput: string) => {
+        // Handle modifying task due hour
+      }
+    },
+    'mq': {
+      prompt: 'Modify task description:',
+      handler: (userInput: string) => {
+        database.modifyTask(focusedTaskID, '', '', userInput, '', '');
+        reloadTagRecord();
+      }
+    },
+    'mp': {
+      prompt: 'Modify task project:',
+      handler: (userInput: string) => {
+        database.modifyTask(focusedTaskID, '', userInput, '', '', '');
+        reloadTagRecord();
+        setFocusedProjectName(userInput);
+      }
+    },
+    'mt': {
+      prompt: 'Modify task tag:',
+      handler: (userInput: string) => {
+        database.modifyTask(focusedTaskID, userInput, '', '', '', '');
+        reloadTagRecord();
+        setFocusedTag(userInput);
+      }
+    },
+    'ms': {
+      prompt: 'Modify task priority/severity:',
+      handler: (userInput: string) => {
+        if (userInput === '') {
+          userInput = ' ';
+        }
+        database.modifyTask(focusedTaskID, '', '', '', '', userInput);
+        reloadTagRecord();
+      }
+    },
+    'g': {
+      prompt: 'Fuzzy-search:',
+      handler: (userInput: string) => {
+        setFuzzySearchString(userInput);
+      }
+    },
+    '/': {
+      prompt: 'Search:',
+      handler: (userInput: string) => {
+        setSearchString(userInput);
+      }
+    },
   };
 
   const nonPromptKeybindMap: { [key: string]: () => void } = {
@@ -226,8 +335,38 @@ function TaskWarrior() {
         setFilterSet(new Set(filterSet));
       }
     },
+    'j': () => {
+      if (focusedTagName === '') {
+        return;
+      }
+      if (focusedTaskID === -1) {
+        setFocusedTaskID(0);
+      }
+      let index;
+      console.log(focusedTagName);
+      for (index = 0; index <= tagRecord[focusedTagName].tasks.length; index++ ) {
+        console.log(index);
+        if (tagRecord[focusedTagName].tasks[index].id === focusedTaskID) {
+          break;
+        }
+      }
+      setFocusedTaskID(tagRecord[focusedTagName].tasks[index + 1].id);
+    },
+    'k': () => {
+      let index;
+      if (focusedTagName === '') {
+        return;
+      }
+      console.log(focusedTagName);
+      for (index = 1; index < tagRecord[focusedTagName].tasks.length; index++ ) {
+        console.log(index);
+        if (tagRecord[focusedTagName].tasks[index].id === focusedTaskID) {
+          break;
+        }
+      }
+      setFocusedTaskID(tagRecord[focusedTagName].tasks[index - 1].id);
+    }
   };
-
   const numberKeybindMap: { [key: string]: (num: number) => void } = {
     't': (num: number) => {
       console.log(`number: ${num}`);
@@ -259,6 +398,10 @@ function TaskWarrior() {
       console.log(`number: ${num}`);
       setFocusedTaskID(num);
     },
+    /* 'i': (num: number) => { */
+    /* console.log(`number: ${num}`); */
+    /* setFocusedTaskIndex(num); */
+    /* }, */
   };
 
   const [keySequence, setKeySequence] = useState<string[]>([]);
@@ -266,6 +409,7 @@ function TaskWarrior() {
     if (event.key === 'Escape') {
       setSearchString('');
       setFuzzySearchString('');
+      setCurrentPrompt('');
     }
     if (currentPrompt === '') {
       if (/\d/.test(event.key)) { // if a digit is pressed
@@ -319,14 +463,16 @@ function TaskWarrior() {
     /* console.log("Debug"); */
     /* console.log("tagNameArray:"); */
     /* console.log(tagNameArray); */
-    console.log("tagRecord:");
-    console.log(tagRecord);
+    /* console.log("tagRecord:"); */
+    /* console.log(tagRecord); */
     /* console.log("focusedTagName"); */
     /* console.log(focusedTagName); */
     /* console.log("focusedProjectName"); */
     /* console.log(focusedProjectName); */
     /* console.log("focusedTaskID"); */
     /* console.log(focusedTaskID); */
+    /* console.log("focusedTaskIndex"); */
+    /* console.log(focusedTaskIndex); */
     /* console.log(fuzzySearchString); */
     /* setErrorMessage('test error'); */
     /* setTimeout(() => setErrorMessage(''), ERROR_DURATION_MS); // Clear the error message after 1.2 seconds */
@@ -368,6 +514,18 @@ function TaskWarrior() {
         </div>
       </div>
       <div className="flex-container column-flex-direction" id="column-2">
+        {/* <Alert */}
+        {/*   color='secondary' */}
+        {/*   autohide */}
+        {/*   width={800} */}
+        {/*   position='top-right' */}
+        {/*   offset={50} */}
+        {/*   delay={2000000000} */}
+        {/*   appendToBody */}
+        {/*   triggerRef={debugItem} */}
+        {/*   > */}
+        {/*   alert text lorem ipsum */}
+        {/*   </Alert> */}
         <div className="item justify-content-flex-start">
           {render.renderHeader(tagRecord, focusedTagName, focusedProjectName)}
           <Prompt

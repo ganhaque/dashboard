@@ -57,13 +57,22 @@ export function modifyTask(
   tag: string,
   project: string,
   description: string,
-  due: string
+  due: string,
+  priority: string
 ) {
   const newTag = tag !== '' ? `tag:'${tag}' ` : '';
   const newProject = project !== '' ? `project:'${project}' ` : '';
   const newDescription = description !== '' ? `description:'${description}' ` : '';
   const newDueDate = due !== '' ? `due:'${due}' ` : '';
-  const cmd = `task modify ` + taskID + ` ` + newTag + newProject + newDescription + newDueDate;
+  const newPriority = priority !== '' ? `priority:'${priority}' ` : '';
+  const cmd = `task modify ` +
+    taskID + ' ' +
+    newTag +
+    newProject +
+    newDescription +
+    newDueDate +
+    newPriority
+  ;
   console.log(cmd);
 
   if (window.electronAPI?.executeCommand) {

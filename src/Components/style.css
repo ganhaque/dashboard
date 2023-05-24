@@ -2,19 +2,20 @@
 
 @font-face {
   font-family: SF;
-  src:url("./fonts/SF-Mono-Nerd-Font/SFMono\ Regular\ Nerd\ Font\ Complete.otf");
+  /* src:url("./fonts/SF-Mono-Nerd-Font/SFMono\ Regular\ Nerd\ Font\ Complete.otf"); */
+  src:url("../Assets/fonts/SF-Mono-Nerd-Font/SFMono\ Regular\ Nerd\ Font\ Complete.otf");
 }
 @font-face {
   font-family: cozette;
-  src:url("./fonts/CozetteVector.ttf");
+  src:url("../Assets/fonts/CozetteVector.ttf");
 }
 @font-face {
   font-family: DDBB;
-  src:url("./fonts/disposabledroid-bb.regular.ttf");
+  src:url("../Assets/fonts/disposabledroid-bb.regular.ttf");
 }
 @font-face {
   font-family: terminus;
-  src:url("./fonts/Terminus.ttf");
+  src:url("../Assets/fonts/Terminus.ttf");
 }
 
 ::-webkit-scrollbar {

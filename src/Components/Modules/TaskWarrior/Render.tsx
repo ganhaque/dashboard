@@ -7,6 +7,7 @@ interface Task {
   description: string;
   entry: string;
   modified: string;
+  priority?: string;
   project?: string;
   status: string;
   uuid: string;
@@ -18,13 +19,13 @@ interface Task {
 export function renderTags(
   tagRecord: any,
   focusedTagName: string,
-  tagNameArray: string[], 
+  tagNameArray: string[],
   handleTagClick: (tag: string) => void
 ) {
   if (!tagRecord[focusedTagName]) {
     return <div> Loading... </div>
   }
-  return tagNameArray.map((tag) => 
+  return tagNameArray.map((tag) =>
     <p
       key={tag}
       className={`hover-button ${tag === focusedTagName ? 'focused-hover-button' : ''}`}
@@ -154,14 +155,22 @@ flex-container flex-double-gap`}
             <p className="">{task.id}</p>
           </div>
           <div className="" id="task-description">
-            <p className="">{task.description}</p>
+            <p className={`priority-${task.priority}`}>
+              {task.priority ? `(${task.priority}) ` : ""}
+              {task.description}
+            </p>
           </div>
           <div className="flex-no-grow" id="task-due">
             <p>{task.due ? `due ${helper.formatDueDate(task.due)}` : ""}</p>
           </div>
           <div className="flex-no-grow" id="task-urgency">
-            <p>
-              {/* TODO: changes text color based on urgency */}
+            {/* <p> */}
+            {/*   {Number(task.urgency).toFixed(1)} */}
+            {/* </p> */}
+            <p style={{
+              color: `rgba(var(--primary), ${0.1 + Math.min(Number(task.urgency) / 10, 1)})`,
+              /* textShadow: `1px 1px 0 rgba(255, 255, 255, ${Math.min(Number(task.urgency) / 10, 1)})` */
+            }}>
               {Number(task.urgency).toFixed(1)}
             </p>
           </div>

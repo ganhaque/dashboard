@@ -1,0 +1,8 @@
+.alert-danger {
+  background-color: rgba(var(--one_bg));
+  color: rgba(var(--red))
+}
+
+.alert {
+  border-color: currentcolor;
+}

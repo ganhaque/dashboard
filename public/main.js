@@ -9,6 +9,7 @@ const {
 } = require('electron')
 
 const path = require('path');
+const url = require('url');
 // const fs = require("fs");
 const { exec } = require('child_process');
 
@@ -21,7 +22,7 @@ function createWindow () {
   // windowTwo.loadFile('index.html')
 
   // Create the browser window.
-  const win = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     // minHeight:400,
@@ -40,7 +41,30 @@ function createWindow () {
   })
 
   //load the index.html from a url
-  win.loadURL('http://localhost:3000');
+  mainWindow.loadURL('http://localhost:3000');
+
+  // mainWindow.loadFile('build/index.html');
+
+  // mainWindow.loadURL(url.format({
+  //   pathname: path.join(__dirname, 'index.html'),
+  //   protocol: 'file:',
+  //   slashes: true
+  // }));
+  // mainWindow.loadURL(isDev ? 'http://localhost:3000' : 'file://${__dirname}/../build/index.html');
+  // mainWindow.loadURL(
+  //   url.format({
+  //     pathname: path.join(__dirname, 'build', 'index.html'),
+  //     protocol: 'file:',
+  //     slashes: true,
+  //   })
+  // );
+  // mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+  // mainWindow.loadURL(`file://${path.join(__dirname, 'build', 'index.html')}`);
+  // win.loadURL(url.format({
+  //   pathname: path.join(__dirname, 'build', 'index.html'),
+  //   protocol: 'file:',
+  //   slashes: true
+  // }));
 
   // Show window when page is ready to prevent white flashes
   // win.once('ready-to-show', () => {

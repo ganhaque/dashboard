@@ -4,11 +4,11 @@ import SideBar from './Components/Sidebar/SideBar';
 import { sidebarItems } from './Components/Sidebar/SideBar';
 import MainPage from './Components/MainPage';
 import { colorPalettes, handleColorChange } from './Components/ColorPalette';
-import { getRandomIndex } from './Components/Helpers/random';
+import { getRandomIndex } from './Components/Modules/Helpers/random';
 
 const App = () => {
   /* const [activeItem, setActiveItem] = useState('home'); */
-  const [activeItemIndex, setActiveItemIndex] = useState(0);
+  const [activeItemIndex, setActiveItemIndex] = useState(1);
   const [colorPaletteIndex, setColorPaletteIndex] = useState(getRandomIndex(Object.keys(colorPalettes).length));
   /* const pageOrder = ['home', 'lightning', 'finance', 'calendar', 'add']; // define the order of pages here */
   /* const currentPageIndex = useRef(pageOrder.indexOf(activeItem)); // use a ref to keep track of the current page index */

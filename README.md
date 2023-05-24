@@ -5,7 +5,9 @@
 My attempt at recreating [garado's cozy dashboard](https://github.com/garado/cozy) while learning about React and Electron.
 
 ## Usage
-There are no released build yet. If you want to use it in the current version, you can do the following
+<!-- There are no released build yet. -->
+I don't know how to build & release the project so
+if you want to use it in the current version, you can do the following
 ```bash
 # git clone & cd into the repo
 git clone https://github.com/ganhaque/port-moon.git && cd port-moon
@@ -13,11 +15,8 @@ git clone https://github.com/ganhaque/port-moon.git && cd port-moon
 # install dependencies
 npm install
 
-# start the web version of the dashboard
-npm start
-
-# run the electron version
-npm run electron-dev
+# start the web version of the dashboard and run the electron version
+npm run both
 ```
 
 ## Modules
@@ -30,8 +29,7 @@ Require timewarrior to be installed. Does nothing other wise.
 
 ### Taskwarrior (WIP)
 Require taskwarrior to be installed.
-Current iteration is difficult to use.
-User guide coming soon?
+Current iteration work but difficult to use.
 
 ### Commit Emoji
 I use emoji for the git commit to shorten common commit like :feat, :fix, or added.
