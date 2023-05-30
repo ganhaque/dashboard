@@ -4,8 +4,8 @@
   /* top: 0; */
   /* left: 0; */
   height: 100vh;
-  width: 4rem;
-  min-width: 4rem;
+  width: 2.4rem;
+  min-width: 2.4rem;
   display: flex;
   flex-direction: column;
   flex-grow: 0 !important;
@@ -18,7 +18,7 @@
   align-items: center;
   justify-content: center;
   height: 3rem; /* equivalent to h-12 */
-  width: 3rem; /* equivalent to w-12 */
+  width: 1.6rem; /* equivalent to w-12 */
   margin-top: 0.5rem; /* equivalent to mt-2 */
   margin-bottom: 0.5rem; /* equivalent to mb-2 */
   margin-left: auto; /* equivalent to mx-auto */
@@ -82,7 +82,7 @@
   font-size: 14px;
 
   padding: 10px 12px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
   border-radius: 8px;
 
   /* display: block; */
@@ -92,7 +92,7 @@
   background: #202225;
 
   position: absolute;
-  left: 60px;
+  left: calc(1.6rem + 1rem);
   top: 50%;
   transform: translateY(-50%);
   transform: translateY(-50%);
@@ -107,7 +107,7 @@
   height: 0;
 
   border-top:   5px solid transparent;
-  border-bottom:5px solid transparent; 
+  border-bottom:5px solid transparent;
   border-right: 5px solid #202225;
 
   position: absolute;

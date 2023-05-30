@@ -39,15 +39,15 @@ interface SidebarProps {
 }
 
 export const sidebarItems = [
-  { name: 'Home', icon: <BsRocketTakeoff size="28" /> },
-  { name: 'Taskwarrior', icon: <GiSpartanHelmet size="30" /> },
-  { name: 'Finance', icon: <FaDollarSign size="24" /> },
-  { name: 'Calendar', icon: <GoCalendar size="28" /> },
-  { name: 'Bookmark', icon: <MdOutlineBookmarks size="28" /> },
+  { name: 'Home', icon: <BsRocketTakeoff size="14" /> },
+  { name: 'Taskwarrior', icon: <GiSpartanHelmet size="15" /> },
+  { name: 'Finance', icon: <FaDollarSign size="12" /> },
+  { name: 'Calendar', icon: <GoCalendar size="14" /> },
+  { name: 'Bookmark', icon: <MdOutlineBookmarks size="14" /> },
   /* { name: 'Add', icon: <BsPlus size="32" /> }, */
-  { name: 'Game', icon: <GiRollingDices size="32" /> },
-  { name: 'Journals', icon: <GoKey size="24" /> },
-  { name: 'Themes', icon: <BsSunFill size="24" /> },
+  { name: 'Game', icon: <GiRollingDices size="16" /> },
+  { name: 'Journals', icon: <GoKey size="12" /> },
+  { name: 'Themes', icon: <BsSunFill size="12" /> },
 ];
 
 const Sidebar = ({ activeItem, onItemClick }: SidebarProps): JSX.Element => {
