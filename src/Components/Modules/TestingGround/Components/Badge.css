@@ -1,0 +1,68 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  /* white-space: nowrap; */
+
+  color: hsl(var(--base06));
+
+  font-size: 0.75rem;
+  line-height: 1rem;
+
+  box-sizing: border-box;
+  border: 0 solid #e5e7eb;
+  border-width: 1px;
+  border-radius: 9999px;
+  border-color: hsl(var(--grey));
+
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition-property: color,background-color,border-color,text-decoration-color,fill,stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  outline: none;
+
+  caption-side: bottom;
+  text-indent: 0;
+  border-collapse: collapse;
+}
+
+.badge.primary {
+  color: hsla(var(--base00));
+  background-color: hsla(var(--primary));
+  border-color: transparent;
+}
+
+.badge.primary:hover {
+  background-color: hsla(var(--primary), 0.8);
+}
+
+.badge.secondary {
+  color: hsl(var(--base00));
+  background-color: hsl(var(--secondary));
+  border-color: transparent;
+}
+
+.badge.secondary:hover {
+  background-color: hsla(var(--secondary), 0.8);
+}
+
+/* .badge.destructive { */
+/*   background-color: #ef4444; */
+/*   border-color: transparent; */
+/*   color: #fff; */
+/* } */
+/**/
+/* .badge.destructive:hover { */
+/*   background-color: rgba(239, 68, 68, 0.8); */
+/* } */
+
+/* default no variant */
+.badge.outline {
+  background-color: transparent;
+}
