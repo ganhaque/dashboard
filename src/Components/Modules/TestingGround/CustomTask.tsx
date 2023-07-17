@@ -3,6 +3,7 @@
 import { Input } from './Components/Input';
 import { Button } from './Components/Button';
 import { Badge } from './Components/Badge';
+import { Label } from './Components/Label';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Interface } from 'readline';
 import { useLocalStorage } from './Components/LocalStorageHook';
@@ -30,6 +31,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./Components/Dialog"
+
+import { NewCardDialog } from './NewCardDialog';
+import { Toolbar } from './Toolbar';
+import Card from './Card';
+import List from './List';
+import Example from './DndList';
+
 
 // Note to my forgetful future-self:
 // localStorage is stored in $HOME/.config/port-moon/Local Storage/leveldb/000003.log
@@ -134,7 +142,6 @@ interface Setting {
 }
 
 function TaskPage() {
-  const [filterValue, setFilterValue] = useState<string>("");
 
   /* const [isOpen, setOpen] = useState( */
   /*   JSON.parse(localStorage.getItem('is-open') || 'false') */
@@ -145,12 +152,13 @@ function TaskPage() {
 
   /* const [isOpen, setOpen] = useLocalStorage('is-open', false); */
   const [boards, setBoards] = useLocalStorage<Board[]>('boards', []);
+  /* const [newBoardTitle, setNewBoardTitle] = useState<string>("new board"); */
 
   return (
     <>
       {/* <div className="md:hidden"> */}
       {/* </div> */}
-      <div className="font-sf flex-column space-y-8 p-8 md:flex">
+      <div className="font-sf flex-column space-y-8 p-8 width-full">
         <div className="flex items-center justify-between top-gap-05">
           <div>
             <h2 className="text-6 font-bold tracking-tight">Welcome back!</h2>
@@ -180,106 +188,52 @@ function TaskPage() {
           </Badge>
         </div>
 
-        <div className="flex gap-2 top-gap-2">
-          <Button
-            variant="outline"
-            size="small"
-            className=""
-            onClick={ () => {
-            }}
-          >
-            New Board
-          </Button>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Edit Profile</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex-column gap-4">
-                <div className="flex-column gap-2">
-                  {/* <Label htmlFor="name" className="text-right"> */}
-                  <div className="text-sm font-medium leading-none">
-                    Name
+
+        <div className="flex-column gap-2 top-gap-2">
+          <div className="flex gap-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline">New Board</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>New Board</DialogTitle>
+                  <DialogDescription>
+                    Description lorem ipsum
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex-column gap-6">
+                  <div className="flex-column gap-2">
+                    <Label htmlFor="name" className="text-right">
+                      Board Title
+                    </Label>
+                    <Input
+                      id="name"
+                      /* value={newBoardTitle} */
+                      placeholder="board title go here"
+                      className=""
+                    />
                   </div>
-                  {/* </Label> */}
-                  <Input id="name" value="Pedro Duarte" className="col-span-3" />
-                </div>
-                <div className="flex-column gap-2">
-                  {/* <Label htmlFor="username" className="text-right"> */}
-                  {/*   Username */}
-                  {/* </Label> */}
-                  <div className="text-sm font-medium leading-none">
-                    Username
+                  <div className="flex-column gap-2">
+                    <Label htmlFor="username" className="text-right">
+                      Username
+                    </Label>
+                    {/* <div className="text-sm font-medium leading-none"> */}
+                    {/*   Username */}
+                    {/* </div> */}
+                    <Input id="username" value="@peduarte" className="col-span-3" />
                   </div>
-                  <Input id="username" value="@peduarte" className="col-span-3" />
                 </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Submit</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+                <DialogFooter>
+                  <Button type="submit">Submit</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
-        <div className="flex gap-2 top-gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                size="small"
-                className="border-dashed"
-                onClick={ () => {
-                  /* console.log(isOpen); */
-                }}
-              >
-                Board
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0" align="start">
-              <Command className="rounded-lg border shadow-md">
-                <CommandInput placeholder="Type a command or search..." />
-                <CommandList>
-                  <CommandEmpty>
-                    No results found.
-                  </CommandEmpty>
-                  <CommandGroup heading="">
-                    <CommandItem
-                      key={'port-moon'}
-                      onSelect={() => {
-                      }}
-                    >
-                      Port Moon
-                    </CommandItem>
-                    <CommandItem>
-                      CSC 3102
-                    </CommandItem>
-                    <CommandItem>
-                      Goals
-                    </CommandItem>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
+            <NewCardDialog/>
 
-        <div className="flex items-center space-x-2 top-gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <Input
-              placeholder="Filter tasks..."
-              value={filterValue ?? ""}
-              onChange={(event) =>
-                setFilterValue(event.target.value)
-              }
-              className=""
-            />
-
+          </div>
+          <div className="flex gap-2">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -290,178 +244,29 @@ function TaskPage() {
                     /* console.log(isOpen); */
                   }}
                 >
-                  Label
+                  Board
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0" align="start">
                 <Command className="rounded-lg border shadow-md">
                   <CommandInput placeholder="Type a command or search..." />
                   <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandEmpty>
+                      No results found.
+                    </CommandEmpty>
                     <CommandGroup heading="">
                       <CommandItem
-                        key={'calendar'}
+                        key={'port-moon'}
                         onSelect={() => {
-                          console.log('calendar');
                         }}
                       >
-                        <div
-                          style={{
-                            display: "flex",
-                            height: "1.25rem",
-                            gap: "var(--gap-size)"
-                          }}
-                        >
-                          <div>Calendar</div>
-                          <Separator
-                            orientation='vertical'
-                          />
-                          <div>Calendar</div>
-                        </div>
+                        Port Moon
                       </CommandItem>
                       <CommandItem>
-                        <span>Search Emoji</span>
+                        CSC 3102
                       </CommandItem>
                       <CommandItem>
-                        <span>Launch</span>
-                      </CommandItem>
-                    </CommandGroup>
-                    <CommandSeparator />
-                    <CommandGroup heading="">
-                      <CommandItem>
-                        <span>Profile</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Mail</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Settings</span>
-                      </CommandItem>
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="small"
-                  className="border-dashed"
-                  onClick={ () => {
-                    /* console.log(isOpen); */
-                  }}
-                >
-                  Status
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0" align="start">
-                <Command className="rounded-lg border shadow-md">
-                  <CommandInput placeholder="Type a command or search..." />
-                  <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup heading="">
-                      <CommandItem
-                        key={'calendar'}
-                        onSelect={() => {
-                          console.log('calendar');
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            height: "1.25rem",
-                            gap: "var(--gap-size)"
-                          }}
-                        >
-                          <div>Calendar</div>
-                          <Separator
-                            orientation='vertical'
-                          />
-                          <div>Calendar</div>
-                        </div>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Search Emoji</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Launch</span>
-                      </CommandItem>
-                    </CommandGroup>
-                    <CommandSeparator />
-                    <CommandGroup heading="">
-                      <CommandItem>
-                        <span>Profile</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Mail</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Settings</span>
-                      </CommandItem>
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="small"
-                  className="border-dashed"
-                  onClick={ () => {
-                    /* console.log(isOpen); */
-                  }}
-                >
-                  Priority
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0" align="start">
-                <Command className="rounded-lg border shadow-md">
-                  <CommandInput placeholder="Type a command or search..." />
-                  <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup heading="">
-                      <CommandItem
-                        key={'calendar'}
-                        onSelect={() => {
-                          console.log('calendar');
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            height: "1.25rem",
-                            gap: "var(--gap-size)"
-                          }}
-                        >
-                          <div>Calendar</div>
-                          <Separator
-                            orientation='vertical'
-                          />
-                          <div>Calendar</div>
-                        </div>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Search Emoji</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Launch</span>
-                      </CommandItem>
-                    </CommandGroup>
-                    <CommandSeparator />
-                    <CommandGroup heading="">
-                      <CommandItem>
-                        <span>Profile</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Mail</span>
-                      </CommandItem>
-                      <CommandItem>
-                        <span>Settings</span>
+                        Goals
                       </CommandItem>
                     </CommandGroup>
                   </CommandList>
@@ -470,7 +275,24 @@ function TaskPage() {
             </Popover>
 
           </div>
+
+          <Card
+            id={2}
+            title=""
+            description="content"
+            status="todo"
+          />
+
+          <List title="List"/>
+
+          <Example />
+
+          <Toolbar/>
         </div>
+
+
+
+
       </div>
     </>
   )

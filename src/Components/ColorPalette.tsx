@@ -32,8 +32,14 @@ export const colorPalettes : { [key: string]: ColorPalette }= {
   },
   /* 'green-green': { primary: 'catppuccin_green', secondary: 'vibrant_green' }, */
   'lavender': {
-    primary: 'catppuccin_lavender',
-    secondary: 'purple',
+    primary: 'purple',
+    secondary: 'catppuccin_lavender',
+    tertiary: 'blue',
+    quaternary: 'cyan'
+  },
+  'trans': {
+    primary: 'purple',
+    secondary: 'catppuccin_lavender',
     tertiary: 'blue',
     quaternary: 'cyan'
   },

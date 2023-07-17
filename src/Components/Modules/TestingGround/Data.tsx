@@ -1,71 +1,82 @@
+/* import { */
+/*   ArrowDownToLine, */
+/*   ArrowRightToLine, */
+/*   ArrowUpCircle, */
+/*   ArrowUpToLine, */
+/*   CheckCircle2, */
+/*   Circle, */
+/*   HelpCircle, */
+/*   XCircle, */
+/* } from "lucide-react" */
 import {
-  ArrowDownToLine,
-  ArrowRightToLine,
-  ArrowUpCircle,
-  ArrowUpToLine,
-  CheckCircle2,
-  Circle,
-  HelpCircle,
-  XCircle,
-} from "lucide-react"
+  ArrowDownIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  CheckCircledIcon,
+  CircleIcon,
+  CrossCircledIcon,
+  QuestionMarkCircledIcon,
+  StopwatchIcon,
+} from "@radix-ui/react-icons"
+import { Circle } from "lucide-react"
 
-/* export const labels = [ */
-/*   { */
-/*     value: "Bug", */
-/*     label: "Bug", */
-/*   }, */
-/*   { */
-/*     value: "Feature", */
-/*     label: "Feature", */
-/*   }, */
-/*   { */
-/*     value: "Documentation", */
-/*     label: "Documentation", */
-/*   }, */
-/* ] */
+export const labels = [
+  {
+    value: "bug",
+    label: "Bug",
+  },
+  {
+    value: "feature",
+    label: "Feature",
+  },
+  {
+    value: "documentation",
+    label: "Documentation",
+  },
+]
 
 export const statuses = [
   {
-    value: "Backlog",
-    label: "Backlog",
-    icon: HelpCircle,
-  },
-  {
-    value: "Todo",
+    value: "todo",
     label: "Todo",
-    icon: Circle,
+    icon: CircleIcon,
   },
   {
-    value: "In progress",
+    value: "in progress",
     label: "In Progress",
-    icon: ArrowUpCircle,
+    icon: StopwatchIcon,
   },
   {
-    value: "Done",
+    value: "backlog",
+    label: "Backlog",
+    icon: QuestionMarkCircledIcon,
+  },
+  {
+    value: "done",
     label: "Done",
-    icon: CheckCircle2,
+    icon: CheckCircledIcon,
   },
   {
-    value: "Canceled",
+    value: "canceled",
     label: "Canceled",
-    icon: XCircle,
+    icon: CrossCircledIcon,
   },
 ]
 
 export const priorities = [
   {
-    label: "Low",
     value: "low",
-    icon: ArrowDownToLine,
+    label: "Low",
+    icon: ArrowDownIcon,
   },
   {
-    label: "Medium",
     value: "medium",
-    icon: ArrowRightToLine,
+    label: "Medium",
+    icon: ArrowRightIcon,
   },
   {
-    label: "High",
     value: "high",
-    icon: ArrowUpToLine,
+    label: "High",
+    icon: ArrowUpIcon,
   },
 ]

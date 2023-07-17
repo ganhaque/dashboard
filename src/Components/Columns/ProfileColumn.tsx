@@ -8,12 +8,16 @@ import Time from '../Modules/Time';
 /* import GitHubGraph from '../Modules/GithubGraph'; */
 import Playerctl from '../Modules/Playerctl';
 /* import MyComponent from '../Modules/TimeWarrior'; */
+import SystemInfoPanel from '../Modules/SystemInfoPanel';
+import WebScraper from '../Modules/Webscrape';
 
 function ProfileColumn() {
   return (
     <div className="flex-container column-flex-direction" id="column-1">
       <Profile />
       <Time />
+      {/* <SystemInfoPanel /> */}
+      {/* <WebScraper /> */}
       {/* <MyComponent /> */}
       {/* <div className="item"> */}
       {/*   <QuoteOfTheDay /> */}

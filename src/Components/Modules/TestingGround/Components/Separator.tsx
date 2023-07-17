@@ -8,7 +8,7 @@ React.ElementRef<typeof SeparatorPrimitive.Root>,
 React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
 >(
   (
-    { className, orientation = "horizontal", decorative = true, ...props },
+    { style, className, orientation = "horizontal", decorative = true, ...props },
     ref
   ) => (
       <SeparatorPrimitive.Root
@@ -25,6 +25,7 @@ React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
           height: orientation === 'horizontal' ? "1px" : "100%",
           backgroundColor: 'hsla(var(--grey))',
           flexShrink: "0",
+          ...style
         }}
         /* className={cn( */
         /*   "shrink-0 bg-border", */

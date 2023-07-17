@@ -11,6 +11,8 @@
   border-radius: 0.375rem;
 
   background-color: hsla(var(--darker_black));
+  /* background-color: hsla(var(--black)); */
+  /* background-color: rgba(0, 0, 0, 1); */
   color: hsla(var(--base06));
 }
 

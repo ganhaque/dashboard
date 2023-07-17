@@ -69,6 +69,7 @@ React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
 
 CommandList.displayName = CommandPrimitive.List.displayName
 
+/* TODO: Style this */
 const CommandEmpty = React.forwardRef<
 React.ElementRef<typeof CommandPrimitive.Empty>,
 React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>

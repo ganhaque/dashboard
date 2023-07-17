@@ -18,7 +18,7 @@ React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
       ref={ref}
       align={align}
       sideOffset={sideOffset}
-      className={'todo'}
+      className={`todo ${className}`}
       {...props}
     />
   </PopoverPrimitive.Portal>

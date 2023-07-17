@@ -61,6 +61,7 @@
   width: 100%;
   gap: 1rem;
   max-width: 32rem;
+  background-color: hsla(var(--darker_black));
 
   box-sizing: border-box;
   border: 0 solid hsla(var(--base06));
@@ -124,7 +125,8 @@
 }
 
 .dialog-close[data-state="open"] {
-  background-color: hsla(var(--black));
+  /* background-color: hsla(var(--black)); */
+  background-color: transparent;
   color: hsla(var(--base06));
 }
 

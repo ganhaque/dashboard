@@ -1,0 +1,369 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Emoji&display=swap'); */
+
+@font-face {
+  font-family: SF;
+  /* src:url("./fonts/SF-Mono-Nerd-Font/SFMono\ Regular\ Nerd\ Font\ Complete.otf"); */
+  src:url("../Assets/fonts/SF-Mono-Nerd-Font/SFMono\ Regular\ Nerd\ Font\ Complete.otf");
+}
+@font-face {
+  font-family: cozette;
+  src:url("../Assets/fonts/CozetteVector.ttf");
+}
+@font-face {
+  font-family: DDBB;
+  src:url("../Assets/fonts/disposabledroid-bb.regular.ttf");
+}
+@font-face {
+  font-family: terminus;
+  src:url("../Assets/fonts/Terminus.ttf");
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* disable electron focus orange box */
+:focus {
+  outline: none;
+}
+
+:root {
+  --transition-speed: 720ms;
+  --gap-size: 0.8rem;
+  --radius:0.5rem;
+
+  --base00: 213, 20%, 9%;
+  --base01: 210, 15%, 12%;
+  --base02: 220, 15%, 16%;
+  --base03: 220, 15%, 18%;
+  --base04: 220, 14%, 19%;
+  --base05: 230, 43%, 97%;
+  --base06: 0, 0%, 100%;
+  --base07: 240, 1%, 83%;
+  --base08: 216, 87%, 57%;
+  --base09: 42, 91%, 65%;
+  --base0A: 327, 100%, 72%;
+  --base0B: 79, 69%, 69%;
+  --base0C: 205, 79%, 69%;
+  --base0D: 174, 67%, 40%;
+  --base0E: 276, 80%, 75%;
+  --base0F: 216, 43%, 73%;
+
+  --white: 0, 0%, 100%;
+  --darker_white: 240, 1%, 45%;
+  /* --darker_black: 220, 15%, 6%; */
+  --darker_black: 220, 15%, 2%;
+  --black: 220, 15%, 8%;
+  --black2: 220, 15%, 11%;
+
+  --one_bg1: 220, 15%, 15%;
+  --one_bg2: 220, 15%, 18%;
+  --one_bg3: 220, 15%, 20%;
+
+  --grey: 220, 7%, 28%;
+  --grey_fg: 220, 8%, 30%;
+  --grey_fg2: 220, 9%, 31%;
+  --light_grey: 220, 10%, 33%;
+
+  --red: 346, 80%, 66%;
+  --baby_pink: 348, 89%, 69%;
+  --pink: 328, 100%, 71%;
+  --catppuccin_flamingo: 350, 62%, 83%;
+  --horizon_orange: 14, 88%, 70%;
+  --orange: 29, 100%, 71%;
+  --yellow: 43, 90%, 65%;
+  --pale_yellow_green: 85, 90%, 87%;
+  --yellow_green: 79, 69%, 69%;
+  --pale_green: 135, 81%, 84%;
+  --catppuccin_green: 123, 62%, 82%;
+  --dead_green: 128, 61%, 69%;
+  --light_green: 140, 74%, 68%;
+  --green: 135, 51%, 43%;
+  --vibrant_green: 162, 82%, 61%;
+  --teal: 178, 65%, 47%;
+  --green_cyan: 184, 64%, 43%;
+  --cyan: 194, 76%, 43%;
+  --pale_blue: 208, 45%, 79%;
+  --light_blue: 203, 80%, 70%;
+  --blue: 217, 63%, 66%;
+  --nord_blue: 222, 61%, 63%;
+  --purple: 276, 80%, 75%;
+  --dark_purple: 263, 46%, 61%;
+  --catppuccin_lavender: 239, 71%, 80%;
+  --statusline_bg: 242, 30%, 14%;
+
+
+
+
+
+  --pallete00: 200, 52%, 30%;
+  --pallete01: 178, 57%, 45%;
+  --pallete02: 162, 58%, 53%;
+  --pallete03: 144, 67%, 65%;
+  --pallete04: 123, 57%, 85%;
+
+  --foreground:213 31% 91%;
+  /* --muted_foreground:215.4 16.3% 56.9%; */
+  --muted_foreground:216 9% 56%;
+  /* #7d8ca1 */
+  /* #858d99 */
+
+  --primary: var(--red);
+  --secondary: var(--orange);
+  --tertiary: var(--yellow);
+  --quaternary: var(--catppuccin_green);
+
+  --palette-red: var(--red);
+  --palette-orange: var(--orange);
+
+}
+
+/* input:focus-visible, */
+button:focus-visible {
+  outline: none;
+  border-color: hsla(var(--grey));
+  --tw-ring-offset-width: 2px;
+  --tw-ring-offset-shadow: 0 0 0 var(--tw-ring-offset-width) hsla(var(--black));
+  --tw-ring-shadow: 0 0 0 calc(1px + var(--tw-ring-offset-width)) hsla(var(--grey));
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow);
+}
+
+input::placeholder {
+  color: hsla(var(--muted_foreground));
+}
+
+html {
+  background-color: hsla(var(--darker_black), 1);
+}
+
+body {
+  /* font-size: 1.2em; */
+  background-color: hsla(var(--darker_black), 1);
+  color: hsla(var(--base06), 1);
+  /* color: color-mix(in oklab, var(--base08-hex), white, 50%); */
+  /* font-family: terminus; */
+  /* background-image:url(./assets/bg.png); */
+  /* background-position: 50% 0; */
+  /* color: black; */
+  /* background-color: white; */
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  flex-grow: 2;
+  /* font-family: terminus; */
+  display: block;
+  /* margin-left: 5rem; */
+  padding: var(--gap-size);
+  /* height: calc(100% - 2 * var(--gap-size)); */
+  animation: fadeIn 0.6s ease-out;
+
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+p {
+  /* font-size: 1.2rem; */
+  margin: 0;
+}
+
+h2 {
+  margin: 0;
+}
+
+/* div { */
+/* display: flex !important; */
+/* } */
+.react-calendar-heatmap .color-scale-1 { fill: hsla(var(--primary), 0.2); }
+.react-calendar-heatmap .color-scale-2 { fill: hsla(var(--primary), 0.5); }
+.react-calendar-heatmap .color-scale-3 { fill: hsla(var(--primary),0.8); }
+.react-calendar-heatmap .color-scale-4 { fill: hsla(var(--primary), 1); }
+.react-calendar-heatmap .color-empty { fill: hsla(var(--black), 1) !important; }
+
+.flex-container {
+  display: flex !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: var(--gap-size);
+}
+
+.item {
+  /* disable these to not center module if grow */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+
+  /* font-family: terminus; */
+  /* background-color: hsla(var(--black2), 0.7); */
+  background-color: hsla(var(--black3), 1);
+  /* background-color: hsla(var(--black), 1); */
+  color: hsla(var(--base06),1);
+  padding: var(--gap-size);
+  /* font-family: terminus; */
+  /* border: 1px solid hsla(var(--base04), 1); */
+  /* border: 1px solid hsla(var(--black2), 1); */
+  border-radius: 0.8rem;
+}
+
+.justify-content-flex-start {
+  justify-content: flex-start;
+}
+
+/* .flex-container > .item{ */
+/*   justify-content: center; */
+/* } */
+
+
+/* .flex-container > div { */
+/*   flex-grow: 1; */
+/* } */
+
+
+/* #timer-button { */
+/*   flex-grow: 0; */
+/*   width: 12rem; */
+/* } */
+/**/
+/* #TimeKeeper { */
+/*   align-items: center; */
+/* } */
+
+.header {
+  /* font-family: terminus; */
+  font-family: DDBB;
+  font-weight: normal;
+  font-size: 2rem;
+  /* letter-spacing: 0.1rem; */
+  /* font-size: 1.2rem; */
+  text-align: center;
+  color: hsla(var(--primary), 1);
+  /* margin-top: var(--gap-size); */
+  margin-top: 0;
+  margin-bottom: calc(var(--gap-size)/2);
+}
+
+.smaller-header {
+  /* font-family: terminus; */
+  font-family: DDBB;
+  font-weight: normal;
+  font-size: 1.6rem;
+  /* letter-spacing: 0.1rem; */
+  /* font-size: 1.2rem; */
+  text-align: center;
+  color: hsla(var(--darker-white), 1);
+  /* color: hsla(var(--secondary), 1); */
+  /* margin-top: var(--gap-size); */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+
+#icon {
+  font-family: 'Noto Emoji', sans-serif;
+  font-size: 2rem;
+}
+
+#bigbox {
+  /* height: calc(100% - 2 * var(--gap-size)); */
+  height: calc(100vh - 2 * var(--gap-size));
+  /* height: calc(100vh - 0 * var(--gap-size)); */
+  /* height: 100vh; */
+}
+
+#profile {
+  margin-top: var(--gap-size);
+  margin-bottom: var(--gap-size);
+}
+
+#time {
+  font-family: DDBB;
+  font-size: 2rem;
+}
+#date {
+  font-family: DDBB;
+  /* font-weight: bold; */
+  font-size: 1.6rem;
+  color: hsla(var(--primary), 1);
+}
+#remaining-time {
+  font-family: DDBB;
+  padding-top: 0.8rem;
+  font-size: 1.2rem;
+  color: hsla(var(--darker-white), 1);
+}
+
+#weather {
+  font-family: terminus, 'Noto Emoji', sans-serif;
+  font-size: 1.2rem;
+  min-width: 316px;
+  height: 300px;
+}
+
+/* #quest { */
+/*   font-size: 1.2rem; */
+/* } */
+
+#current-session-time {
+  font-size: 2rem;
+}
+
+.align-item-center {
+  align-items: center;
+}
+
+#duo-div {
+  gap: calc(2 * var(--gap-size));
+}
+
+.button {
+  border-radius: 0.8rem;
+  /* border: 2px solid hsla(var(--primary),1); */
+  background-color: hsla(var(--one_bg), 1);
+}
+
+#stop-button {
+  margin-top: var(--gap-size);
+  width: 6rem;
+}
+
+#session-button {
+  width: 10rem;
+}
+
+.hover-button {
+  user-select: none;
+  padding: 0.6rem;
+  border-radius: 0.8rem;
+}
+
+.focused-hover-button {
+  color: hsla(var(--secondary));
+  /* background-color: hsla(var(--one_bg)) */
+}
+
+.hover-button:hover {
+  cursor: pointer;
+  background-color: hsla(var(--one_bg))
+}
+
+#not-found {
+  display: flex;
+  flex-grow: 2;
+  align-items: center;
+  justify-content: center;
+  color: hsla(var(--darker-white));
+}
+
+
+/* Small screens */
+@media only screen and (max-width: 600px) {
+}
+
+/* Large screens */
+@media only screen and (min-width: 600px) {
+}
+

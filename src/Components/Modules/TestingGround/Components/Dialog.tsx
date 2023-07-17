@@ -53,6 +53,7 @@ const DialogContent = React.forwardRef<
             width: "1rem"
           }}
         />
+        {/* X */}
         {/* <span className="sr-only">Close</span> */}
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

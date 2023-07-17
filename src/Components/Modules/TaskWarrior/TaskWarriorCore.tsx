@@ -17,6 +17,7 @@ import * as render from './Render';
 import * as database from './Database';
 import Prompt from './Prompt';
 import Error from './Error';
+import Button from '../../UI/Button';
 /* import Alert from '../../Alert'; */
 
 const ERROR_DURATION_MS = 1600;
@@ -483,6 +484,10 @@ function TaskWarrior() {
     setCurrentPrompt('a');
   }
 
+  const handleButtonClick = () => {
+    console.log('Button pressed!');
+  };
+
   return (
     <div className="flex-container" id="bigbox">
       <div className="flex-container column-flex-direction flex-no-grow" id="tag-project-column">
@@ -493,9 +498,44 @@ function TaskWarrior() {
           <div className="hover-button" onClick={() => debugClick()}>
             Debug
           </div>
-          <div className="hover-button" onClick={() => debugClick2()}>
-            <BsPlus size="32" />
-          </div>
+
+          <Button
+            variant="default"
+            onPress={handleButtonClick}
+          >
+            Default
+          </Button>
+
+          <Button
+            variant="primary"
+            onPress={handleButtonClick}
+          >
+            Primary
+          </Button>
+          <Button
+            variant="secondary"
+            onPress={handleButtonClick}
+          >
+            Secondary
+          </Button>
+
+          <Button
+            variant="outline"
+            onPress={handleButtonClick}
+          >
+            Outline
+          </Button>
+
+          <Button
+            variant="primary link"
+            onPress={handleButtonClick}
+          >
+            Link
+          </Button>
+
+          {/* <div className="hover-button" onClick={() => debugClick2()}> */}
+          {/*   <BsPlus size="32" /> */}
+          {/* </div> */}
         </div>
         <div className="item flex-no-grow">
           <h2 className="header">
@@ -508,24 +548,9 @@ function TaskWarrior() {
             Projects
           </h2>
           {render.renderProjects(tagRecord, focusedTagName, focusedProjectName, handleProjectClick)}
-          {/* <p> */}
-          {/*   render projects here */}
-          {/* </p> */}
         </div>
       </div>
       <div className="flex-container column-flex-direction" id="column-2">
-        {/* <Alert */}
-        {/*   color='secondary' */}
-        {/*   autohide */}
-        {/*   width={800} */}
-        {/*   position='top-right' */}
-        {/*   offset={50} */}
-        {/*   delay={2000000000} */}
-        {/*   appendToBody */}
-        {/*   triggerRef={debugItem} */}
-        {/*   > */}
-        {/*   alert text lorem ipsum */}
-        {/*   </Alert> */}
         <div className="item justify-content-flex-start">
           {render.renderHeader(tagRecord, focusedTagName, focusedProjectName)}
           <Prompt

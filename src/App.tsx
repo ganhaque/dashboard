@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './App.css';
+import './Style/App.css';
 import SideBar from './Components/Sidebar/SideBar';
 import { sidebarItems } from './Components/Sidebar/SideBar';
 import MainPage from './Components/MainPage';
@@ -46,20 +46,19 @@ const App = () => {
     handleColorChange(currentPaletteName);
   }, [colorPaletteIndex]);
 
-  useEffect(() => {
-    // add event listener for Tab and Shift-Tab keys
-    document.addEventListener('keydown', handleKeyDown);
-
-    // remove event listener on component unmount
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-
-  }, [activeItemIndex]);
+  /* useEffect(() => { */
+  /*   // add event listener for Tab and Shift-Tab keys */
+  /*   document.addEventListener('keydown', handleKeyDown); */
+  /**/
+  /*   // remove event listener on component unmount */
+  /*   return () => { */
+  /*     document.removeEventListener('keydown', handleKeyDown); */
+  /*   }; */
+  /* }, [activeItemIndex]); */
 
   return (
     <div className="App flex-container">
-      <SideBar activeItem={activeItemIndex} onItemClick={handleSidebarItemClick} />
+      {/* <SideBar activeItem={activeItemIndex} onItemClick={handleSidebarItemClick} /> */}
       <MainPage activeItemIndex={activeItemIndex} />
     </div>
   );

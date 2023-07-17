@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import './Components/style.css';
+import './Style/index.css';
+import './Style/style.css';
+import './Style/CustomWind.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

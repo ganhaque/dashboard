@@ -14,15 +14,31 @@ const { contextBridge, ipcRenderer } = require('electron')
 // timewPog: () => ipcRenderer.invoke('timew-pog'),
 // })
 
-window.api = {
-  invoke: (channel, ...args) => {
-    return ipcRenderer.invoke(channel, ...args);
-  },
-};
+// window.api = {
+//   invoke: (channel, ...args) => {
+//     return ipcRenderer.invoke(channel, ...args);
+//   },
+// };
 
 contextBridge.exposeInMainWorld('electronAPI', {
   executeCommand: (commandString) => {
-    return window.api.invoke('execute-command', commandString);
+    // return window.api.invoke('execute-command', commandString);
+    return ipcRenderer.invoke('execute-command', commandString);
+  },
+  getOsInfo: () => {
+    return ipcRenderer.invoke('get-os-info');
+  },
+  getCpuUsage: () => {
+    return ipcRenderer.invoke('get-cpu-usage');
+  },
+  getRamUsage: () => {
+    return ipcRenderer.invoke('get-ram-usage');
+  },
+  getUptime: () => {
+    return ipcRenderer.invoke('get-uptime');
+  },
+  getNetworkInfo: () => {
+    return ipcRenderer.invoke('get-network-info');
   },
 });
 
