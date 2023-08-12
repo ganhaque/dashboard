@@ -1,0 +1,32 @@
+.tooltip {
+  z-index: 50;
+  overflow: hidden;
+  border-radius: 0.375rem; /* Use the appropriate border-radius value */
+  /* border: 1px solid #ccc; */
+  border-width: 1px;
+  pointer-events: none;
+  /* background-color: #f9fafb; */
+  /* background-color: hsla(var(--black)); */
+  /* padding: 0.75rem 1.5rem; */
+  /* font-size: 0.875rem; */
+  /* color: #333; */
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  /* animation-duration: 0.3s; */
+  /* transition-delay: 0ms; */
+}
+
+.tooltip[data-side='bottom'] {
+  /* Define the styles for the bottom tooltip */
+}
+
+.tooltip[data-side='left'] {
+  /* Define the styles for the left tooltip */
+}
+
+.tooltip[data-side='right'] {
+  /* Define the styles for the right tooltip */
+}
+
+.tooltip[data-side='top'] {
+  /* Define the styles for the top tooltip */
+}

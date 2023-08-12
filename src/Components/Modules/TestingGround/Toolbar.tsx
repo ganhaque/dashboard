@@ -35,7 +35,10 @@ export function Toolbar() {
     <div className="flex items-center space-x-2 top-gap-2">
       <div className="flex items-center justify-between gap-2">
         <Input
-          label="Filter"
+          style={{
+            height:'2rem',
+          }}
+          /* label="Filter" */
           placeholder="Filter tasks..."
           value={filterValue ?? ""}
           onChange={(event) =>

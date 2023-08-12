@@ -1,9 +1,10 @@
 .input-style-default {
   display: flex;
   width: 100%;
-  height: 2rem;
+  /* height: 2rem; */
 
   font-family: inherit;
+  font-size: inherit;
   color: inherit;
 
   box-sizing: border-box;
@@ -16,7 +17,7 @@
   padding-bottom: 0.5rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  font-size: 0.875rem;
+  /* font-size: 0.875rem; */
   outline-offset: 0.125rem;
   font-weight: 500;
 }

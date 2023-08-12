@@ -1,0 +1,24 @@
+.textarea {
+  display: flex;
+  min-height: 80px;
+  width: 100%;
+  padding: 0.75rem; /* You can adjust this value to match the original px-3 py-2 padding */
+  font-size: 0.875rem; /* This corresponds to text-sm in Tailwind */
+  border-radius: 0.375rem; /* This corresponds to rounded-md in Tailwind */
+  border-width: 1px;
+  background-color: transparent; /* This corresponds to bg-transparent in Tailwind */
+  color: hsla(var(--base06));
+  /* background-color: hsla(var(--black)); */
+  resize: vertical; /* If you want the textarea to be resizable */
+}
+
+/* Placeholder text color */
+.textarea::placeholder {
+  color: hsla(var(--muted_foreground));
+}
+
+/* Disabled state */
+.textarea:disabled {
+  cursor: not-allowed; /* This corresponds to disabled:cursor-not-allowed in Tailwind */
+  opacity: 0.5; /* This corresponds to disabled:opacity-50 in Tailwind */
+}

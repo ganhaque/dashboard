@@ -250,6 +250,8 @@ app.commandLine.appendSwitch('ignore-gpu-blacklist');
 app.commandLine.appendSwitch('disable-gpu');
 app.commandLine.appendSwitch('disable-gpu-compositing');
 
+app.commandLine.appendSwitch('force-color-profile', 'srgb');
+
 
 
 
@@ -297,7 +299,7 @@ async function scrapeWebsite() {
   await browser.close();
 }
 
-scrapeWebsite();
+// scrapeWebsite();
 
 /**
 Data structure

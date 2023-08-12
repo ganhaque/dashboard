@@ -87,9 +87,26 @@
   border-radius: calc(var(--radius) - 2px);
 }
 .button-style.outline:hover {
-  background-color: hsla(var(--grey));
+  background-color: hsla(var(--one_bg1));
 }
 .button-style.outline:active {
-  background-color: hsla(var(--grey), 0.8);
+  background-color: hsla(var(--one_bg1), 0.8);
 }
 
+.button-style.ghost {
+  color: hsla(var(--base06));
+  background-color: transparent;
+  /* border-color: hsla(var(--grey)); */
+  /* border-width: 1px; */
+  /* border-radius: calc(var(--radius) - 2px); */
+}
+.button-style.ghost:hover {
+  background-color: hsla(var(--one_bg1));
+}
+.button-style.ghost:active {
+  background-color: hsla(var(--one_bg1), 0.8);
+}
+
+.button-style.square {
+  border-radius: 0;
+}

@@ -6,7 +6,7 @@
   flex-direction: column;
   overflow: hidden;
 
-  border-color: hsla(var(--darker_white));
+  border-color: hsla(var(--grey));
   border-width: 1px;
   border-radius: 0.375rem;
 
@@ -20,7 +20,7 @@
   display: flex;
   align-items: center;
   border-bottom: 1px solid;
-  border-color: hsla(var(--darker_white));
+  border-color: hsla(var(--grey));
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }

@@ -1,0 +1,73 @@
+/* Define your custom styles here */
+
+/* Toast Viewport */
+.toast-viewport {
+  display: flex;
+  gap: 0.25rem;
+  position: fixed;
+  top: auto;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  flex-direction: column-reverse;
+  padding: 1rem;
+  margin: 0;
+  /* background-color: #fff; */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  max-height: 100vh;
+  width: 100%;
+  max-width: 26.25rem;
+  padding: 1rem;
+}
+
+/* Toast Root (Main Toast Component) */
+.toast-primitive {
+  position: relative;
+  pointer-events: auto;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 1rem;
+  overflow: hidden;
+  border-width: 1px;
+  border-radius: 0.625rem;
+  padding: 1.5rem;
+  padding-right: 2rem;
+  background-color: hsla(var(--darker_black));
+}
+
+/* Toast Action Button */
+.toast-action {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.toast-action:hover {
+  background-color: #f3f4f6; /* Set your desired hover background color */
+}
+
+/* Toast Close Button */
+.toast-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border-radius: 50%;
+  padding: 4px;
+  color: hsla(var(--base06), 0.2);
+  transition: color 0.2s ease;
+}
+
+.toast-close:hover {
+  color: hsla(var(--base06))
+}
+

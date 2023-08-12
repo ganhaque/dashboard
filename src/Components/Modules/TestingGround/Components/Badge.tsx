@@ -1,39 +1,33 @@
-import * as React from "react"
-import "./Badge.css"
+import * as React from "react";
+import "./Badge.css";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string; // Add className prop to the InputProps interface
+export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: string;
+  color?: string;
+  backgroundColor?: string;
+  style?: React.CSSProperties; // New prop to allow additional styles
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
-    return (
-      <input
-        type={type}
-        className={`input-style-default ${className}`}
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
-Input.displayName = "Input"
-
-export { Input }
-
-
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-    variant: string
-  }
-
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({
+  className,
+  variant,
+  color,
+  backgroundColor,
+  style, // Include the style prop here
+  ...props
+}: BadgeProps) {
   return (
     <div
-      className={ `badge ${className} ${variant}` } {...props}
+      style={{
+        backgroundColor: variant ? "" : `hsla(var(--${backgroundColor}))`,
+        color: variant ? "" : `hsla(var(--${color}))`,
+        ...style,
+      }}
+      className={`badge ${className} ${variant}`}
+      {...props}
     />
-  )
+  );
 }
 
-export { Badge }
+export { Badge };
+
