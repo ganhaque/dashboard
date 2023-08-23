@@ -17,6 +17,7 @@ import {
 
 import { BoardProps, exampleBoards, initialLabels, initialStatuses } from './Data';
 import Board from './Board';
+import BoardToolbar from './BoardToolbar';
 import { NewCardDialog } from './NewCardDialog';
 import { Toolbar } from './Toolbar';
 import { InputForm } from './FormDemo';
@@ -101,6 +102,7 @@ function TaskPage() {
           {/* <Button variant='outline' onClick={() => {console.log(selectedBoardIndex)}}>index</Button> */}
 
           <BoardProvider>
+            <BoardToolbar />
             <Board/>
           </BoardProvider>
         </div>
