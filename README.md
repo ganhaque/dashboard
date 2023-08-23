@@ -1,4 +1,4 @@
-# Port Moon ~~~Dashboard~~~
+# Port Moon
 
 <!-- > A Linux dashboard made using React Typescript & Electron (WIP) -->
 > A ~~totally-not-a-trello-clone~~ task manager made using React Typescript & Electron (WIP)
